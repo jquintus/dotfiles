@@ -1,0 +1,106 @@
+export PATH="/usr/local/opt/mysql@5.7/bin:$PATH:/Applications/calibre.app/Contents/console.app/Contents/MacOS/:~/bin"
+export CODE="/Users/jq/code"
+
+########################################
+# Command Line Aliases
+# Some of these came from https://gist.github.com/natelandau/10654137
+########################################
+
+
+alias up="pushd .."
+alias bpr="source ~/.aliases"
+
+# lock computer
+alias lock='/System/Library/CoreServices/"Menu Extras"/User.menu/Contents/Resources/CGSession -suspend'
+
+alias code='pushd $CODE'
+alias tst='pushd ~/test'
+alias dl='pushd ~/Downloads'
+alias home='~'
+alias profile='vim ~/.bash_profile'
+alias gprofile='gvim ~/.bash_profile'
+alias aliases='vim ~/.aliases'
+alias galiases='gvim ~/.aliases'
+alias zshrc='vim ~/.bash_zshrc'
+alias gzshrc='gvim ~/.zshrc'
+alias :wq='exit'
+
+alias copy='cp -iv'                         # Preferred 'cp' implementation
+alias cp='cp -iv'                           # Preferred 'cp' implementation
+alias move='mv -iv'                         # Preferred 'mv' implementation
+alias mv='mv -iv'                           # Preferred 'mv' implementation
+alias mkdir='mkdir -pv'                     # Preferred 'mkdir' implementation
+alias ll='ls -FGlAhp'                       # Preferred 'ls' implementation
+alias less='less -FSRXc'                    # Preferred 'less' implementation
+alias f='open -a Finder '                   # Open the specified directory in MacOS Finder
+alias f.='open -a Finder ./'                # Open current directory in MacOS Finder
+
+alias ~="pushd ~"                           # Go Home
+alias cls='clear'                           # Clear terminal display
+alias clip='pbcopy'                         # I won't remmber pbcopy any time soon.
+alias back='popd'
+
+#   lr:  Full Recursive Directory Listing
+alias lr='ls -R | grep ":$" | sed -e '\''s/:$//'\'' -e '\''s/[^-][^\/]*\//--/g'\'' -e '\''s/^/   /'\'' -e '\''s/-/|/'\'' | less'
+
+# up 'n' folders
+alias ..='pushd ..'
+alias ...='pushd ../..'
+alias ....='pushd ../../..'
+alias .....='pushd ../../../..'
+
+# grep with color
+alias grep='grep --color=auto'
+
+########################################
+# Sometimes I'm just bad at typing...
+########################################
+alias greb='grep'
+
+########################################
+# Don't always use the defaults
+########################################
+# alias cat='ccat'         # ccat adds syntax highlighting to the output
+alias cat='bat'            # bat adds syntax highlighting and formatting to the output
+
+
+########################################
+# Git Stuffs
+########################################
+alias tit="git"                               # typos
+alias it="git"                                # typos
+alias co="git checkout"
+alias cob="git checkout -b"
+alias pull="git pull"
+alias push="git pushup"
+alias pushup="git pushup"
+alias c="git add -A && git commit"
+
+alias s="pwd && scmpuff_status"
+
+########################################
+# Attentive aliases
+########################################
+alias startAtt='docker-compose -f $CODE/tools/dev-env/docker-compose.yml up -d'
+alias fixProto='mvn clean compile'
+alias schema='gvim $CODE/integration-test/src/main/resources/*.sql'
+alias activate_python='. $CODE/python/myvirtualenv/bin/activate'
+
+source ~/.sshAliases.sh
+
+########################################
+# DB Access
+########################################
+export AWS_USERNAME=jquintus
+
+alias rds-dev='$CODE/tools/aws-rds/aws-rds.sh  -u $AWS_USERNAME -h attentive-devel -x'
+alias rds-prod='$CODE/tools/aws-rds/aws-rds.sh -u $AWS_USERNAME -h attentive-prod -x'
+alias rds-prod-replica='$CODE/tools/aws-rds/aws-rds.sh  -u $AWS_USERNAME -h attentive-prod-replica -x'
+alias rds-staging='$CODE/tools/aws-rds/aws-rds.sh -u $AWS_USERNAME -h attentive-staging -x'
+
+alias pg-dev='$CODE/tools/aws-rds/aws-rds.sh   -u $AWS_USERNAME -h postgres-events-devel -x'
+alias pg-prod='$CODE/tools/aws-rds/aws-rds.sh  -u $AWS_USERNAME -h postgres-events -x'
+
+alias pg-segmentation-prod='$CODE/tools/aws-rds/aws-rds.sh  -u $AWS_USERNAME -h attentive-segmentation-prod -x'
+alias pg-segmentation-devel='$CODE/tools/aws-rds/aws-rds.sh  -u $AWS_USERNAME -h attentive-segmentation-devel -x'
+

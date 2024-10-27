@@ -1,0 +1,42 @@
+[credential]
+    helper = osxkeychain
+[user]
+    name = Josh Quintus
+    email = jquintus@attentivemobile.com
+[alias]
+    unstage = reset HEAD --
+    unadd = reset
+    unstash = stash pop
+    kev  = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard   # Move your current changes to the Recycle bin (instead of just burning it down). You can use git reflog to find the commit again and restore it if need be.  http://haacked.com/archive/2014/07/28/github-flow-aliases/
+    ec = config --global -e                                                            # Edit this file http://haacked.com/archive/2014/07/28/github-flow-aliases/
+    co = checkout                                                                      # Checkout
+    cob = checkout -b                                                                  # Checkout a new branch
+    amend  = checkout --amend
+
+    ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
+    ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+    la = "!git config -l | grep alias | cut -c 7-"                                     # List aliases
+
+    branches = branch -l                                                               # List branches
+    pushup = "!git push --set-upstream origin $(git symbolic-ref --short HEAD)"        # Set the upstream
+
+    pb = remote prune origin 
+
+    vim = "!git diff --name-only | xargs gvim -p"                                      # Open all edited files in vim (the -p tells vim to open eacn file in a new tab)
+    vimHead = "!git diff-tree --no-commit-id --name-only -r HEAD | xargs gvim -p"      # Open all the files from the last commit in vim
+    vimDiff = "!gvim -p -c 'tabdo Gdiff' $(git status --porcelain | awk '{print $2}')" # Open all edited files in vim in diff view
+
+[grep]
+    lineNumber = true
+
+[web]
+    browser = google-chrome
+
+[diff]
+    tool = vimdiff
+
+[core]
+    editor = gvim -f
+	excludesfile = /Users/jq/.gitignore
+[pager]
+	branch = false

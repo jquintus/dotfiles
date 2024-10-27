@@ -1,0 +1,82 @@
+source ~/.zshrc-antigen
+source /usr/local/share/antigen/antigen.zsh
+
+# Josh starts here
+source ~/.aliases
+
+########################################
+# iTerm Specific 
+########################################
+# function iterm2_print_user_vars() {
+#   iterm2_set_user_var time "$(date '+%a %b %e %X')"
+#   iterm2_set_user_var gitBranch "$(__git_ps1)"
+# }
+
+source /usr/local/etc/bash_completion.d/git-prompt.sh
+GIT_PS1_SHOWDIRTYSTATE=true
+
+# Set CLICOLOR if you want Ansi Colors in iTerm2 
+export CLICOLOR=1
+
+# Set colors to match iTerm2 Terminal Colors
+export TERM=xterm-256color
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+########################################
+# Git Stuffs
+########################################
+
+# Makes working with git from the command line 
+# quicker by substituting numeric shortcuts for files.
+eval "$(scmpuff init -s)"   # https://github.com/mroth/scmpuff
+
+
+########################################
+# Power Level 9K Prompt
+# https://github.com/bhilburn/powerlevel9k#prompt-customization
+########################################
+POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND='clear'
+POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND='yellow'
+
+# Default: (status root_indicator background_jobs history time)	
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(command_execution_time vcs status root_indicator background_jobs time)
+
+# Default: (context dir vcs)
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(virtualenv dir)
+
+########################################
+# NVM Settings
+# (Node Version Manager)
+########################################
+export NVM_DIR="$HOME/.nvm"
+[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"  # This loads nvm bash_completion
+
+########################################
+# This speeds up pasting w/ autosuggest
+# https://github.com/zsh-users/zsh-autosuggestions/issues/238
+########################################
+pasteinit() {
+  OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
+  zle -N self-insert url-quote-magic # I wonder if you'd need `.url-quote-magic`?
+}
+
+pastefinish() {
+  zle -N self-insert $OLD_SELF_INSERT
+}
+zstyle :bracketed-paste-magic paste-init pasteinit
+zstyle :bracketed-paste-magic paste-finish pastefinish
+
+[[ -s "$HOME/.avn/bin/avn.sh" ]] && source "$HOME/.avn/bin/avn.sh" # load avn
+
+########################################
+# Tell less to not page things if there's less than a page anyway
+# i.e., this makes "less" act like "cat" if there isn't a full page of text
+# https://stackoverflow.com/questions/2183900/how-do-i-prevent-git-diff-from-using-a-pager
+########################################
+export LESS="-F -X $LESS"
+
+export JAVA_HOME=`/usr/libexec/java_home -v 8`
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/amazon-corretto-8.jdk/Contents/Home
+export AWS_PROFILE=prod
+export AWS_REGION=us-east-1

@@ -1,0 +1,98 @@
+export PATH="/usr/local/opt/mysql@5.7/bin:$PATH:/Applications/calibre.app/Contents/console.app/Contents/MacOS/:~/bin"
+
+
+########################################
+# Command Line Aliases
+# Some of these came from https://gist.github.com/natelandau/10654137
+########################################
+source ~/.aliases
+
+trash () { command mv "$@" ~/.Trash ; }     # trash:        Moves a file to the MacOS trash
+
+########################################
+# Add syntax highlighting to the output
+########################################
+chead (){ head $@ | ccat; }
+ctail (){ tail $@ | ccat; }
+
+########################################
+# Extract most know archives with one command
+# example: 
+#          extract file.zip
+#          extract file.tar.gz
+########################################
+    extract () {
+        if [ -f $1 ] ; then
+          case $1 in
+            *.tar.bz2)   tar xjf $1     ;;
+            *.tar.gz)    tar xzf $1     ;;
+            *.bz2)       bunzip2 $1     ;;
+            *.rar)       unrar e $1     ;;
+            *.gz)        gunzip $1      ;;
+            *.tar)       tar xf $1      ;;
+            *.tbz2)      tar xjf $1     ;;
+            *.tgz)       tar xzf $1     ;;
+            *.zip)       unzip $1       ;;
+            *.Z)         uncompress $1  ;;
+            *.7z)        7z x $1        ;;
+            *)     echo "'$1' cannot be extracted via extract()" ;;
+             esac
+         else
+             echo "'$1' is not a valid file"
+         fi
+    }
+
+########################################
+# Git Stuffs
+########################################
+
+# Makes working with git from the command line 
+# quicker by substituting numeric shortcuts for files.
+eval "$(scmpuff init -s)"   # https://github.com/mroth/scmpuff
+
+########################################
+# Prompt
+# http://www.gnu.org/software/bash/manual/bash.html#Controlling-the-Prompt
+#
+# \t := The time, in 24-hour HH:MM:SS format.
+# \W := The basename of $PWD, with $HOME abbreviated with a tilde.
+# \! := The current command number (e.g., type !23 to repeat command #23)
+# 
+# To get the git integration to work, you need to install bash completion.
+# After that, the git-prompt.sh and git-completion.bash will be present in
+# the bash_completion.d directory.  All you need to do then is source them 
+# in your bas_profile
+# > brew install bash-completion
+########################################
+
+source /usr/local/etc/bash_completion.d/git-prompt.sh
+source /usr/local/etc/bash_completion.d/git-completion.bash
+GIT_PS1_SHOWDIRTYSTATE=true
+
+# If I'm in iTerm2 then the path and github info is displayed as a badge
+# which means I don't need it as part of my prompt.
+if [ "$TERM_PROGRAM" == "iTerm.app" ];then
+    PS1="\t \[\033[0;35m\]>\[\033[00m\] "
+else
+    PS1="\t \[\033[0;35m\]\!\[\033[00m\] \[\033[36m\]\W\[\033[32m\]\$(__git_ps1)\[\033[00m\] > "
+fi
+
+
+# Set CLICOLOR if you want Ansi Colors in iTerm2 
+export CLICOLOR=1
+
+# Set colors to match iTerm2 Terminal Colors
+export TERM=xterm-256color
+
+test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
+
+
+########################################
+# iTerm Specific 
+########################################
+function iterm2_print_user_vars() {
+  iterm2_set_user_var time "$(date '+%a %b %e %X')"
+  iterm2_set_user_var gitBranch "$(__git_ps1)"
+  echo -ne "\033]0;$PWD\007"
+}
+[[ -s "$HOME/.avn/bin/avn.sh" ]] && source "$HOME/.avn/bin/avn.sh" # load avn
