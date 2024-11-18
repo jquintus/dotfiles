@@ -1,5 +1,5 @@
-source ~/.zshrc-antigen
-source /usr/local/share/antigen/antigen.zsh
+# source ~/.zshrc-antigen
+# source /usr/local/share/antigen/antigen.zsh
 
 # Josh starts here
 source ~/.aliases
@@ -12,7 +12,7 @@ source ~/.aliases
 #   iterm2_set_user_var gitBranch "$(__git_ps1)"
 # }
 
-source /usr/local/etc/bash_completion.d/git-prompt.sh
+#source /usr/local/etc/bash_completion.d/git-prompt.sh
 GIT_PS1_SHOWDIRTYSTATE=true
 
 # Set CLICOLOR if you want Ansi Colors in iTerm2 
@@ -28,7 +28,7 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 
 # Makes working with git from the command line 
 # quicker by substituting numeric shortcuts for files.
-eval "$(scmpuff init -s)"   # https://github.com/mroth/scmpuff
+# eval "$(scmpuff init -s)"   # https://github.com/mroth/scmpuff
 
 
 ########################################
@@ -80,3 +80,21 @@ export JAVA_HOME=`/usr/libexec/java_home -v 8`
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/amazon-corretto-8.jdk/Contents/Home
 export AWS_PROFILE=prod
 export AWS_REGION=us-east-1
+
+
+########################################
+# Hightouch configs
+########################################
+
+# Java
+export CPPFLAGS="$CPPFLAGS -I/opt/homebrew/opt/openjdk/include"
+export JAVA_HOME="$(/usr/libexec/java_home)"
+
+# Volta
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
+
+# Tailscale
+export TAILSCALE_PATH="/Applications/Tailscale.app/Contents/MacOS/"
+export PATH="$TAILSCALE_PATH:$PATH"
+

@@ -2,7 +2,7 @@
     helper = osxkeychain
 [user]
     name = Josh Quintus
-    email = jquintus@attentivemobile.com
+    email = josh.quintus@hightouch.io
 [alias]
     unstage = reset HEAD --
     unadd = reset
@@ -26,6 +26,8 @@
     vimHead = "!git diff-tree --no-commit-id --name-only -r HEAD | xargs gvim -p"      # Open all the files from the last commit in vim
     vimDiff = "!gvim -p -c 'tabdo Gdiff' $(git status --porcelain | awk '{print $2}')" # Open all edited files in vim in diff view
 
+    sortBranchesByCommitDate = "branch --sort=-committerdate -l 'jq*'"
+
 [grep]
     lineNumber = true
 
@@ -38,5 +40,8 @@
 [core]
     editor = gvim -f
 	excludesfile = /Users/jq/.gitignore
+	pager = less -R
 [pager]
 	branch = false
+[color]
+	ui = auto

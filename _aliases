@@ -1,5 +1,5 @@
 export PATH="/usr/local/opt/mysql@5.7/bin:$PATH:/Applications/calibre.app/Contents/console.app/Contents/MacOS/:~/bin"
-export CODE="/Users/jq/code"
+# export CODE="/Users/jq/code"
 
 ########################################
 # Command Line Aliases
@@ -13,7 +13,7 @@ alias bpr="source ~/.aliases"
 # lock computer
 alias lock='/System/Library/CoreServices/"Menu Extras"/User.menu/Contents/Resources/CGSession -suspend'
 
-alias code='pushd $CODE'
+# alias code='pushd $CODE'
 alias tst='pushd ~/test'
 alias dl='pushd ~/Downloads'
 alias home='~'
@@ -61,7 +61,13 @@ alias greb='grep'
 # Don't always use the defaults
 ########################################
 # alias cat='ccat'         # ccat adds syntax highlighting to the output
-alias cat='bat'            # bat adds syntax highlighting and formatting to the output
+# alias cat='bat'            # bat adds syntax highlighting and formatting to the output
+
+########################################
+# Make my mac more windowsy
+########################################
+
+alias ex="open"
 
 
 ########################################
@@ -76,31 +82,15 @@ alias push="git pushup"
 alias pushup="git pushup"
 alias c="git add -A && git commit"
 
-alias s="pwd && scmpuff_status"
+alias s="git status"
+
+
+# source ~/.sshAliases.sh
 
 ########################################
-# Attentive aliases
+# Hightouch Aliases
 ########################################
-alias startAtt='docker-compose -f $CODE/tools/dev-env/docker-compose.yml up -d'
-alias fixProto='mvn clean compile'
-alias schema='gvim $CODE/integration-test/src/main/resources/*.sql'
-alias activate_python='. $CODE/python/myvirtualenv/bin/activate'
 
-source ~/.sshAliases.sh
-
-########################################
-# DB Access
-########################################
-export AWS_USERNAME=jquintus
-
-alias rds-dev='$CODE/tools/aws-rds/aws-rds.sh  -u $AWS_USERNAME -h attentive-devel -x'
-alias rds-prod='$CODE/tools/aws-rds/aws-rds.sh -u $AWS_USERNAME -h attentive-prod -x'
-alias rds-prod-replica='$CODE/tools/aws-rds/aws-rds.sh  -u $AWS_USERNAME -h attentive-prod-replica -x'
-alias rds-staging='$CODE/tools/aws-rds/aws-rds.sh -u $AWS_USERNAME -h attentive-staging -x'
-
-alias pg-dev='$CODE/tools/aws-rds/aws-rds.sh   -u $AWS_USERNAME -h postgres-events-devel -x'
-alias pg-prod='$CODE/tools/aws-rds/aws-rds.sh  -u $AWS_USERNAME -h postgres-events -x'
-
-alias pg-segmentation-prod='$CODE/tools/aws-rds/aws-rds.sh  -u $AWS_USERNAME -h attentive-segmentation-prod -x'
-alias pg-segmentation-devel='$CODE/tools/aws-rds/aws-rds.sh  -u $AWS_USERNAME -h attentive-segmentation-devel -x'
-
+alias hasura="npm run hasura -- --database-name default"
+alias prettier="/Users/jq/code/hightouch2/node_modules/.bin/prettier"
+alias ht='pushd ~/code/Hightouch'
