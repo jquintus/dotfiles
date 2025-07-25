@@ -8,3 +8,7 @@ To install the dotfiles, simply link them
 ```bash
 ln -nfs /Users/jq/dotfiles/_vimrc /Users/jq/.vimrc
 ```
+
+# Links to consider
+* [Tons of git aliases to add](https://kapeli.com/cheat_sheets/Oh-My-Zsh_Git.docset/Contents/Resources/Documents/index)
+* [Yet another dotfiles manager](https://yadm.io/)
