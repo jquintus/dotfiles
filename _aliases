@@ -1,6 +1,8 @@
 export PATH="/usr/local/opt/mysql@5.7/bin:$PATH:/Applications/calibre.app/Contents/console.app/Contents/MacOS/:~/bin"
 # export CODE="/Users/jq/code"
 
+alias bpr="source ~/.aliases"
+
 ########################################
 # Command Line Aliases
 # Some of these came from https://gist.github.com/natelandau/10654137
@@ -8,7 +10,6 @@ export PATH="/usr/local/opt/mysql@5.7/bin:$PATH:/Applications/calibre.app/Conten
 
 
 alias up="pushd .."
-alias bpr="source ~/.aliases"
 
 # lock computer
 alias lock='/System/Library/CoreServices/"Menu Extras"/User.menu/Contents/Resources/CGSession -suspend'
@@ -38,6 +39,7 @@ alias f.='open -a Finder ./'                # Open current directory in MacOS Fi
 alias ~="pushd ~"                           # Go Home
 alias cls='clear'                           # Clear terminal display
 alias clip='pbcopy'                         # I won't remmber pbcopy any time soon.
+alias xclip='pbcopy'                        # I won't remmber pbcopy any time soon.
 alias back='popd'
 
 #   lr:  Full Recursive Directory Listing
@@ -76,6 +78,7 @@ alias ex="open"
 alias tit="git"                               # typos
 alias it="git"                                # typos
 alias co="git checkout"
+alias coi="git branch | sed -r 's/^[ \\*]+//g' | fzf | xargs git checkout"
 alias cob="git checkout -b"
 alias pull="git pull"
 alias push="git pushup"
@@ -84,6 +87,26 @@ alias c="git add -A && git commit"
 
 alias s="git status"
 
+alias master="checkout_default_branch"
+alias main="checkout_default_branch"
+
+checkout_default_branch() {
+    # Automatically find the default branch for this repo (main, master, etc) and then
+    # 1. Check out that branch
+    # 2. pull
+    branch=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')
+    if [ -n "$branch" ]; then
+        git checkout "$branch" && git pull
+    else
+        echo "Unable to determine default branch."
+        echo "Try running"
+        echo "git remote set-head origin -a"
+    fi
+}
+
+# Requires the github command line installed
+alias pulls="gh pr view --web"
+
 
 # source ~/.sshAliases.sh
 
@@ -91,6 +114,21 @@ alias s="git status"
 # Hightouch Aliases
 ########################################
 
-alias hasura="npm run hasura -- --database-name default"
 alias prettier="/Users/jq/code/hightouch2/node_modules/.bin/prettier"
 alias ht='pushd ~/code/Hightouch'
+alias infra='pushd ~/code/infra'
+alias localdb="psql -h localhost -p 5432 -U htu -d htdb"
+alias replica="psql -h production-htdb-replica -U readonly -d htdb"
+alias readwrite="psql -h production-htdb -U readwrite -d htdb"
+
+# This is the old version of the replica alias that uses the htdb command
+alias old_replica="htdb connect production-replica readonly"
+
+
+alias synth='npm run cdktf synth'
+
+########################################
+# Cursor & VS Code
+########################################
+
+alias clean_cursor='rm -rf ~/Library/Application\ Support/Cursor/User/workspaceStorage/'

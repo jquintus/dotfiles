@@ -45,3 +45,5 @@
 	branch = false
 [color]
 	ui = auto
+[fetch]
+	prune = true

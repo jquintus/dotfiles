@@ -3,6 +3,8 @@
 
 # Josh starts here
 source ~/.aliases
+export PATH="$HOME/bin:$PATH"
+export EDITOR=nvim 
 
 ########################################
 # iTerm Specific 
@@ -98,3 +100,4 @@ export PATH="$VOLTA_HOME/bin:$PATH"
 export TAILSCALE_PATH="/Applications/Tailscale.app/Contents/MacOS/"
 export PATH="$TAILSCALE_PATH:$PATH"
 
+export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
