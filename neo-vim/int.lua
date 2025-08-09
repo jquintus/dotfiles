@@ -13,8 +13,7 @@ require('test')
 require('neovide')
 require('variables')
 require('settings')
-require('keymaps')       -- to be tested
-require('autocmds')      -- to be tested
-require('commands')      -- to be tested
-require('mac-specific')  -- to be tested
-
+require('keymaps')
+require('autocmds')     -- to be tested
+require('commands')     -- to be tested
+require('mac-specific') -- to be tested

@@ -79,5 +79,8 @@
         "vsplit",
         "vssettings",
         "wincmd"
+    ],
+    "Lua.diagnostics.globals": [
+        "vim"
     ]
 }

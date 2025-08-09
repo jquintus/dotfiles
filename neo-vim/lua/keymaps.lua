@@ -6,10 +6,8 @@ local variables = require('variables')
 
 -- Key mappings for personal vimrc
 vim.keymap.set('n', '<F3>', function()
-
     vim.cmd("source " .. "/Users/jq/dotfiles/neo-vim/int.lua")
-    vim.api.nvim_echo({{"Reloading int.lua", "None"}}, false, {})
-
+    vim.api.nvim_echo({ { "Reloading int.lua", "None" } }, false, {})
 end, { noremap = true })
 
 vim.keymap.set('n', '<S-F3>', function()
@@ -96,16 +94,16 @@ vim.keymap.set('n', '<leader>g', ':g::d<CR>', { noremap = true })
 vim.keymap.set('n', '<leader>y', function()
     -- Clear the y register
     vim.fn.setreg('y', '')
-    
+
     -- Create a mark so we can come back here later
     vim.cmd("normal! my")
-    
+
     -- Copy all lines that match the current search to the y buffer
     vim.cmd("g//y Y")
-    
+
     -- Copy the content of the y buffer to the clipboard
     vim.fn.setreg('+', vim.fn.getreg('y'))
-    
+
     -- Move the cursor back to the starting position
     vim.cmd("normal! `y")
 end, { noremap = true })
@@ -122,7 +120,7 @@ vim.keymap.set('n', 'k', 'gk', { noremap = true })
 vim.keymap.set('n', '<F2>', ':setlocal wrap!<CR>', { noremap = true })
 -- Shift+F2: Toggle word wrapping AND line break mode (only break at word boundaries)
 vim.keymap.set('n', '<S-F2>', ':setlocal wrap!<CR>:setlocal lbr!<CR>', { noremap = true })
--- Ctrl+F2: Format/reflow the current paragraph 
+-- Ctrl+F2: Format/reflow the current paragraph
 vim.keymap.set('n', '<C-F2>', 'gq}', { noremap = true })
 
 -------------------------------------------------------------------------------
@@ -133,7 +131,7 @@ vim.keymap.set('n', '<F11>', function()
     if not vim.b.syntax then
         vim.b.syntax = 0
     end
-    
+
     if vim.b.syntax == 0 then
         vim.b.syntax = 1
         vim.cmd("setlocal syntax=cs")
@@ -213,17 +211,17 @@ vim.cmd("cmap <S-Insert> <C-R>+")
 
 -- CTRL-A is copy all
 vim.keymap.set('n', '<M-a>', function()
-    vim.api.nvim_echo({{"Copying entire file to clipboard", "None"}}, false, {})
+    vim.api.nvim_echo({ { "Copying entire file to clipboard", "None" } }, false, {})
 
     -- Save current position in mark 'c'
     vim.cmd('normal! mc')
     vim.cmd('normal! ggVG"+y')
-    
+
     -- Return to the saved position and delete the mark
     vim.cmd("normal! `c")
     vim.cmd('delmarks c')
 
-    vim.api.nvim_echo({{"File copied to clipboard", "None"}}, false, {})
+    vim.api.nvim_echo({ { "File copied to clipboard", "None" } }, false, {})
 end, { noremap = true })
 
 -------------------------------------------------------------------------------
@@ -246,13 +244,13 @@ vim.keymap.set('n', '<leader>d', ':next $HOME/OneDrive/bin/config/vimfiles/desti
 
 vim.keymap.set('n', 't?', function()
     vim.api.nvim_echo({
-        {'<leader>b => notes.bat'},
-        {'\n<leader>c => notes.cs'},
-        {'\n<leader>j => notes.json'},
-        {'\n<leader>m => notes.md'},
-        {'\n<leader>s => notes.sql'},
-        {'\n<leader>t => notes.txt'},
-        {'\n<leader>x => notes.xml'}
+        { '<leader>b => notes.bat' },
+        { '\n<leader>c => notes.cs' },
+        { '\n<leader>j => notes.json' },
+        { '\n<leader>m => notes.md' },
+        { '\n<leader>s => notes.sql' },
+        { '\n<leader>t => notes.txt' },
+        { '\n<leader>x => notes.xml' }
     }, false, {})
 end, { noremap = true })
 
@@ -272,7 +270,7 @@ local function auto_highlight_toggle()
         vim.cmd('au! auto_highlight')
         vim.cmd('augroup! auto_highlight')
         vim.opt.updatetime = 4000
-        vim.api.nvim_echo({{'Highlight current word: off', 'None'}}, false, {})
+        vim.api.nvim_echo({ { 'Highlight current word: off', 'None' } }, false, {})
         return 0
     else
         vim.api.nvim_create_augroup('auto_highlight', { clear = true })
@@ -286,7 +284,7 @@ local function auto_highlight_toggle()
             end
         })
         vim.opt.updatetime = 500
-        vim.api.nvim_echo({{'Highlight current word: ON', 'None'}}, false, {})
+        vim.api.nvim_echo({ { 'Highlight current word: ON', 'None' } }, false, {})
         return 1
     end
 end
