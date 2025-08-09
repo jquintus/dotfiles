@@ -17,20 +17,6 @@ neo-vim/
 ├── init.lua                  # Main entry point - loads all modules
 ```
 
-## Installation
-
-1. Copy the `lua` directory to your Neovim config:
-
-   ```bash
-   cp -r neo-vim/lua ~/.config/nvim/
-   ```
-
-2. Create a main `init.lua` file in `~/.config/nvim/`:
-   ```lua
-   -- Load the modular configuration
-   require('config')
-   ```
-
 ## Modules
 
 ### `variables.lua`
@@ -76,15 +62,3 @@ neo-vim/
 3. **Reusability**: Modules can be loaded independently
 4. **Testing**: Individual modules can be tested separately
 5. **Organization**: Clear separation of concerns
-
-## Usage
-
-The configuration is automatically loaded when Neovim starts. All the original functionality from `mac.vimrc` is preserved, but now organized in a more maintainable structure.
-
-## Migration from Single File
-
-If you were using the single `mac.lua` file, you can now use the modular version by:
-
-1. Removing the old `mac.lua` file
-2. Installing the modular structure as described above
-3. The functionality will be identical, but better organized
