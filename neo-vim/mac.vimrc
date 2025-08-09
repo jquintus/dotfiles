@@ -11,7 +11,7 @@ nmap <leader>sv :execute 'source' PersonalVimRc<cr>
 nmap <leader>ev :execute 'e' PersonalVimRc<cr>
 
 "*******************************************************************************
-" Mac Specic Stuff
+" Mac Specific Stuff
 " <D-j> : this maps the "command key + j"
 "*******************************************************************************
 " To set colors up in ITerm

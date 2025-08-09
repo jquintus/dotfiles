@@ -1,20 +1,13 @@
 -- Neovim configuration file (init.lua)
 -- Converted from _vimrc
 
--- External vimrc path
-local external_vimrc = "/Users/jq/OneDrive/bin/config/vimfiles/vimrc.mac.txt"
+-- Add the current directory to the Lua path so we can find our modules
+local current_dir = '/Users/jq/dotfiles/neo-vim/lua'
+package.path = package.path .. ';' .. current_dir .. '/?.lua;' .. current_dir .. '/?/init.lua'
 
--- Source the external vimrc file
-vim.cmd("source " .. external_vimrc)
+-- Print the package.path for debugging
+print("Current dir: " .. current_dir)
+print("Package path: " .. package.path)
 
--- Set colorscheme (after external vimrc to avoid being overridden)
-vim.cmd("colorscheme murphy")
-
--- Key mappings (exact conversion from _vimrc)
-vim.keymap.set('n', ':', function()
-    vim.cmd("source " .. external_vimrc)
-end, { noremap = true })
-
-vim.keymap.set('n', '<S-F3>', function()
-    vim.cmd("e " .. external_vimrc)
-end, { noremap = true })
+-- Load just one module to test
+require('test')
