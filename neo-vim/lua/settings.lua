@@ -45,18 +45,16 @@ vim.opt.backup = true                   -- keep backup copies
 vim.opt.backupdir = "~/.vim_backup"     -- save all backups in one directory
 vim.opt.directory = "~/.vim_backup"     -- put swaps files here too
 vim.opt.undodir = "~/.vim_undo"         -- put swaps files here too
--- vim.opt.backupext = ".bak"              -- don't use that weird ~ extension - not supported in Neovim
+vim.opt.backupext = ".bak"              -- don't use that weird ~ extension - not supported in Neovim
 vim.opt.ruler = true                    -- show column/row count (on by default)
 
 vim.opt.showcmd = true                  -- show key sequence in status line
 
 -- GUI options - simplified for Neovim
--- vim.opt.guifont = "Menlo-Regular:h16"
+vim.opt.encoding = "utf-8"
+vim.cmd("color desert")
 
--- vim.opt.encoding = "utf-8"
--- vim.cmd("color desert")
-
--- vim.opt.autoread = true                 -- Automatically reload a file when it has been changed on disk
+vim.opt.autoread = true                 -- Automatically reload a file when it has been changed on disk
 
 vim.g.mapleader = " "
 
@@ -65,4 +63,4 @@ vim.g.mapleader = " "
 -- have unwritten changes to a file and open a new file using :e, without being
 -- forced to write or undo your changes first. Also, undo buffers and marks are
 -- preserved while the buffer is open. This is an absolute must-have.
--- vim.opt.hidden = true
+vim.opt.hidden = true
