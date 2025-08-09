@@ -8,7 +8,6 @@ alias bpr="source ~/.aliases"
 # Some of these came from https://gist.github.com/natelandau/10654137
 ########################################
 
-
 alias up="pushd .."
 
 # lock computer
@@ -20,7 +19,7 @@ alias dl='pushd ~/Downloads'
 alias home='~'
 alias profile='vim ~/.bash_profile'
 alias gprofile='gvim ~/.bash_profile'
-alias aliases='vim ~/.aliases'
+alias aliases='nvim ~/.aliases'
 alias galiases='gvim ~/.aliases'
 alias zshrc='vim ~/.bash_zshrc'
 alias gzshrc='gvim ~/.zshrc'
@@ -124,11 +123,11 @@ alias infra='pushd ~/code/infra'
 # alias prod_readonly="psql -h production-htdb -U readonly -d htdb"
 # alias sandboxdb="psql -h hightouch-sync-2.chqia4iykr0y.us-east-1.rds.amazonaws.com -p 5432 -U postgres -d postgres"
 
-alias localdb="psql -h localhost -p 5432 -U htu -d htdb --set=PROMPT1='%[%033[32m%][localhost] %n@%m:%/%R%#%[%033[0m%]'"
-alias sandboxdb="psql -h hightouch-sync-2.chqia4iykr0y.us-east-1.rds.amazonaws.com -p 5432 -U postgres -d postgres --set=PROMPT1='%[%033[32m%][sandbox] %n@%m:%/%R%#%[%033[0m%]'"
-alias replica="psql -h production-htdb-replica -U readonly -d htdb --set=PROMPT1='%[%033[33m%][staging] %n@%m:%/%R%#%[%033[0m%]'"
-alias prod_readonly="psql -h production-htdb -U readonly -d htdb --set=PROMPT1='%[%033[31m%][PROD (RO)] %n@%m:%/%R%#%[%033[0m%]'"
-alias prod_readwrite="psql -h production-htdb -U readwrite -d htdb --set=PROMPT1='%[%033[1;31m%][!!! PROD (RW) !!!] %n@%m:%/%R%#%[%033[0m%]'"
+alias localdb="psql -h localhost -p 5432 -U htu -d htdb --set=PROMPT1='%[%033[32m%][localhost] %/%R%#%[%033[0m%]'"
+alias sandboxdb="psql -h hightouch-sync-2.chqia4iykr0y.us-east-1.rds.amazonaws.com -p 5432 -U postgres -d postgres --set=PROMPT1='%[%033[32m%][sandbox] %/%R%#%[%033[0m%]'"
+alias replica="psql -h production-htdb-replica -U readonly -d htdb --set=PROMPT1='%[%033[33m%][replica] %/%R%#%[%033[0m%]'"
+alias prod_readonly="psql -h production-htdb -U readonly -d htdb --set=PROMPT1='%[%033[31m%][PROD (RO)] %/%R%#%[%033[0m%]'"
+alias prod_readwrite="psql -h production-htdb -U readwrite -d htdb --set=PROMPT1='%[%033[1;31m%][!!! PROD (RW)] %/%R%#%[%033[0m%]'"
 
 # This is the old version of the replica alias that uses the htdb command
 alias old_replica="htdb connect production-replica readonly"
