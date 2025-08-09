@@ -6,11 +6,15 @@ local variables = require('variables')
 
 -- Key mappings for personal vimrc
 vim.keymap.set('n', '<F3>', function()
-    vim.cmd("source " .. variables.PersonalVimRc)
+
+    vim.cmd("source " .. "/Users/jq/dotfiles/neo-vim/int.lua")
 end, { noremap = true })
 
 vim.keymap.set('n', '<S-F3>', function()
-    vim.cmd("e " .. variables.PersonalVimRc)
+    local command = "e " .. variables.PersonalVimRc
+    print(command)
+    vim.cmd(command)
+    -- vim.cmd("e " .. "/Users/jq/dotfiles/neo-vim/int.lua")
 end, { noremap = true })
 
 vim.keymap.set('n', '<leader>sv', function()
@@ -21,22 +25,11 @@ vim.keymap.set('n', '<leader>ev', function()
     vim.cmd("e " .. variables.PersonalVimRc)
 end, { noremap = true })
 
--- Mac-specific key mappings
-vim.keymap.set('n', '<D-cr>', ':set fu!<CR>', { noremap = true })
-vim.keymap.set('n', '<D-j>', '<C-w>j', { noremap = true })
-vim.keymap.set('n', '<D-h>', '<C-w>h', { noremap = true })
-vim.keymap.set('n', '<D-k>', '<C-w>k', { noremap = true })
-vim.keymap.set('n', '<D-l>', '<C-w>l', { noremap = true })
-
 -- Window navigation
 vim.keymap.set('n', '<C-j>', '<C-w>j', { noremap = true })
 vim.keymap.set('n', '<C-h>', '<C-w>h', { noremap = true })
 vim.keymap.set('n', '<C-k>', '<C-w>k', { noremap = true })
 vim.keymap.set('n', '<C-l>', '<C-w>l', { noremap = true })
-
--- open/reread config file
-vim.keymap.set('n', '<C-F3>', ':source ~/_vimrc<CR>', { noremap = true })
-vim.keymap.set('n', '<CS-F3>', ':e ~/_vimrc<CR>', { noremap = true })
 
 vim.keymap.set('n', '<F5>', ':e!<CR>zz', { noremap = true })
 vim.keymap.set('n', '<S-F5>', ':e!<CR>Gzz', { noremap = true })
@@ -64,8 +57,14 @@ vim.keymap.set('n', '<F7>', 'j.', { noremap = true })
 vim.keymap.set('n', '<M-Space>', '<Esc>:sort u<CR>:echo "Sorted"<CR>', { noremap = true })
 vim.keymap.set('n', '<leader>r', ':g/^/m0<CR>:echo "Reversed all lines in file"<CR>', { noremap = true })
 
-vim.keymap.set('n', '<F4>', '<C-h>:diffthis<CR><C-l>:diffthis<CR>', { noremap = true })
+vim.keymap.set('n', '<F4>', function()
+    vim.cmd('wincmd h')
+    vim.cmd('diffthis')
+    vim.cmd('wincmd l')
+    vim.cmd('diffthis')
+end, { noremap = true })
 
+-- JQ I GOT THIS FAR
 -- Copy the entire file to the clipboard and return to the current line
 vim.keymap.set('n', '<C-Space>', '<Esc>mzggVG"*y`z:delmarks c<CR>:echo "File copied to clipboard"<CR>', { noremap = true })
 

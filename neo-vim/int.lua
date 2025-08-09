@@ -5,12 +5,15 @@
 local current_dir = '/Users/jq/dotfiles/neo-vim/lua'
 package.path = package.path .. ';' .. current_dir .. '/?.lua;' .. current_dir .. '/?/init.lua'
 
+
+vim.keymap.set('c', '<D-v>', '<C-r>+', { noremap = true, silent = true })
+
 -- Load just the test module
 require('test')
 require('variables')
 require('settings')
-require('keymaps')
-require('autocmds')
-require('commands')
-require('mac-specific')
+require('keymaps')       -- to be tested
+require('autocmds')      -- to be tested
+require('commands')      -- to be tested
+require('mac-specific')  -- to be tested
 

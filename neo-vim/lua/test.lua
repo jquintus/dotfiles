@@ -3,4 +3,3 @@
 -- If this can't load, then there's something wrong with paths.
 
 print("Test module loaded: Hello World")
-vim.cmd("colorscheme murphy")
