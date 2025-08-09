@@ -10,6 +10,7 @@ vim.keymap.set('c', '<D-v>', '<C-r>+', { noremap = true, silent = true })
 
 -- Load just the test module
 require('test')
+require('neovide')
 require('variables')
 require('settings')
 require('keymaps')       -- to be tested

@@ -8,6 +8,8 @@ local variables = require('variables')
 vim.keymap.set('n', '<F3>', function()
 
     vim.cmd("source " .. "/Users/jq/dotfiles/neo-vim/int.lua")
+    vim.api.nvim_echo({{"Reloading int.lua", "None"}}, false, {})
+
 end, { noremap = true })
 
 vim.keymap.set('n', '<S-F3>', function()
@@ -37,9 +39,13 @@ vim.keymap.set('n', '<S-F5>', ':e!<CR>Gzz', { noremap = true })
 -- Remove highlights when you hit enter
 vim.keymap.set('n', '<CR>', ':noh<CR>j', { noremap = true })
 
--- Tab Completion in edit mode
+-- Use tab to cycle through buffers
 vim.keymap.set('n', '<Tab>', ':bn<CR>', { noremap = true })
 vim.keymap.set('n', '<S-Tab>', ':bp<CR>', { noremap = true })
+
+-- Tab Completion in edit mode
+vim.keymap.set('i', '<Tab>', '<C-n>', { noremap = true })
+vim.keymap.set('i', '<S-Tab>', '<C-p>', { noremap = true })
 
 -- Cycle between tabs
 vim.keymap.set('n', '<C-Tab>', ':tabNext<CR>', { noremap = true })
@@ -52,6 +58,8 @@ vim.keymap.set('n', '<C-F10>', ':tabclose!<CR>', { noremap = true })
 vim.keymap.set('n', '<F6>', 'n.', { noremap = true })
 vim.keymap.set('n', '<S-F6>', 'nn.', { noremap = true })
 vim.keymap.set('n', '<F7>', 'j.', { noremap = true })
+-- Alt-period replay the last ex command
+vim.keymap.set('n', '<M-.>', ':<Up><CR>', { noremap = true })
 
 -- Sort uniques
 vim.keymap.set('n', '<M-Space>', '<Esc>:sort u<CR>:echo "Sorted"<CR>', { noremap = true })
@@ -64,31 +72,62 @@ vim.keymap.set('n', '<F4>', function()
     vim.cmd('diffthis')
 end, { noremap = true })
 
--- JQ I GOT THIS FAR
 -- Copy the entire file to the clipboard and return to the current line
-vim.keymap.set('n', '<C-Space>', '<Esc>mzggVG"*y`z:delmarks c<CR>:echo "File copied to clipboard"<CR>', { noremap = true })
+vim.keymap.set('n', '<C-Space>', function()
+    -- Remember where we are at the start
+    vim.cmd("normal! mz")
 
--- J/K work on word wrapped lines now
-vim.keymap.set('n', 'j', 'gj', { noremap = true })
-vim.keymap.set('n', 'k', 'gk', { noremap = true })
+    -- Select and copy the entire file
+    vim.cmd("normal! ggVG")
+    vim.cmd('normal! "*y')
+
+    -- Return to saved cursor position and delete the mark
+    vim.cmd("normal! `z")
+    vim.cmd("delmarks c")
+
+    print("File copied to clipboard")
+end, { noremap = true })
 
 -- Filtering
 vim.keymap.set('n', '<leader>v', ':v::d<CR>', { noremap = true })
 vim.keymap.set('n', '<leader>g', ':g::d<CR>', { noremap = true })
 
 -- Copy all lines that match the current search to the default buffer
-vim.keymap.set('n', '<leader>y', 'qyqmy:g::y Y<CR>:let @+ =@y<CR>`y', { noremap = true })
+vim.keymap.set('n', '<leader>y', function()
+    -- Clear the y register
+    vim.fn.setreg('y', '')
+    
+    -- Create a mark so we can come back here later
+    vim.cmd("normal! my")
+    
+    -- Copy all lines that match the current search to the y buffer
+    vim.cmd("g//y Y")
+    
+    -- Copy the content of the y buffer to the clipboard
+    vim.fn.setreg('+', vim.fn.getreg('y'))
+    
+    -- Move the cursor back to the starting position
+    vim.cmd("normal! `y")
+end, { noremap = true })
 
--- Configure <TAB> to tab-completion when at the end of a word
-vim.keymap.set('i', '<Tab>', '<C-n>', { noremap = true })
-vim.keymap.set('i', '<S-Tab>', '<C-p>', { noremap = true })
 
--- Toggle Word Wrap with <F2>
+-------------------------------------------------------------------------------
+-- Word Wrapping
+-------------------------------------------------------------------------------
+-- J/K work on word wrapped lines now
+vim.keymap.set('n', 'j', 'gj', { noremap = true })
+vim.keymap.set('n', 'k', 'gk', { noremap = true })
+
+-- F2: Toggle word wrapping on/off for current buffer
 vim.keymap.set('n', '<F2>', ':setlocal wrap!<CR>', { noremap = true })
+-- Shift+F2: Toggle word wrapping AND line break mode (only break at word boundaries)
 vim.keymap.set('n', '<S-F2>', ':setlocal wrap!<CR>:setlocal lbr!<CR>', { noremap = true })
+-- Ctrl+F2: Format/reflow the current paragraph 
 vim.keymap.set('n', '<C-F2>', 'gq}', { noremap = true })
 
+-------------------------------------------------------------------------------
 -- Syntax Highlighting
+-------------------------------------------------------------------------------
 vim.keymap.set('n', '<F11>', function()
     -- Toggle syntax highlighting
     if not vim.b.syntax then
@@ -129,9 +168,11 @@ vim.keymap.set('n', '<F11>', function()
         print("Turning off syntax highlighting")
     end
 end, { noremap = true })
-
 vim.b.syntax = 0
 
+-------------------------------------------------------------------------------
+-- Search
+-------------------------------------------------------------------------------
 -- Search for selected text with * and #
 local function v_set_search()
     local temp = vim.fn.getreg('"')
@@ -151,12 +192,10 @@ vim.keymap.set('v', '#', function()
     vim.cmd('??')
 end, { noremap = true })
 
--- Alt-period replay the last ex command
-vim.keymap.set('n', '<M-.>', ':<Up><CR>', { noremap = true })
-
--- Insert the line number at the beginning/end of a line
-vim.keymap.set('n', '<leader>ln', ':%s/^/\\=line("."). " "/<CR>', { noremap = true })
-
+-------------------------------------------------------------------------------
+-- Clipboard
+-- Some of these may be windows specific
+-------------------------------------------------------------------------------
 -- Stolen from mswin.vim
 -- CTRL-X and SHIFT-Del are Cut
 vim.keymap.set('v', '<C-X>', '"+x', { noremap = true })
@@ -173,7 +212,26 @@ vim.keymap.set('v', '<S-Insert>', '"+gP', { noremap = true })
 vim.cmd("cmap <S-Insert> <C-R>+")
 
 -- CTRL-A is copy all
-vim.keymap.set('n', '<M-A>', 'mcggVG"+y\'c:delmarks c<CR>:echo "File copied to clipboard"<CR>', { noremap = true })
+vim.keymap.set('n', '<M-a>', function()
+    vim.api.nvim_echo({{"Copying entire file to clipboard", "None"}}, false, {})
+
+    -- Save current position in mark 'c'
+    vim.cmd('normal! mc')
+    vim.cmd('normal! ggVG"+y')
+    
+    -- Return to the saved position and delete the mark
+    vim.cmd("normal! `c")
+    vim.cmd('delmarks c')
+
+    vim.api.nvim_echo({{"File copied to clipboard", "None"}}, false, {})
+end, { noremap = true })
+
+-------------------------------------------------------------------------------
+-- Line Numbers
+-------------------------------------------------------------------------------
+-- Insert the line number at the beginning/end of a line
+vim.keymap.set('n', '<leader>ln', ':%s/^/\\=line("."). " "/<CR>', { noremap = true })
+
 
 -- Notes
 vim.keymap.set('n', '<leader>b', ':next $HOME/OneDrive/bin/config/vimfiles/notes.bat<CR>', { noremap = true })
@@ -187,13 +245,15 @@ vim.keymap.set('n', '<leader>x', ':next $HOME/OneDrive/bin/config/vimfiles/notes
 vim.keymap.set('n', '<leader>d', ':next $HOME/OneDrive/bin/config/vimfiles/destiny_notes.txt<CR>', { noremap = true })
 
 vim.keymap.set('n', 't?', function()
-    print('<leader>b => notes.bat')
-    print('<leader>c => notes.cs')
-    print('<leader>j => notes.json')
-    print('<leader>m => notes.md')
-    print('<leader>s => notes.sql')
-    print('<leader>t => notes.txt')
-    print('<leader>x => notes.xml')
+    vim.api.nvim_echo({
+        {'<leader>b => notes.bat'},
+        {'\n<leader>c => notes.cs'},
+        {'\n<leader>j => notes.json'},
+        {'\n<leader>m => notes.md'},
+        {'\n<leader>s => notes.sql'},
+        {'\n<leader>t => notes.txt'},
+        {'\n<leader>x => notes.xml'}
+    }, false, {})
 end, { noremap = true })
 
 -- Markdown
