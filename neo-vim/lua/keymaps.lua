@@ -6,6 +6,18 @@ local variables = require('variables')
 
 -- Key mappings for personal vimrc
 vim.keymap.set('n', '<F3>', function()
+    -- Clear the module cache so all modules will be reloaded
+    package.loaded.test = nil
+    package.loaded.neovide = nil
+    package.loaded.variables = nil
+    package.loaded.settings = nil
+    package.loaded.keymaps = nil
+    package.loaded.autocmds = nil
+    package.loaded.commands = nil
+    package.loaded['mac-specific'] = nil
+    package.loaded['win-specific'] = nil
+
+    -- Reload the main config
     vim.cmd("source " .. "/Users/jq/dotfiles/neo-vim/int.lua")
     vim.api.nvim_echo({ { "Reloading int.lua", "None" } }, false, {})
 end, { noremap = true })
