@@ -12,7 +12,7 @@ require('variables')
 require('settings')
 require('keymaps')
 require('autocmds')
-require('commands') -- to be tested
+require('commands')
 
 if vim.fn.has('mac') == 1 then
     -- Load macOS-specific settings only on macOS
