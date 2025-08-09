@@ -5,9 +5,5 @@
 local current_dir = '/Users/jq/dotfiles/neo-vim/lua'
 package.path = package.path .. ';' .. current_dir .. '/?.lua;' .. current_dir .. '/?/init.lua'
 
--- Print the package.path for debugging
-print("Current dir: " .. current_dir)
-print("Package path: " .. package.path)
-
--- Load just one module to test
+-- Load just the test module
 require('test')
