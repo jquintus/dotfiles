@@ -7,16 +7,14 @@ This directory contains a modular Neovim configuration converted from the origin
 ```
 neo-vim/
 ├── lua/
-│   └── config/
-│       ├── init.lua          # Main entry point - loads all modules
-│       ├── variables.lua     # Configuration variables
-│       ├── settings.lua      # Basic settings and options
-│       ├── keymaps.lua       # All key mappings
-│       ├── autocmds.lua      # Auto commands
-│       ├── commands.lua      # Custom commands
-│       └── mac-specific.lua  # Mac-specific configurations
-├── mac.vimrc                 # Original vimrc file
-└── mac.lua                   # Single-file conversion (legacy)
+│   ├── variables.lua         # Configuration variables
+│   ├── settings.lua          # Basic settings and options
+│   ├── keymaps.lua           # All key mappings
+│   ├── autocmds.lua          # Auto commands
+│   ├── commands.lua          # Custom commands
+│   └── mac-specific.lua      # Mac-specific configurations
+├── mac.vimrc                 # Original vimrc file left for references purposes
+├── init.lua                  # Main entry point - loads all modules
 ```
 
 ## Installation

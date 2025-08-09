@@ -3,6 +3,10 @@
 -- <D-j> : this maps the "command key + j"
 --*******************************************************************************
 
+-- To set colors up in ITerm
+-- https://tomlankhorst.nl/iterm-tmux-vim-true-color/
+vim.opt.termguicolors = true
+
 -- FZF integration
 vim.opt.rtp = vim.opt.rtp + "/usr/local/opt/fzf"
 vim.g.fzf_history_dir = '~/.vimfzf-history'
