@@ -263,7 +263,9 @@ vim.keymap.set('v', '<Leader>4', 'c[<C-r>"](<Esc>"*pli)<Esc>', { noremap = true 
 vim.keymap.set('n', ',', 'ciw[<C-r>"](<Esc>"*pli)<Esc>', { noremap = true })
 vim.keymap.set('v', ',', 'c[<C-r>"](<Esc>"*pli)<Esc>', { noremap = true })
 
+-------------------------------------------------------------------------------
 -- Auto highlight current word when idle
+-------------------------------------------------------------------------------
 local function auto_highlight_toggle()
     vim.fn.setreg('/', '')
     if vim.fn.exists('#auto_highlight') == 1 then
