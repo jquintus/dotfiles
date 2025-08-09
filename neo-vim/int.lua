@@ -8,7 +8,7 @@ local external_vimrc = "/Users/jq/OneDrive/bin/config/vimfiles/vimrc.mac.txt"
 vim.cmd("source " .. external_vimrc)
 
 -- Set colorscheme (after external vimrc to avoid being overridden)
-vim.cmd("colorscheme elflord")
+vim.cmd("colorscheme murphy")
 
 -- Key mappings (exact conversion from _vimrc)
 vim.keymap.set('n', ':', function()
