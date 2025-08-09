@@ -7,9 +7,6 @@
 vim.opt.rtp = vim.opt.rtp + "/usr/local/opt/fzf"
 vim.g.fzf_history_dir = '~/.vimfzf-history'
 
--- Additional Mac-specific settings and mappings can be added here
-
-
 vim.keymap.set('n', '<D-cr>', ':set fu!<CR>', { noremap = true })
 
 -- Mac Cmd-J, H, K, L are window navigation
@@ -26,7 +23,6 @@ vim.keymap.set('i', '<D-c>', '<C-r>+', { noremap = true })
 
 vim.api.nvim_set_keymap('i', '<C-v>', '<C-r>+', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('i', '<D-v>', '<C-r>+', { noremap = true, silent = true })
-
 
 -------------------------------------------------------------------------------
 -- Neovide specific settings
