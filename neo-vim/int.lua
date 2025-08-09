@@ -7,3 +7,9 @@ package.path = package.path .. ';' .. current_dir .. '/?.lua;' .. current_dir ..
 
 -- Load just the test module
 require('test')
+-- require('variables')
+-- require('settings')
+-- require('keymaps')
+-- require('autocmds')
+-- require('commands')
+-- require('mac-specific')

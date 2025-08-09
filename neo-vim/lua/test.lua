@@ -1,5 +1,2 @@
--- Simple test module
-print("Test module loaded successfully!")
-
--- Set the theme
-vim.cmd("colorscheme desert")
+print("Test module loaded: Hello World")
+vim.cmd("colorscheme murphy")
