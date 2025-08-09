@@ -20,6 +20,7 @@
     },
     "peacock.color": "#42b883",
     "cSpell.words": [
+        "altv",
         "augroup",
         "autocmd",
         "autocmds",
@@ -44,15 +45,20 @@
         "ignorecase",
         "incsearch",
         "isdirectory",
+        "keepdir",
         "keymap",
         "keymaps",
         "leftabove",
+        "Lexplore",
+        "liststyle",
+        "localcopydircmd",
         "localdb",
         "mapleader",
         "mcgg",
         "mswin",
         "mzgg",
         "neovide",
+        "Netrw",
         "nmap",
         "nnoremap",
         "noremap",
@@ -78,7 +84,8 @@
         "Vimscript",
         "vsplit",
         "vssettings",
-        "wincmd"
+        "wincmd",
+        "winsize"
     ],
     "Lua.diagnostics.globals": [
         "vim"
