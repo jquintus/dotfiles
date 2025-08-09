@@ -270,15 +270,21 @@ local function auto_highlight_toggle()
         vim.cmd('au! auto_highlight')
         vim.cmd('augroup! auto_highlight')
         vim.opt.updatetime = 4000
-        print('Highlight current word: off')
+        vim.api.nvim_echo({{'Highlight current word: off', 'None'}}, false, {})
         return 0
     else
-        vim.cmd('augroup auto_highlight')
-        vim.cmd('au!')
-        vim.cmd('au CursorHold * let @/ = \'\\V\\<\\' .. vim.fn.escape(vim.fn.expand('<cword>'), '\\') .. '\\>\'')
-        vim.cmd('augroup end')
+        vim.api.nvim_create_augroup('auto_highlight', { clear = true })
+        vim.api.nvim_create_autocmd('CursorHold', {
+            group = 'auto_highlight',
+            callback = function()
+                local word = vim.fn.expand('<cword>')
+                if word ~= '' then
+                    vim.fn.setreg('/', '\\V\\<' .. vim.fn.escape(word, '\\') .. '\\>')
+                end
+            end
+        })
         vim.opt.updatetime = 500
-        print('Highlight current word: ON')
+        vim.api.nvim_echo({{'Highlight current word: ON', 'None'}}, false, {})
         return 1
     end
 end
