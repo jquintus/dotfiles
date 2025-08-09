@@ -18,15 +18,13 @@ vim.keymap.set('n', '<F3>', function()
     package.loaded['win-specific'] = nil
 
     -- Reload the main config
-    vim.cmd("source " .. "/Users/jq/dotfiles/neo-vim/int.lua")
-    vim.api.nvim_echo({ { "Reloading int.lua", "None" } }, false, {})
+    vim.cmd("source " .. variables.PersonalVimRc)
+    vim.api.nvim_echo({ { "Reloading " .. variables.PersonalVimRc, "None" } }, false, {})
 end, { noremap = true })
 
 vim.keymap.set('n', '<S-F3>', function()
-    local command = "e " .. variables.PersonalVimRc
-    print(command)
-    vim.cmd(command)
-    -- vim.cmd("e " .. "/Users/jq/dotfiles/neo-vim/int.lua")
+    vim.cmd("e " .. variables.PersonalVimRc)
+    vim.api.nvim_echo({ { "Editing " .. variables.PersonalVimRc, "None" } }, false, {})
 end, { noremap = true })
 
 vim.keymap.set('n', '<leader>sv', function()
