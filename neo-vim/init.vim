@@ -270,7 +270,7 @@ set hidden
 "*******************************************************************************
 " http://www.rayninfo.co.uk/vimtips.html
 "*******************************************************************************
-" Insert the line number at the begining/end of a line
+" Insert the line number at the beginning/end of a line
 nmap <leader>ln :%s/^/\=line('.'). ' '<cr>
  ":%s/$/\=line('.'). ' '
 
