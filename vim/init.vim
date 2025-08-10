@@ -1,7 +1,6 @@
-# source /Users/jq/OneDrive/bin/config/vimfiles/vimrc.mac.txt
+" Set config file path
+let g:config_file = '~/dotfiles/vim/mac.vim'
 
-# nmap :source /Users/jq/OneDrive/bin/config/vimfiles/vimrc.mac.txt<cr>
-# nmap <s-F3> :e /Users/jq/OneDrive/bin/config/vimfiles/vimrc.mac.txt<cr>
-
-colorscheme desert
-colorscheme murphy
+execute 'source' g:config_file
+nnoremap <F3> :execute 'source' g:config_file<CR>
+nnoremap <S-F3> :execute 'edit' g:config_file<CR>
