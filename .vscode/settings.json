@@ -35,6 +35,8 @@
         "cmap",
         "colorschemes",
         "cword",
+        "dadbod",
+        "DBUI",
         "delmarks",
         "diffthis",
         "expandtab",
@@ -48,6 +50,7 @@
         "keepdir",
         "keymap",
         "keymaps",
+        "kristijanhusak",
         "leftabove",
         "Lexplore",
         "liststyle",
@@ -64,6 +67,7 @@
         "noremap",
         "nowrap",
         "nvim",
+        "packadd",
         "qyqmy",
         "setf",
         "setreg",
@@ -72,22 +76,26 @@
         "showcmd",
         "smartcase",
         "sqlanywhere",
+        "stdpath",
         "tabclose",
         "tabnew",
         "tabpagebuflist",
         "tabpagenr",
         "termguicolors",
         "tpbl",
+        "tpope",
         "undodir",
         "updatetime",
         "vimfzf",
         "Vimscript",
         "vsplit",
         "vssettings",
+        "wbthomason",
         "wincmd",
         "winsize"
     ],
     "Lua.diagnostics.globals": [
-        "vim"
+        "vim",
+        "packer_bootstrap"
     ]
 }

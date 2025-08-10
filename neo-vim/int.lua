@@ -14,6 +14,8 @@ require('keymaps')
 require('autocmds')
 require('commands')
 require('netrw') -- Replaces NERDTree
+require('plugins')
+require('db')
 
 if vim.fn.has('mac') == 1 then
     -- Load macOS-specific settings only on macOS
