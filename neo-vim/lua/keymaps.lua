@@ -80,6 +80,12 @@ vim.keymap.set('n', '<F4>', function()
     vim.cmd('diffthis')
 end, { noremap = true })
 
+-- Open file from clipboard path
+vim.keymap.set('n', '<leader>p', function()
+    local path = vim.fn.getreg('+')
+    vim.cmd('edit ' .. vim.fn.fnameescape(path))
+end, { desc = 'Open file from clipboard path' })
+
 -- Copy the entire file to the clipboard and return to the current line
 vim.keymap.set('n', '<C-Space>', function()
     -- Remember where we are at the start
