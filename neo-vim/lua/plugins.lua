@@ -20,9 +20,18 @@ require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
 
     -- Add your other plugins here
+    use 'hrsh7th/nvim-cmp'                     -- completion engine
+    use 'hrsh7th/cmp-nvim-lsp'                 -- LSP source for cmp (optional but recommended)
+    use 'hrsh7th/cmp-buffer'                   -- buffer words completion source
+    use 'hrsh7th/cmp-path'                     -- file path completion source
+    use 'kristijanhusak/cmp-dadbod-completion' -- dadbod completion source
+
     use 'tpope/vim-dadbod'
     use 'kristijanhusak/vim-dadbod-ui'
     use 'kristijanhusak/vim-dadbod-completion'
+
+    use 'MunifTanjim/nui.nvim' -- noice dependency
+    use 'folke/noice.nvim'
 
     -- Automatically set up your configuration after cloning packer.nvim
     if packer_bootstrap then

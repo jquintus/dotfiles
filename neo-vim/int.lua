@@ -16,6 +16,7 @@ require('commands')
 require('netrw') -- Replaces NERDTree
 require('plugins')
 require('db')
+require('completion_engine')
 
 if vim.fn.has('mac') == 1 then
     -- Load macOS-specific settings only on macOS
@@ -26,3 +27,14 @@ if vim.fn.has('win') == 1 then
     -- Load Windows-specific settings only on Windows
     require('win-specific')
 end
+
+require("noice").setup({
+    -- You can customize settings here; for now, keep it simple
+    presets = {
+        command_palette = true,
+        long_message_to_split = true,
+    },
+    -- optionally, disable some defaults if you want
+    -- messages = { enabled = false },
+    -- cmdline = { enabled = false },
+})
