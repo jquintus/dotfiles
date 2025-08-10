@@ -1,14 +1,8 @@
-"*******************************************************************************
-" Configure variables
-"*******************************************************************************
-let PersonalVimRc = "~/.vimrc"
-let PersonalVimDir="~/OneDrive/bin/config/vimfiles/"
+nmap <F3> :execute 'source' g:config_file<cr>
+nmap <s-F3> :execute 'e' g:config_file<cr>
 
-nmap <F3> :execute 'source' PersonalVimRc<cr>
-nmap <s-F3> :execute 'e' PersonalVimRc<cr>
-
-nmap <leader>sv :execute 'source' PersonalVimRc<cr>
-nmap <leader>ev :execute 'e' PersonalVimRc<cr>
+"nmap <leader>sv :execute 'source' g:config_file<cr>
+"nmap <leader>ev :execute 'e' g:config_file<cr>
 
 "*******************************************************************************
 " Mac Specific Stuff
@@ -29,12 +23,6 @@ nnoremap <D-h> <c-w>h
 nnoremap <D-k> <c-w>k
 nnoremap <D-l> <c-w>l
 
-"*******************************************************************************
-" Load in dependencies
-" Still trying to figure out how to get this to work well
-"*******************************************************************************
-
-" exec "source " . $PersonalVimDir . "vimrc.helloworld.txt"
 
 "*******************************************************************************
 " Create directories
@@ -75,18 +63,18 @@ set shiftwidth=4
 set tabstop=4
 set expandtab
 
-set backup                   " keep backup copies
-set backupdir=~/.vim_backup  " save all backups in one directory (if you get "E303: Unable to open swap file for Â[No Name]Â, recovery impossible" then just make the directory ~/backup
-set directory=~/.vim_backup  " put swaps files here too
-set undodir=~/.vim_undo      " put swaps files here too
-set backupext=.bak           " don't use that weird ~ extension
-set ruler                    " show column/row count (on by default)
+set backup                          " keep backup copies
+let &backupdir=g:config_vim_backup  " save all backups in one directory (if you get "E303: Unable to open swap file for No Name recovery impossible" then just make the directory ~/backup
+let &directory=g:config_vim_backup  " put swaps files here too
+let &undodir=g:config_vim_undo      " put swaps files here too
 
-set showcmd                  " show key sequence in status line
+set backupext=.bak                  " don't use that weird ~ extension
+set ruler                           " show column/row count (on by default)
+set showcmd                         " show key sequence in status line
 
-set guioptions +=bh          " b=> bottom scrollbar; h=> quick scrollbar
-set guioptions -=L           " Removing L fixes the problem where gVim changes size and moves when a tab is opened or closed http://stackoverflow.com/questions/13251522/why-does-gvim-resize-and-reposition-itself-after-some-actions
-set diffopt +=vertical       " Diff with vertical split
+set guioptions +=bh                 " b=> bottom scrollbar; h=> quick scrollbar
+set guioptions -=L                  " Removing L fixes the problem where gVim changes size and moves when a tab is opened or closed http://stackoverflow.com/questions/13251522/why-does-gvim-resize-and-reposition-itself-after-some-actions
+set diffopt +=vertical              " Diff with vertical split
 set guifont=Menlo-Regular:h16
 
 set encoding=utf-8
