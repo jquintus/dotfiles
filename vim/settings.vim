@@ -64,7 +64,7 @@ let mapleader=" "
 "*******************************************************************************
 "open/reread config file
 nmap <F3> :source $MYVIMRC<cr>
-nmap <s-F3> :e ~/_vimrc<cr>
+nmap <s-F3> :execute 'e' g:config_file<cr>
 "nmap <leader>sv :execute 'source' g:config_file<cr>
 "nmap <leader>ev :execute 'e' g:config_file<cr>
 

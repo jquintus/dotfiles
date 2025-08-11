@@ -28,5 +28,6 @@ call plug#begin('~/.vim/plugged')
 Plug 'preservim/nerdtree'
 Plug 'tpope/vim-fugitive'
 Plug 'jpalardy/vim-slime'
+Plug 'easymotion/vim-easymotion'
 
 call plug#end()
