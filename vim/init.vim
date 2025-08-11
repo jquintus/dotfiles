@@ -9,6 +9,7 @@ execute 'source' g:config_file
 
 source ~/dotfiles/vim/plugins.vim
 source ~/dotfiles/vim/slime.vim
+source ~/dotfiles/vim/easymotion.vim
 
 " Platform-specific configurations
 if has('mac')
