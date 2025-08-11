@@ -8,6 +8,7 @@ let g:config_vim_notes= $HOME."/OneDrive/bin/config/vimfiles"
 execute 'source' g:config_file
 
 source ~/dotfiles/vim/plugins.vim
+source ~/dotfiles/vim/slime.vim
 
 " Platform-specific configurations
 if has('mac')
