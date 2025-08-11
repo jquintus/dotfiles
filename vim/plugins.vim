@@ -15,12 +15,15 @@
 " 3. Reopen Vim.
 " 4. Call :PlugInstall
 "*******************************************************************************
+" To clean up all of the plugins and start fresh:
+" rm -rf ~/.vim/autoload/plug.vim ~/.vim/plugged 
+"*******************************************************************************
 
 
 " Bootstrap vim-plug if it's not installed
 if empty(glob('~/.vim/autoload/plug.vim'))
     silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    source ~/.vim/autoload/plug.vim
     finish
 endif
 
