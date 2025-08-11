@@ -4,7 +4,7 @@ Syncing my dotfiles. I'm primarily using https://jooooel.com/sync-dotfiles-using
 
 All the dotfiles start with an underscore so that they aren't hidden when I'm in the repo. This makes `ls` work a lot nicer.
 
-To install the dotfiles, simply link them
+To install the dotfiles, simply link them. The easiest way is to use the install script.
 
 ```bash
 ./scripts/install-mac.sh
