@@ -1,9 +1,3 @@
-nmap <F3> :execute 'source' g:config_file<cr>
-nmap <s-F3> :execute 'e' g:config_file<cr>
-
-"nmap <leader>sv :execute 'source' g:config_file<cr>
-"nmap <leader>ev :execute 'e' g:config_file<cr>
-
 "*******************************************************************************
 " Create directories
 "*******************************************************************************
@@ -69,8 +63,11 @@ let mapleader=" "
 "Keyboard mappings
 "*******************************************************************************
 "open/reread config file
-nmap <c-F3> :source ~/_vimrc<cr>
-nmap <cs-F3> :e ~/_vimrc<cr>
+nmap <F3> :source $MYVIMRC<cr>
+nmap <s-F3> :e ~/_vimrc<cr>
+"nmap <leader>sv :execute 'source' g:config_file<cr>
+"nmap <leader>ev :execute 'e' g:config_file<cr>
+
 
 nmap <F5> :e!<cr>zz
 nmap <s-F5> :e!<cr>Gzz

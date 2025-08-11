@@ -4,9 +4,10 @@ let g:config_vim_backup= $HOME."/.vim_backup"
 let g:config_vim_undo= $HOME."/.vim_undo"
 let g:config_vim_notes= $HOME."/OneDrive/bin/config/vimfiles"
 
-
-" Use this syntax if you want to use variables
+" Source the config file
 execute 'source' g:config_file
+
+source ~/dotfiles/vim/plugins.vim
 
 " Platform-specific configurations
 if has('mac')
