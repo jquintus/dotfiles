@@ -1,19 +1,12 @@
 "*******************************************************************************
 " Vim Plugins
 "*******************************************************************************
-" Warning: This will cause an error to be thrown the first time you open Vim.
-" The plugin manager will be downloaded but it's not loaded, so any calls to it
-" will fail. 
-" 
-" All you have to do is restart vim. This time the plugin manager will exist so
-" it can be loaded on open.
-" At this point you can call `:PlugInstall`
+" This will install the vim-plug plugin manager if it's not already installed.
+" To add plugins, add them to the Plug line below. and call `:PlugInstall`
 "*******************************************************************************
 " TLDR Instructions: 
-" 1. Open Vim. See an error.
-" 2. Close Vim.
-" 3. Reopen Vim.
-" 4. Call :PlugInstall
+" 1. Open Vim. 
+" 2. Call :PlugInstall
 "*******************************************************************************
 " To clean up all of the plugins and start fresh:
 " rm -rf ~/.vim/autoload/plug.vim ~/.vim/plugged 
@@ -24,6 +17,8 @@
 if empty(glob('~/.vim/autoload/plug.vim'))
     silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     source ~/.vim/autoload/plug.vim
+    " Defer plugin loading to next VimEnter to ensure vim-plug is fully initialized
+    autocmd VimEnter * source ~/dotfiles/vim/plugins.vim
     finish
 endif
 
