@@ -1,59 +1,22 @@
 "*******************************************************************************
-" Configure variables
-"*******************************************************************************
-let PersonalVimRc = "~/.vimrc"
-let PersonalVimDir="~/OneDrive/bin/config/vimfiles/"
-
-nmap <F3> :execute 'source' PersonalVimRc<cr>
-nmap <s-F3> :execute 'e' PersonalVimRc<cr>
-
-nmap <leader>sv :execute 'source' PersonalVimRc<cr>
-nmap <leader>ev :execute 'e' PersonalVimRc<cr>
-
-"*******************************************************************************
-" Mac Specific Stuff
-" <D-j> : this maps the "command key + j"
-"*******************************************************************************
-" To set colors up in ITerm
-" https://tomlankhorst.nl/iterm-tmux-vim-true-color/
-set termguicolors
-let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-execute pathogen#infect()
-filetype plugin indent on
-syntax on
-
-nnoremap <D-cr> :set fu!<cr>
-nnoremap <D-j> <c-w>j
-nnoremap <D-h> <c-w>h
-nnoremap <D-k> <c-w>k
-nnoremap <D-l> <c-w>l
-
-"*******************************************************************************
-" Load in dependencies
-" Still trying to figure out how to get this to work well
-"*******************************************************************************
-
-" exec "source " . $PersonalVimDir . "vimrc.helloworld.txt"
-
-"*******************************************************************************
 " Create directories
 "*******************************************************************************
-if !isdirectory($HOME."/.vim_backup")
-    call mkdir($HOME."/.vim_backup", "p")
+if !isdirectory(g:config_vim_backup)
+    call mkdir(g:config_vim_backup, "p")
 endif
 
-if !isdirectory($HOME."/.vim_undo")
-    call mkdir($HOME."/.vim_undo", "p")
+if !isdirectory(g:config_vim_undo)
+    call mkdir(g:config_vim_undo", "p")
 endif
 
-if !isdirectory($HOME."/OneDrive/bin/config/vimfiles")
-    call mkdir($HOME."/OneDrive/bin/config/vimfiles", "p")
+let g:config_vim_notes= $HOME."/OneDrive/bin/config/vimfiles"
+if !isdirectory(g:config_vim_notes)
+    call mkdir(g:config_vim_notes, "p")
 endif
+
 "*******************************************************************************
 " Sets
 "*******************************************************************************
-
 map <c-j> <c-w>j
 map <c-h> <c-w>h
 map <c-k> <c-w>k
@@ -75,18 +38,18 @@ set shiftwidth=4
 set tabstop=4
 set expandtab
 
-set backup                   " keep backup copies
-set backupdir=~/.vim_backup  " save all backups in one directory (if you get "E303: Unable to open swap file for Â[No Name]Â, recovery impossible" then just make the directory ~/backup
-set directory=~/.vim_backup  " put swaps files here too
-set undodir=~/.vim_undo      " put swaps files here too
-set backupext=.bak           " don't use that weird ~ extension
-set ruler                    " show column/row count (on by default)
+set backup                          " keep backup copies
+let &backupdir=g:config_vim_backup  " save all backups in one directory (if you get "E303: Unable to open swap file for No Name recovery impossible" then just make the directory ~/backup
+let &directory=g:config_vim_backup  " put swaps files here too
+let &undodir=g:config_vim_undo      " put swaps files here too
 
-set showcmd                  " show key sequence in status line
+set backupext=.bak                  " don't use that weird ~ extension
+set ruler                           " show column/row count (on by default)
+set showcmd                         " show key sequence in status line
 
-set guioptions +=bh          " b=> bottom scrollbar; h=> quick scrollbar
-set guioptions -=L           " Removing L fixes the problem where gVim changes size and moves when a tab is opened or closed http://stackoverflow.com/questions/13251522/why-does-gvim-resize-and-reposition-itself-after-some-actions
-set diffopt +=vertical       " Diff with vertical split
+set guioptions +=bh                 " b=> bottom scrollbar; h=> quick scrollbar
+set guioptions -=L                  " Removing L fixes the problem where gVim changes size and moves when a tab is opened or closed http://stackoverflow.com/questions/13251522/why-does-gvim-resize-and-reposition-itself-after-some-actions
+set diffopt +=vertical              " Diff with vertical split
 set guifont=Menlo-Regular:h16
 
 set encoding=utf-8
@@ -100,8 +63,11 @@ let mapleader=" "
 "Keyboard mappings
 "*******************************************************************************
 "open/reread config file
-nmap <c-F3> :source ~/_vimrc<cr>
-nmap <cs-F3> :e ~/_vimrc<cr>
+nmap <F3> :source $MYVIMRC<cr>
+nmap <s-F3> :execute 'e' g:config_file<cr>
+"nmap <leader>sv :execute 'source' g:config_file<cr>
+"nmap <leader>ev :execute 'e' g:config_file<cr>
+
 
 nmap <F5> :e!<cr>zz
 nmap <s-F5> :e!<cr>Gzz
@@ -270,7 +236,7 @@ set hidden
 "*******************************************************************************
 " http://www.rayninfo.co.uk/vimtips.html
 "*******************************************************************************
-" Insert the line number at the begining/end of a line
+" Insert the line number at the beginning/end of a line
 nmap <leader>ln :%s/^/\=line('.'). ' '<cr>
  ":%s/$/\=line('.'). ' '
 

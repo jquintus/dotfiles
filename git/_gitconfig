@@ -22,7 +22,7 @@
 
     pb = remote prune origin 
 
-    vim = "!git diff --name-only | xargs gvim -p"                                      # Open all edited files in vim (the -p tells vim to open eacn file in a new tab)
+    vim = "!git diff --name-only | xargs gvim -p"                                      # Open all edited files in vim (the -p tells vim to open each file in a new tab)
     vimHead = "!git diff-tree --no-commit-id --name-only -r HEAD | xargs gvim -p"      # Open all the files from the last commit in vim
     vimDiff = "!gvim -p -c 'tabdo Gdiff' $(git status --porcelain | awk '{print $2}')" # Open all edited files in vim in diff view
 
