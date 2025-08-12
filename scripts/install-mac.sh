@@ -135,6 +135,11 @@ main() {
     create_symlink "$DOTFILES_ROOT/git/_gitconfig" "$HOME/.gitconfig" "Git configuration"
     
     ########################################
+    print_status "Installing PostgreSQL configs"
+    ########################################
+    create_symlink "$DOTFILES_ROOT/_psqlrc" "$HOME/.psqlrc" "PostgreSQL configuration"
+    
+    ########################################
     print_status "Installation completed successfully!"
     print_status "You may need to restart your terminal or run 'source ~/.zshrc' for changes to take effect."
 }
