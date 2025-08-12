@@ -12,5 +12,8 @@ let g:slime_dont_ask_default = 1
 
 " Map <leader>r to send current file to psql pane %0
 nnoremap <leader>r :execute 'SlimeSend1' '\i ' . expand('%:p')<CR>
+
 " Automatically send current file to psql pane %0 on save
-autocmd BufWritePost * if &filetype ==# 'sql' | execute 'SlimeSend1' '\i ' . expand('%:p') | endif
+" I commented this out because it felt dangerous. I could save the file for any
+" number of reasons, and I don't want to accidentally run a query.
+" autocmd BufWritePost * if &filetype ==# 'sql' | execute 'SlimeSend1' '\i ' . expand('%:p') | endif
