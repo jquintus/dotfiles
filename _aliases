@@ -129,6 +129,8 @@ alias replica="psql -h production-htdb-replica -U readonly -d htdb --set=PROMPT1
 alias prod_readonly="psql -h production-htdb -U readonly -d htdb --set=PROMPT1='%[%033[31m%][PROD (RO)] %/%R%#%[%033[0m%]'"
 alias prod_readwrite="psql -h production-htdb -U readwrite -d htdb --set=PROMPT1='%[%033[1;31m%][!!! PROD (RW)] %/%R%#%[%033[0m%]'"
 
+alias sync_queues_us_east_1="psql -h production-sync-queues-us-east-1 -U readonly -d sync_queues"
+
 # This is the old version of the replica alias that uses the htdb command
 alias old_replica="htdb connect production-replica readonly"
 
