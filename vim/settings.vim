@@ -83,7 +83,7 @@ map <s-tab> :bp<cr>
 map <c-tab> :tabNext<cr>
 map <F10> :tabnew<cr>
 map <c-n> :tabnew<cr>
-map <s-F10> :tabclose<cr>
+map <s-F10> :tab split<cr>
 map <c-F10> :tabclose!<cr>
 
 " Simple Edits: next + do-again, down + do-again
