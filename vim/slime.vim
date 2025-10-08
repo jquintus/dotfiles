@@ -2,7 +2,9 @@
 let g:slime_target = "tmux"
 
 " Hardcode target pane to %0 (change if your psql pane is different)
-let g:slime_default_config = {"socket_name": "default", "target_pane": "%0"}
+" let g:slime_default_config = {"socket_name": "default", "target_pane": "%0"}
+"let g:slime_default_config = {"socket_name": "default", "target_pane": "psql-work"}
+let g:slime_default_config = {"socket_name": "default", "target_pane": ":.0"}
 
 " Also set buffer-local slime config for current buffer
 autocmd BufEnter * let b:slime_config = g:slime_default_config
@@ -16,8 +18,17 @@ function! SaveAndSendToPsql()
     execute 'SlimeSend1' '\i ' . expand('%:p')
 endfunction
 
+" This is intended to be used when you're not in an active PSQL session.
+" It will run against localdb but after it is done you can easily edit the
+" command line to switch to a different database or pipe to `pbcopy`
+function! SaveAndSendToLocalDb()
+    write
+    execute 'SlimeSend1' 'localdb -q -f ' . expand('%:p')
+endfunction
+
 " Map <leader>r to save and send current file to psql pane %0
 nnoremap <leader>r :call SaveAndSendToPsql()<cr>
+nnoremap <leader>R :call SaveAndSendToLocalDb()<cr>
 
 " Automatically send current file to psql pane %0 on save
 " I commented this out because it felt dangerous. I could save the file for any

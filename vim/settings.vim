@@ -99,6 +99,9 @@ map <F4> <c-h>:diffthis<cr><c-l>:diffthis<cr>
 
 " Copy the entire file to the clipboard and return to the current line
 map <c-space> <esc>mzggVG"*y`z:delmarks c<cr>:echo "File copied to clipboard"<cr>
+" Copy to system clipboard
+nnoremap <c-c> "*yy:echo "Line copied to clipboard"<cr>
+vnoremap <c-c> "*y:echo "Selection copied to clipboard"<cr>
 
 "J/K work on word wrapped lines now
 nnoremap j gj
@@ -283,7 +286,7 @@ imap <S-Insert> 	<C-V>
 vmap <S-Insert> 	<C-V>
 
 "*******************************************************************************
-" Delete all buffers that aren't displayed in tabs/windows and aren't modified
+" Delete (close) all buffers that aren't displayed in tabs/windows and aren't modified
 " https://www.reddit.com/r/vim/comments/4b9hg5/weekly_vim_tips_and_tricks_thread_2/d17gofm
 "*******************************************************************************
 function! s:wipeout()
@@ -299,6 +302,7 @@ function! s:wipeout()
 endfunction
 command! Wipeout call s:wipeout()
 
+noremap <leader><esc> :Wipeout<cr>
 
 "*******************************************************************************
 " Special file type handling
@@ -387,11 +391,4 @@ set rtp+=/usr/local/opt/fzf
 let g:fzf_history_dir = '~/.vimfzf-history'
 
 
-"*******************************************************************************
-" Running psql in vim
-"*******************************************************************************
-"command! LocalDB left vertical 30split | terminal localdb
 
-command! LocalDB leftabove vertical 30split | terminal localdb
-command! Foo leftabove vertical 30split | terminal localdb
-command! Bar topleft vertical 30vsplit | wincmd H | terminal localdb
