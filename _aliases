@@ -136,7 +136,35 @@ alias old_replica="htdb connect production-replica readonly"
 
 
 alias synth='npm run cdktf synth'
+alias circle_snapshots='npm -C .circleci run test -- -u --'
 
+sql() {
+  # Open up a tmux session if it exists, otherwise create a new one
+  # When creating a new one, automatically:
+  # 1. Create two panels
+  # 2. Name the two panels
+  # 3. cd to `~/sql`
+  # 4. Run vim in the right panel
+  if tmux has-session -t sql 2>/dev/null; then
+    tmux attach -t sql
+  else
+    # create new session but detach immediately so we can rename panes reliably
+    tmux new-session -d -s sql -c ~/sql
+
+    # name the first (left) pane
+    tmux select-pane -t sql:0.0 -T psql-work
+
+    # split right pane and run vim +NERDTree
+    # tmux split-window -h -t sql:0 -c ~/sql 'vim +NERDTree'
+    tmux split-window -h -t sql:0 -c ~/sql
+
+    # name the right pane
+    tmux select-pane -t sql:0.1 -T vim
+
+    # attach to session
+    tmux attach -t sql
+  fi
+}
 ########################################
 # Cursor & VS Code
 ########################################
