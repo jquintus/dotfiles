@@ -99,6 +99,7 @@ map <F4> <c-h>:diffthis<cr><c-l>:diffthis<cr>
 
 " Copy the entire file to the clipboard and return to the current line
 map <c-space> <esc>mzggVG"*y`z:delmarks c<cr>:echo "File copied to clipboard"<cr>
+
 " Copy to system clipboard
 nnoremap <c-c> "*yy:echo "Line copied to clipboard"<cr>
 vnoremap <c-c> "*y:echo "Selection copied to clipboard"<cr>
