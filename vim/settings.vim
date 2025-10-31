@@ -315,6 +315,22 @@ autocmd! BufRead,BufNewFile *.json set filetype=json
 
 nmap <F12> :1,$ ! jq "." -<cr>:set syntax=json<cr>
 
+function! FormatSQL()
+    if !executable('pg_format')
+        echoerr "Error: pg_format is not installed. Please install it first."
+        return
+    endif
+    " Save cursor position
+    let saved_line = line('.')
+    let saved_col = col('.')
+
+    " Format the file
+    :1,$ ! pg_format
+
+    " Restore cursor position
+    call cursor(saved_line, saved_col)
+endfunction
+nmap <s-F12> :call FormatSQL()<cr>
 
 autocmd! BufRead,BufNewFile *.vssettings set filetype=xml
 
