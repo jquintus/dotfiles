@@ -37,8 +37,8 @@ alias f.='open -a Finder ./'                # Open current directory in MacOS Fi
 
 alias ~="pushd ~"                           # Go Home
 alias cls='clear'                           # Clear terminal display
-alias clip='pbcopy'                         # I won't remmber pbcopy any time soon.
-alias xclip='pbcopy'                        # I won't remmber pbcopy any time soon.
+alias clip='pbcopy'                         # I won't remember pbcopy any time soon.
+alias xclip='pbcopy'                        # I won't remember pbcopy any time soon.
 alias back='popd'
 
 #   lr:  Full Recursive Directory Listing
@@ -117,12 +117,6 @@ alias prettier="/Users/jq/code/hightouch2/node_modules/.bin/prettier"
 alias ht='pushd ~/code/Hightouch'
 alias infra='pushd ~/code/infra'
 
-# alias localdb="psql -h localhost -p 5432 -U htu -d htdb"
-# alias replica="psql -h production-htdb-replica -U readonly -d htdb"
-# alias prod_readwrite="psql -h production-htdb -U readwrite -d htdb"
-# alias prod_readonly="psql -h production-htdb -U readonly -d htdb"
-# alias sandboxdb="psql -h hightouch-sync-2.chqia4iykr0y.us-east-1.rds.amazonaws.com -p 5432 -U postgres -d postgres"
-
 alias localdb="psql -h localhost -p 5432 -U htu -d htdb --set=PROMPT1='%[%033[32m%][localhost] %/%R%#%[%033[0m%]'"
 alias sandboxdb="psql -h hightouch-sync-2.chqia4iykr0y.us-east-1.rds.amazonaws.com -p 5432 -U postgres -d postgres --set=PROMPT1='%[%033[32m%][sandbox] %/%R%#%[%033[0m%]'"
 alias replica="psql -h production-htdb-replica -U readonly -d htdb --set=PROMPT1='%[%033[33m%][replica] %/%R%#%[%033[0m%]'"
@@ -148,7 +142,6 @@ alias sync_queues_us_east_1_ro="psql -h production-sync-queues-us-east-1-ro -U r
 
 # This is the old version of the replica alias that uses the htdb command
 alias old_replica="htdb connect production-replica readonly"
-
 
 alias synth='npm run cdktf synth'
 alias circle_snapshots='npm -C .circleci run test -- -u --'
