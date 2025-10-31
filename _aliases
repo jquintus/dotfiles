@@ -129,6 +129,14 @@ alias replica="psql -h production-htdb-replica -U readonly -d htdb --set=PROMPT1
 alias prod_readonly="psql -h production-htdb -U readonly -d htdb --set=PROMPT1='%[%033[31m%][PROD (RO)] %/%R%#%[%033[0m%]'"
 alias prod_readwrite="psql -h production-htdb -U readwrite -d htdb --set=PROMPT1='%[%033[1;31m%][!!! PROD (RW)] %/%R%#%[%033[0m%]'"
 
+htdb() {
+  if [[ "$1" == "list" ]]; then
+    open "https://www.notion.so/hightouch/Production-database-access-ffb76ba2d345462b8bc07dde2b638334#296ab9c473d58065a3b9cfd178d3081e"
+  else
+    echo "Unknown subcommand: $1"
+  fi
+}
+
 # Sync DBs
 # You can get the list of databases by running `htdb list`. It's not perfect but it gets you going
 alias sync_queues_ap_south-1="psql -h production-sync-queues-ap-south-1  -U readonly -d sync_queues"
