@@ -29,5 +29,6 @@ Plug 'preservim/nerdtree'
 Plug 'tpope/vim-fugitive'
 Plug 'jpalardy/vim-slime'
 Plug 'easymotion/vim-easymotion'
+Plug 'mechatroner/rainbow_csv'
 
 call plug#end()
