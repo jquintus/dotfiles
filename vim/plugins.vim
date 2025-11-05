@@ -31,4 +31,6 @@ Plug 'jpalardy/vim-slime'
 Plug 'easymotion/vim-easymotion'
 Plug 'mechatroner/rainbow_csv'
 
+Plug 'jlanzarotta/bufexplorer'
+
 call plug#end()
