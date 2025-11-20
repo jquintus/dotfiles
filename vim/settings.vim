@@ -327,6 +327,9 @@ function! FormatSQL()
     " Format the file
     :1,$ ! pg_format
 
+    " Set syntax to SQL
+		setlocal syntax=sql
+
     " Restore cursor position
     call cursor(saved_line, saved_col)
 endfunction
