@@ -126,6 +126,17 @@ alias replica="psql -h production-htdb-replica -U readonly -d htdb --set=PROMPT1
 alias prod_readonly="psql -h production-htdb -U readonly -d htdb --set=PROMPT1='%[%033[31m%][PROD (RO)] %/%R%#%[%033[0m%]'"
 alias prod_readwrite="psql -h production-htdb -U readwrite -d htdb --set=PROMPT1='%[%033[1;31m%][!!! PROD (RW)] %/%R%#%[%033[0m%]'"
 
+# Sync DBs
+# You can get the list of databases by running `htdb list`. It's not perfect but it gets you going
+alias sync_queues_ap_south-1="psql -h production-sync-queues-ap-south-1  -U readonly -d sync_queues --set=PROMPT1='%[%033[33m%][sync_queues ap-south-1] %/%R%#%[%033[0m%]'"
+alias sync_queues_ap_south_1_ro="psql -h production-sync-queues-ap-south-1-ro -U readonly -d sync_queues --set=PROMPT1='%[%033[33m%][sync_queues ap-south-1 (RO)] %/%R%#%[%033[0m%]'"
+alias sync_queues_eu_west_1="psql -h production-sync-queues-eu-west-1 -U readonly -d sync_queues --set=PROMPT1='%[%033[33m%][sync_queues eu-west-1] %/%R%#%[%033[0m%]'"
+alias sync_queues_eu_west_1_ro="psql -h production-sync-queues-eu-west-1-ro -U readonly -d sync_queues --set=PROMPT1='%[%033[33m%][sync_queues eu-west-1 (RO)] %/%R%#%[%033[0m%]'"
+alias sync_queues_us_east_1="psql -h production-sync-queues-us-east-1 -U readonly -d sync_queues --set=PROMPT1='%[%033[33m%][sync_queues us-east-1] %/%R%#%[%033[0m%]'"
+alias sync_queues_us_east_1_ro="psql -h production-sync-queues-us-east-1-ro -U readonly -d sync_queues --set=PROMPT1='%[%033[33m%][sync_queues us-east-1 (RO)] %/%R%#%[%033[0m%]'"
+
+# call with `htdb list`
+# Opens the web page that lists all db hosts
 htdb() {
   if [[ "$1" == "list" ]]; then
     open "https://www.notion.so/hightouch/Production-database-access-ffb76ba2d345462b8bc07dde2b638334#296ab9c473d58065a3b9cfd178d3081e"
@@ -134,14 +145,25 @@ htdb() {
   fi
 }
 
-# Sync DBs
-# You can get the list of databases by running `htdb list`. It's not perfect but it gets you going
-alias sync_queues_ap_south-1="psql -h production-sync-queues-ap-south-1  -U readonly -d sync_queues"
-alias sync_queues_ap_south_1_ro="psql -h production-sync-queues-ap-south-1-ro -U readonly -d sync_queues"
-alias sync_queues_eu_west_1="psql -h production-sync-queues-eu-west-1 -U readonly -d sync_queues"
-alias sync_queues_eu_west_1_ro="psql -h production-sync-queues-eu-west-1-ro -U readonly -d sync_queues"
-alias sync_queues_us_east_1="psql -h production-sync-queues-us-east-1 -U readonly -d sync_queues"
-alias sync_queues_us_east_1_ro="psql -h production-sync-queues-us-east-1-ro -U readonly -d sync_queues"
+dbs() {
+  # Grab all aliases
+  local aliases
+  # Only keep ones that match your DB naming patterns
+  aliases=$(alias | awk -F'[ =]' '
+    /^localdb|^prod_|^replica|^sandboxdb|^sync_queues/ {
+      gsub(/alias /, "", $1)
+      print $1
+    }')
+
+  # Use fzf to select one
+  local choice
+  choice=$(printf '%s\n' "$aliases" | fzf --height 10 --border --prompt="Select DB: ")
+
+  # If a choice was made, run it
+  if [[ -n "$choice" ]]; then
+    eval "$choice"
+  fi
+}
 
 # This is the old version of the replica alias that uses the htdb command
 alias old_replica="htdb connect production-replica readonly"
