@@ -120,13 +120,14 @@ alias prettier="/Users/jq/code/hightouch2/node_modules/.bin/prettier"
 alias ht='pushd ~/code/Hightouch'
 alias infra='pushd ~/code/infra'
 
+# DB Aliases
 alias localdb="psql -h localhost -p 5432 -U htu -d htdb --set=PROMPT1='%[%033[32m%][localhost] %/%R%#%[%033[0m%]'"
 alias sandboxdb="psql -h hightouch-sync-2.chqia4iykr0y.us-east-1.rds.amazonaws.com -p 5432 -U postgres -d postgres --set=PROMPT1='%[%033[32m%][sandbox] %/%R%#%[%033[0m%]'"
 alias replica="psql -h production-htdb-replica -U readonly -d htdb --set=PROMPT1='%[%033[33m%][replica] %/%R%#%[%033[0m%]'"
 alias prod_readonly="psql -h production-htdb -U readonly -d htdb --set=PROMPT1='%[%033[31m%][PROD (RO)] %/%R%#%[%033[0m%]'"
 alias prod_readwrite="psql -h production-htdb -U readwrite -d htdb --set=PROMPT1='%[%033[1;31m%][!!! PROD (RW)] %/%R%#%[%033[0m%]'"
 
-# Sync DBs
+## Sync DBs
 # You can get the list of databases by running `htdb list`. It's not perfect but it gets you going
 alias sync_queues_ap_south-1="psql -h production-sync-queues-ap-south-1  -U readonly -d sync_queues --set=PROMPT1='%[%033[33m%][sync_queues ap-south-1] %/%R%#%[%033[0m%]'"
 alias sync_queues_ap_south_1_ro="psql -h production-sync-queues-ap-south-1-ro -U readonly -d sync_queues --set=PROMPT1='%[%033[33m%][sync_queues ap-south-1 (RO)] %/%R%#%[%033[0m%]'"
@@ -146,11 +147,12 @@ htdb() {
 }
 
 dbs() {
+  # Requires fzf to be installed
   # Grab all aliases
   local aliases
   # Only keep ones that match your DB naming patterns
   aliases=$(alias | awk -F'[ =]' '
-    /^localdb|^prod_|^replica|^sandboxdb|^sync_queues/ {
+    /psql -h/ {
       gsub(/alias /, "", $1)
       print $1
     }')
