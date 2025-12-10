@@ -140,6 +140,27 @@ main() {
     create_symlink "$DOTFILES_ROOT/_psqlrc" "$HOME/.psqlrc" "PostgreSQL configuration"
     
     ########################################
+    print_status "Installing bin scripts"
+    ########################################
+    # Create ~/bin directory if it doesn't exist
+    if [[ ! -d "$HOME/bin" ]]; then
+        print_status "Creating directory: $HOME/bin"
+        mkdir -p "$HOME/bin"
+    fi
+    
+    # Symlink all scripts from bin/ directory to ~/bin/
+    if [[ -d "$DOTFILES_ROOT/bin" ]]; then
+        for script in "$DOTFILES_ROOT/bin"/*; do
+            if [[ -f "$script" ]]; then
+                script_name=$(basename "$script")
+                create_symlink "$script" "$HOME/bin/$script_name" "bin/$script_name"
+            fi
+        done
+    else
+        print_warning "bin directory not found, skipping script installation"
+    fi
+    
+    ########################################
     print_status "Installation completed successfully!"
     print_status "You may need to restart your terminal or run 'source ~/.zshrc' for changes to take effect."
 }
