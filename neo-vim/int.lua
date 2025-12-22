@@ -18,6 +18,7 @@ require('neo-tree') -- Neo-tree for file explorer
 require('plugins')
 require('slime')    -- Vim-slime for sending code to tmux
 require('completion_engine')
+require('sql')
 
 if vim.fn.has('mac') == 1 then
     -- Load macOS-specific settings only on macOS

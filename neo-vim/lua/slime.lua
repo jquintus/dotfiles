@@ -52,10 +52,15 @@ end
 -- Keymaps
 --*******************************************************************************
 
--- Map <leader>r to save and send current file to psql
-vim.keymap.set('n', '<leader>r', ':lua SaveAndSendToPsql()<CR>', { silent = true, desc = "Save and send to psql" })
+-- Only set <leader>r if NOT in SQL workspace mode
+-- SQL workspace mode (SVIM=1) will set its own <leader>r mapping
+if vim.env.SVIM ~= "1" then
+    -- Map <leader>r to save and send current file to psql
+    vim.keymap.set('n', '<leader>r', ':lua SaveAndSendToPsql()<CR>',
+        { silent = true, desc = "Save and send to psql (tmux)" })
+end
 
--- Map <leader>R to save and send to localdb
+-- Map <leader>R to save and send to localdb (always available)
 vim.keymap.set('n', '<leader>R', ':lua SaveAndSendToLocalDb()<CR>', { silent = true, desc = "Save and send to localdb" })
 
 -- Send visual selection with <leader>s (uses vim-slime's default visual mode sending)
