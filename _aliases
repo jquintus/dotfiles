@@ -117,6 +117,7 @@ alias pulls="gh pr view --web"
 ########################################
 
 alias vimsql='vim -c NERDTree --'
+alias sql='SVIM=1 nvim'
 
 alias prettier="/Users/jq/code/hightouch2/node_modules/.bin/prettier"
 alias ht='pushd ~/code/Hightouch'
@@ -175,7 +176,7 @@ alias old_replica="htdb connect production-replica readonly"
 alias synth='npm run cdktf synth'
 alias circle_snapshots='npm -C .circleci run test -- -u --'
 
-sql() {
+tmux_sql() {
   # Open up a tmux session if it exists, otherwise create a new one
   # When creating a new one, automatically:
   # 1. Create two panels

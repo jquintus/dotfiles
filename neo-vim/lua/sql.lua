@@ -20,17 +20,18 @@ local function open_sql_workspace()
     -- Mark this buffer as the SQL target
     vim.b.sql = true
 
+    -- Save the terminal window ID so we can return to it
+    local terminal_win = vim.api.nvim_get_current_win()
+
     -- Go back to editor pane
     vim.cmd("wincmd h")
 
     -- Optional: open Neo-tree
     vim.cmd("Neotree reveal left")
 
-    vim.api.nvim_create_autocmd("TermOpen", {
-        callback = function()
-            vim.cmd("startinsert")
-        end,
-    })
+    -- Return to terminal window and enter insert mode
+    vim.api.nvim_set_current_win(terminal_win)
+    vim.cmd("startinsert")
 
     -- Set global <leader>r mapping for SQL workspace mode
     -- This overrides any previous <leader>r mapping (like the one from slime.lua)
