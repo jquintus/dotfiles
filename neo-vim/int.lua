@@ -13,9 +13,10 @@ require('settings')
 require('keymaps')
 require('autocmds')
 require('commands')
-require('netrw') -- Replaces NERDTree
+require('netrw')    -- Replaces NERDTree
+require('neo-tree') -- Neo-tree for file explorer
 require('plugins')
-require('db')
+require('slime')    -- Vim-slime for sending code to tmux
 require('completion_engine')
 
 if vim.fn.has('mac') == 1 then

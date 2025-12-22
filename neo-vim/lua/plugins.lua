@@ -32,6 +32,9 @@ require('packer').startup(function(use)
     use 'hrsh7th/cmp-path'     -- file path completion source
 
 
+    -- Slime - send code to tmux/terminal
+    use 'jpalardy/vim-slime'
+
     -- Dadbod is a plugin for database interaction in Neovim
     -- use 'kristijanhusak/cmp-dadbod-completion' -- dadbod completion source
     -- use 'tpope/vim-dadbod'
@@ -60,10 +63,3 @@ require('packer').startup(function(use)
         require('packer').sync()
     end
 end)
-
--- Configure neo-tree (only after packer has loaded plugins)
--- Wrap in pcall to avoid errors if plugin isn't installed yet
-local status_ok, neotree = pcall(require, "neo-tree")
-if status_ok then
-    neotree.setup({})
-end
