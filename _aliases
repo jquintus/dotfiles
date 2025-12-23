@@ -117,7 +117,7 @@ alias pulls="gh pr view --web"
 ########################################
 
 alias vimsql='vim -c NERDTree --'
-alias sql='SVIM=1 nvim'
+alias sql='cd ~/sql && SVIM=1 nvim'
 
 alias prettier="/Users/jq/code/hightouch2/node_modules/.bin/prettier"
 alias ht='pushd ~/code/Hightouch'
