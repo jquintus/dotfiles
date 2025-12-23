@@ -58,6 +58,11 @@ require('packer').startup(function(use)
         }
     }
 
+    -- Commentary - comment/uncomment lines
+    -- gcc - comment/uncomment line
+    -- gc - comment/uncomment visually selected text
+    use 'tpope/vim-commentary'
+
     -- Automatically set up your configuration after cloning packer.nvim
     if packer_bootstrap then
         require('packer').sync()
