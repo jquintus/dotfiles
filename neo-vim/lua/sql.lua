@@ -49,6 +49,36 @@ local function open_sql_workspace()
 
         vim.notify("No SQL terminal found", vim.log.levels.ERROR)
     end, { desc = "Save and send to SQL terminal (nvim workspace)" })
+
+    -- Set visual mode mapping to send selected text to SQL terminal
+    vim.keymap.set("v", "<leader>r", function()
+        -- Get the selected text
+        local start_pos = vim.fn.getpos("'<")
+        local end_pos = vim.fn.getpos("'>")
+        local lines = vim.fn.getline(start_pos[2], end_pos[2])
+
+        -- Handle single line selection
+        if #lines == 1 then
+            lines[1] = string.sub(lines[1], start_pos[3], end_pos[3])
+        else
+            -- Handle multi-line selection
+            lines[1] = string.sub(lines[1], start_pos[3])
+            lines[#lines] = string.sub(lines[#lines], 1, end_pos[3])
+        end
+
+        local text = table.concat(lines, "\n")
+
+        -- Find SQL terminal and send text
+        for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+            if vim.b[buf].sql and vim.bo[buf].buftype == "terminal" then
+                local chan = vim.bo[buf].channel
+                vim.fn.chansend(chan, text .. "\n")
+                return
+            end
+        end
+
+        vim.notify("No SQL terminal found", vim.log.levels.ERROR)
+    end, { desc = "Send visual selection to SQL terminal" })
 end
 
 -- Open SQL workspace when vim is opened like this
