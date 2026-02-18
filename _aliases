@@ -117,7 +117,7 @@ alias pulls="gh pr view --web"
 ########################################
 
 alias vimsql='vim -c NERDTree --'
-alias sql='cd ~/sql && SVIM=1 nvim'
+alias sql='cd ~/workspace/sql && SVIM=1 nvim'
 
 alias prettier="/Users/jq/code/hightouch2/node_modules/.bin/prettier"
 alias ht='pushd ~/code/Hightouch'
@@ -125,10 +125,12 @@ alias infra='pushd ~/code/infra'
 
 # DB Aliases
 alias localdb="psql -h localhost -p 5432 -U htu -d htdb --set=PROMPT1='%[%033[32m%][localhost] %/%R%#%[%033[0m%]'"
+alias localdb_sync_queues="psql -h localhost -p 5434 -U sync_queues -d sync_queues --set=PROMPT1='%[%033[32m%][localhost sync queues] %/%R%#%[%033[0m%]'"
 alias sandboxdb="psql -h hightouch-sync-2.chqia4iykr0y.us-east-1.rds.amazonaws.com -p 5432 -U postgres -d postgres --set=PROMPT1='%[%033[32m%][sandbox] %/%R%#%[%033[0m%]'"
 alias replica="psql -h production-htdb-replica -U readonly -d htdb --set=PROMPT1='%[%033[33m%][replica] %/%R%#%[%033[0m%]'"
 alias prod_readonly="psql -h production-htdb -U readonly -d htdb --set=PROMPT1='%[%033[31m%][PROD (RO)] %/%R%#%[%033[0m%]'"
 alias prod_readwrite="psql -h production-htdb -U readwrite -d htdb --set=PROMPT1='%[%033[1;31m%][!!! PROD (RW)] %/%R%#%[%033[0m%]'"
+alias prod_operator="psql -h production-htdb -U operator -d htdb --set=PROMPT1='%[%033[1;31m%][!!! PROD (operator)] %/%R%#%[%033[0m%]'"
 
 ## Sync DBs
 # You can get the list of databases by running `htdb list`. It's not perfect but it gets you going
@@ -208,3 +210,8 @@ tmux_sql() {
 ########################################
 
 alias clean_cursor='rm -rf ~/Library/Application\ Support/Cursor/User/workspaceStorage/'
+
+########################################
+# Claude
+########################################
+alias thermonuclearwar='claude --dangerously-skip-permissions'
