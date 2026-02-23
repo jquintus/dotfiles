@@ -118,3 +118,7 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
+
+# peon-ping quick controls
+alias peon="bash /Users/jq/.claude/hooks/peon-ping/peon.sh"
+[ -f /Users/jq/.claude/hooks/peon-ping/completions.bash ] && source /Users/jq/.claude/hooks/peon-ping/completions.bash
