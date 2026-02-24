@@ -10,13 +10,14 @@ const REPO = join(homedir(), "code", "hightouch");
 const STATE_FILE = join(homedir(), ".local", "state", "ht-start", "last.json");
 
 // cmd defaults to `pnpm run swc:dev <name>` if omitted
+// debugPort: enables --inspect on that port (attach from Cursor anytime)
 const SERVICES = [
-  { name: "scheduler" },
-  { name: "api" },
-  { name: "customer-data-worker" },
-  { name: "background-customer-data-worker" },
-  { name: "plan-executor" },
-  { name: "worker" },
+  { name: "scheduler",                       debugPort: 9230 },
+  { name: "api",                             debugPort: 9232 },
+  { name: "customer-data-worker",            debugPort: 9233 },
+  { name: "background-customer-data-worker", debugPort: 9234 },
+  { name: "plan-executor",                   debugPort: 9231 },
+  { name: "worker",                          debugPort: 9229 },
   { name: "webserver", cmd: ["node", "../test-webhook-sink/index.js"] },
   { name: "app",       cmd: ["pnpm", "run", "app"] },
 ];
@@ -125,15 +126,17 @@ function startServices(services) {
   const procs = [];
 
   for (let i = 0; i < services.length; i++) {
-    const { name, cmd } = services[i];
+    const { name, cmd, debugPort } = services[i];
     const color = COLORS[i % COLORS.length];
     const prefix = color + name.padEnd(maxLen) + R + "  ";
 
     const [bin, ...args] = cmd ?? ["pnpm", "run", "swc:dev", name];
+    const env = { ...process.env, FORCE_COLOR: "1" };
+    if (debugPort) env.NODE_OPTIONS = `--inspect=${debugPort}`;
     const proc = spawn(bin, args, {
       cwd: REPO,
       stdio: ["ignore", "pipe", "pipe"],
-      env: { ...process.env, FORCE_COLOR: "1" },
+      env,
     });
 
     procs.push(proc);
