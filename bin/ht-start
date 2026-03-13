@@ -12,14 +12,14 @@ const STATE_FILE = join(homedir(), ".local", "state", "ht-start", "last.json");
 // cmd defaults to `pnpm run swc:dev <name>` if omitted
 // debugPort: enables --inspect on that port (attach from Cursor anytime)
 const SERVICES = [
-  { name: "scheduler",                       debugPort: 9230 },
-  { name: "api",                             debugPort: 9232 },
-  { name: "customer-data-worker",            debugPort: 9233 },
-  { name: "background-customer-data-worker", debugPort: 9234 },
-  { name: "plan-executor",                   debugPort: 9231 },
-  { name: "worker",                          debugPort: 9229 },
-  { name: "webserver", cmd: ["node", "../test-webhook-sink/index.js"] },
-  { name: "app",       cmd: ["pnpm", "run", "app"] },
+  { name: "scheduler",      debugPort: 9230 },
+  { name: "api",            debugPort: 9232 },
+  { name: "cdw",            debugPort: 9233 },
+  { name: "bcdw",           debugPort: 9234 },
+  { name: "plan-executor",  debugPort: 9231 },
+  { name: "worker",         debugPort: 9229 },
+  { name: "webserver",      cmd: ["node", "../test-webhook-sink/index.js"] },
+  { name: "app",            cmd: ["pnpm", "run", "app"] },
 ];
 
 // ── State ──────────────────────────────────────────────────────────────────
