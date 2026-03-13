@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-"use strict";
 
 const { spawn } = require("child_process");
 const { mkdirSync, readFileSync, writeFileSync } = require("fs");
@@ -11,16 +10,27 @@ const STATE_FILE = join(homedir(), ".local", "state", "ht-start", "last.json");
 
 // cmd defaults to `pnpm run swc:dev <name>` if omitted
 // debugPort: enables --inspect on that port (attach from Cursor anytime)
+// key: optional hotkey to toggle this service in the TUI
 const SERVICES = [
-  { name: "scheduler",      debugPort: 9230 },
-  { name: "api",            debugPort: 9232 },
-  { name: "cdw",            debugPort: 9233 },
-  { name: "bcdw",           debugPort: 9234 },
-  { name: "plan-executor",  debugPort: 9231 },
-  { name: "worker",         debugPort: 9229 },
+  { name: "scheduler",      key: "s", debugPort: 9230 },
+  { name: "api",            key: "a", debugPort: 9232 },
+  { name: "cdw",            key: "c", debugPort: 9233 },
+  { name: "bcdw",           key: "b", debugPort: 9234 },
+  { name: "plan-executor",  key: "p", debugPort: 9231 },
+  { name: "worker",         key: "w", debugPort: 9229 },
   { name: "webserver",      cmd: ["node", "../test-webhook-sink/index.js"] },
   { name: "app",            cmd: ["pnpm", "run", "app"] },
 ];
+
+const PRESETS = {
+  backend:  ["scheduler", "api", "plan-executor", "worker"],
+  frontend: ["webserver", "app"],
+};
+
+// Derived from SERVICES for quick lookup
+const HOTKEYS = Object.fromEntries(
+  SERVICES.filter((s) => s.key).map((s) => [s.key, s.name])
+);
 
 // ── State ──────────────────────────────────────────────────────────────────
 
@@ -54,12 +64,13 @@ const REV = "\x1b[7m";
 function draw(selected, cursor) {
   let out = "\x1b[2J\x1b[H";
   out += `${B}Start Hightouch services${R}\n`;
-  out += `${DIM}↑↓ move   space select   a all   n none   enter launch${R}\n\n`;
+  out += `${DIM}↑↓/space select   1 backend (again: ±worker)   2 frontend   n none   enter launch${R}\n\n`;
   for (let i = 0; i < SERVICES.length; i++) {
-    const { name } = SERVICES[i];
+    const { name, key } = SERVICES[i];
     const check = selected.has(name) ? `${GRN}[✓]${R}` : `${DIM}[ ]${R}`;
+    const hotkey = key ? `${DIM}${key}${R} ` : "  ";
     const label = i === cursor ? `${REV} ${name} ${R}` : ` ${name}`;
-    out += `  ${check}${label}\n`;
+    out += `  ${check} ${hotkey}${label}\n`;
   }
   process.stdout.write(out);
 }
@@ -89,10 +100,23 @@ async function promptServices() {
         cursor = (cursor - 1 + SERVICES.length) % SERVICES.length;
       } else if (key === "\x1b[B") {
         cursor = (cursor + 1) % SERVICES.length;
-      } else if (key === "a" || key === "A") {
-        SERVICES.forEach((s) => selected.add(s.name));
       } else if (key === "n" || key === "N") {
         selected.clear();
+      } else if (key === "1") {
+        const backendCore = ["scheduler", "api", "plan-executor"];
+        const hasBackendCore = backendCore.every((n) => selected.has(n));
+        if (hasBackendCore) {
+          selected.has("worker") ? selected.delete("worker") : selected.add("worker");
+        } else {
+          selected.clear();
+          for (const n of PRESETS.backend) selected.add(n);
+        }
+      } else if (key === "2") {
+        selected.clear();
+        for (const n of PRESETS.frontend) selected.add(n);
+      } else if (HOTKEYS[key]) {
+        const svc = HOTKEYS[key];
+        selected.has(svc) ? selected.delete(svc) : selected.add(svc);
       } else {
         return;
       }
@@ -168,7 +192,7 @@ function startServices(services) {
 
   // Ctrl+C kills all child processes
   process.on("SIGINT", () => {
-    procs.forEach((p) => p.kill("SIGINT"));
+    for (const p of procs) p.kill("SIGINT");
     process.exit(0);
   });
 }
@@ -176,8 +200,20 @@ function startServices(services) {
 // ── Main ──────────────────────────────────────────────────────────────────
 
 async function main() {
-  const selected = await promptServices();
-  process.stdout.write("\x1b[2J\x1b[H");
+  const arg = process.argv[2];
+  let selected;
+
+  if (arg && PRESETS[arg]) {
+    selected = new Set(PRESETS[arg]);
+    console.log(`${B}Starting ${arg}:${R} ${PRESETS[arg].join(", ")}\n`);
+  } else if (arg) {
+    console.error(`Unknown preset: ${arg}`);
+    console.error(`Available: ${Object.keys(PRESETS).join(", ")}`);
+    process.exit(1);
+  } else {
+    selected = await promptServices();
+    process.stdout.write("\x1b[2J\x1b[H");
+  }
 
   if (selected.size === 0) {
     console.log("Nothing selected.");
