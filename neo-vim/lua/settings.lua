@@ -2,6 +2,8 @@
 -- Settings
 --*******************************************************************************
 
+vim.opt.clipboard = "unnamedplus"
+
 -- Create directories
 local function ensure_dir_exists(path)
     if vim.fn.isdirectory(path) == 0 then
@@ -61,9 +63,19 @@ vim.g.mapleader = " "
 -- preserved while the buffer is open. This is an absolute must-have.
 vim.opt.hidden = true
 
+
+
+
+--*******************************************************************************
+-- Terminal mode key mappings
+--*******************************************************************************
+-- Exit terminal mode with Esc
+vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]])
+
 -- When typing `:terminal` in neovim, it will open a "login shell"
 -- This will source your .zshrc file and load all your settings
 vim.opt.shell = "zsh -l"
+
 -- make Ctrl+Enter exit terminal-insert mode (Neovide on mac)
 vim.keymap.set('t', '<C-CR>', '<C-\\><C-n>', { noremap = true, silent = true })
 

@@ -121,4 +121,6 @@ unset __conda_setup
 
 # peon-ping quick controls
 alias peon="bash /Users/jq/.claude/hooks/peon-ping/peon.sh"
+autoload -Uz compinit && compinit -C
 [ -f /Users/jq/.claude/hooks/peon-ping/completions.bash ] && source /Users/jq/.claude/hooks/peon-ping/completions.bash
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
