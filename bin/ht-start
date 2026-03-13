@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-const { spawn } = require("child_process");
-const { mkdirSync, readFileSync, writeFileSync } = require("fs");
-const { homedir } = require("os");
-const { join } = require("path");
+const { spawn } = require("node:child_process");
+const { mkdirSync, readFileSync, writeFileSync } = require("node:fs");
+const { homedir } = require("node:os");
+const { join } = require("node:path");
 
 const REPO = join(homedir(), "code", "hightouch");
 const STATE_FILE = join(homedir(), ".local", "state", "ht-start", "last.json");
@@ -64,7 +64,7 @@ const REV = "\x1b[7m";
 function draw(selected, cursor) {
   let out = "\x1b[2J\x1b[H";
   out += `${B}Start Hightouch services${R}\n`;
-  out += `${DIM}↑↓/space select   1 backend (again: ±worker)   2 frontend   n none   enter launch${R}\n\n`;
+  out += `${DIM}↑↓/space select   1 backend (again: ±worker)   2 frontend   esc clear   enter launch${R}\n\n`;
   for (let i = 0; i < SERVICES.length; i++) {
     const { name, key } = SERVICES[i];
     const check = selected.has(name) ? `${GRN}[✓]${R}` : `${DIM}[ ]${R}`;
@@ -100,7 +100,7 @@ async function promptServices() {
         cursor = (cursor - 1 + SERVICES.length) % SERVICES.length;
       } else if (key === "\x1b[B") {
         cursor = (cursor + 1) % SERVICES.length;
-      } else if (key === "n" || key === "N") {
+      } else if (key === "\x1b") {
         selected.clear();
       } else if (key === "1") {
         const backendCore = ["scheduler", "api", "plan-executor"];
@@ -152,7 +152,7 @@ function startServices(services) {
   for (let i = 0; i < services.length; i++) {
     const { name, cmd, debugPort } = services[i];
     const color = COLORS[i % COLORS.length];
-    const prefix = color + name.padEnd(maxLen) + R + "  ";
+    const prefix = `${color}${name.padEnd(maxLen)}${R}  `;
 
     const [bin, ...args] = cmd ?? ["pnpm", "run", "swc:dev", name];
     const env = { ...process.env, FORCE_COLOR: "1" };
@@ -166,7 +166,7 @@ function startServices(services) {
     procs.push(proc);
 
     function printLine(line) {
-      process.stdout.write(prefix + line + "\n");
+      process.stdout.write(`${prefix}${line}\n`);
     }
 
     function attachStream(stream) {
