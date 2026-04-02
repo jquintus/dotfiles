@@ -8,6 +8,7 @@
     unadd = reset
     unstash = stash pop
     kev  = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard   # Move your current changes to the Recycle bin (instead of just burning it down). You can use git reflog to find the commit again and restore it if need be.  http://haacked.com/archive/2014/07/28/github-flow-aliases/
+    super-kev = !git fetch origin && git reset --hard origin/$(git symbolic-ref --short HEAD) && git clean -fd
     ec = config --global -e                                                            # Edit this file http://haacked.com/archive/2014/07/28/github-flow-aliases/
     co = checkout                                                                      # Checkout
     cob = checkout -b                                                                  # Checkout a new branch
@@ -27,6 +28,7 @@
     vimDiff = "!gvim -p -c 'tabdo Gdiff' $(git status --porcelain | awk '{print $2}')" # Open all edited files in vim in diff view
 
     sortBranchesByCommitDate = "branch --sort=-committerdate -l 'jq*'"
+	aliases = !nvim ~/.gitconfig
 
 [grep]
     lineNumber = true
