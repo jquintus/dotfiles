@@ -133,6 +133,7 @@ alias prod_readwrite="psql -h production-htdb -U readwrite -d htdb --set=PROMPT1
 alias prod_operator="psql -h production-htdb -U operator -d htdb --set=PROMPT1='%[%033[1;31m%][!!! PROD (operator)] %/%R%#%[%033[0m%]'"
 
 ## Sync DBs
+# Passwords can be stored in ~/.pgpass
 # You can get the list of databases by running `htdb list`. It's not perfect but it gets you going
 alias sync_queues_ap_south-1="psql -h production-sync-queues-ap-south-1  -U readonly -d sync_queues --set=PROMPT1='%[%033[33m%][sync_queues ap-south-1] %/%R%#%[%033[0m%]'"
 alias sync_queues_ap_south_1_ro="psql -h production-sync-queues-ap-south-1-ro -U readonly -d sync_queues --set=PROMPT1='%[%033[33m%][sync_queues ap-south-1 (RO)] %/%R%#%[%033[0m%]'"
@@ -140,6 +141,10 @@ alias sync_queues_eu_west_1="psql -h production-sync-queues-eu-west-1 -U readonl
 alias sync_queues_eu_west_1_ro="psql -h production-sync-queues-eu-west-1-ro -U readonly -d sync_queues --set=PROMPT1='%[%033[33m%][sync_queues eu-west-1 (RO)] %/%R%#%[%033[0m%]'"
 alias sync_queues_us_east_1="psql -h production-sync-queues-us-east-1 -U readonly -d sync_queues --set=PROMPT1='%[%033[33m%][sync_queues us-east-1] %/%R%#%[%033[0m%]'"
 alias sync_queues_us_east_1_ro="psql -h production-sync-queues-us-east-1-ro -U readonly -d sync_queues --set=PROMPT1='%[%033[33m%][sync_queues us-east-1 (RO)] %/%R%#%[%033[0m%]'"
+
+## Agent DBs
+alias local_agents_db="PGOPTIONS='-c search_path=ad_artifacts,hightouch_content,competitor_ads,public' psql -h localhost -p 5435 -U agents -d agents --set=PROMPT1='%[%033[32m%][localhost] %/%R%#%[%033[0m%]'"
+alias prod_agents="psql -h production-agents -p 5432 -U master agents --set=PROMPT1='%[%033[1;31m%][!!! PROD (Agents)] %/%R%#%[%033[0m%]'"
 
 # call with `htdb list`
 # Opens the web page that lists all db hosts
@@ -175,7 +180,7 @@ dbs() {
 # This is the old version of the replica alias that uses the htdb command
 alias old_replica="htdb connect production-replica readonly"
 
-alias synth='npm run cdktf synth'
+alias synth='pnpm run synth'
 alias circle_snapshots='npm -C .circleci run test -- -u --'
 
 tmux_sql() {
