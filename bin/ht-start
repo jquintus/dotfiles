@@ -14,8 +14,8 @@ const STATE_FILE = join(homedir(), ".local", "state", "ht-start", "last.json");
 const SERVICES = [
   { name: "scheduler",      key: "s", debugPort: 9230 },
   { name: "api",            key: "a", debugPort: 9232 },
-  { name: "cdw",            key: "c", debugPort: 9233 },
-  { name: "bcdw",           key: "b", debugPort: 9234 },
+  { name: "customer-data-worker",                      key: "c", debugPort: 9233 },
+  { name: "background-customer-data-worker",           key: "b", debugPort: 9234 },
   { name: "plan-executor",  key: "p", debugPort: 9231 },
   { name: "worker",         key: "w", debugPort: 9229 },
   { name: "webserver",      cmd: ["node", "../test-webhook-sink/index.js"] },
@@ -155,6 +155,9 @@ function startServices(services) {
     const prefix = `${color}${name.padEnd(maxLen)}${R}  `;
 
     const [bin, ...args] = cmd ?? ["pnpm", "run", "swc:dev", name];
+    const fullCmd = [bin, ...args].join(" ");
+    process.stdout.write(`${prefix}${DIM}$ ${fullCmd}${R}\n`);
+
     const env = { ...process.env, FORCE_COLOR: "1" };
     if (debugPort) env.NODE_OPTIONS = `--inspect=${debugPort}`;
     const proc = spawn(bin, args, {
