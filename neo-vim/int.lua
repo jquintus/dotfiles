@@ -13,11 +13,15 @@ require('settings')
 require('keymaps')
 require('autocmds')
 require('commands')
-require('netrw')    -- Replaces NERDTree
-require('neo-tree') -- Neo-tree for file explorer
+require('netrw')
+require('neo-tree-config')
 require('plugins')
-require('slime')    -- Vim-slime for sending code to tmux
+require('slime')
+require('lsp')
 require('completion_engine')
+require('treesitter')
+require('telescope-config')
+require('gitsigns-config')
 require('sql')
 
 if vim.fn.has('mac') == 1 then
@@ -30,13 +34,12 @@ if vim.fn.has('win') == 1 then
     require('win-specific')
 end
 
-require("noice").setup({
-    -- You can customize settings here; for now, keep it simple
-    presets = {
-        command_palette = true,
-        long_message_to_split = true,
-    },
-    -- optionally, disable some defaults if you want
-    -- messages = { enabled = false },
-    -- cmdline = { enabled = false },
-})
+local ok_noice, noice = pcall(require, "noice")
+if ok_noice then
+    noice.setup({
+        presets = {
+            command_palette = true,
+            long_message_to_split = true,
+        },
+    })
+end

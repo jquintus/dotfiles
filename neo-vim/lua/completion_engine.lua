@@ -1,21 +1,23 @@
 -- Configuration for nvim-cmp - Autocompletion plugin
-local cmp = require('cmp')
+local ok, cmp = pcall(require, 'cmp')
+if not ok then return end
 
 cmp.setup({
     snippet = {
         expand = function(args)
-            -- For now, no snippet engine is configured
-            -- You can add luasnip or vsnip later if you want
+            -- No snippet engine configured yet
         end,
     },
-    mapping = {
-        ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Confirm completion with Enter
-        ['<C-n>'] = cmp.mapping.select_next_item(),        -- Next completion item
-        ['<C-p>'] = cmp.mapping.select_prev_item(),        -- Previous completion item
-    },
-    sources = {
-        { name = 'dadbod-completion' },
+    mapping = cmp.mapping.preset.insert({
+        ['<CR>'] = cmp.mapping.confirm({ select = true }),
+        ['<C-n>'] = cmp.mapping.select_next_item(),
+        ['<C-p>'] = cmp.mapping.select_prev_item(),
+        ['<C-Space>'] = cmp.mapping.complete(),
+        ['<C-e>'] = cmp.mapping.abort(),
+    }),
+    sources = cmp.config.sources({
+        { name = 'nvim_lsp' },
         { name = 'buffer' },
         { name = 'path' },
-    },
+    }),
 })

@@ -14,6 +14,15 @@ vim.keymap.set('n', '<F3>', function()
     package.loaded.keymaps = nil
     package.loaded.autocmds = nil
     package.loaded.commands = nil
+    package.loaded.netrw = nil
+    package.loaded['neo-tree-config'] = nil
+    package.loaded.lsp = nil
+    package.loaded['completion_engine'] = nil
+    package.loaded.treesitter = nil
+    package.loaded['telescope-config'] = nil
+    package.loaded['gitsigns-config'] = nil
+    package.loaded.slime = nil
+    package.loaded.sql = nil
     package.loaded['mac-specific'] = nil
     package.loaded['win-specific'] = nil
 

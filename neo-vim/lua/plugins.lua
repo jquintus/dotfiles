@@ -25,29 +25,39 @@ vim.opt.rtp:prepend(install_path)
 require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
 
-    -- Add your other plugins here
-    use 'hrsh7th/nvim-cmp'     -- completion engine
-    use 'hrsh7th/cmp-nvim-lsp' -- LSP source for cmp (optional but recommended)
-    use 'hrsh7th/cmp-buffer'   -- buffer words completion source
-    use 'hrsh7th/cmp-path'     -- file path completion source
+    -- Completion
+    use 'hrsh7th/nvim-cmp'
+    use 'hrsh7th/cmp-nvim-lsp'
+    use 'hrsh7th/cmp-buffer'
+    use 'hrsh7th/cmp-path'
 
+    -- LSP
+    use 'neovim/nvim-lspconfig'
+    use 'williamboman/mason.nvim'
+    use 'williamboman/mason-lspconfig.nvim'
+
+    -- Treesitter (better syntax highlighting)
+    -- Run :TSUpdate manually after install
+    use 'nvim-treesitter/nvim-treesitter'
+
+    -- Telescope (fuzzy finder)
+    use {
+        'nvim-telescope/telescope.nvim',
+        requires = { 'nvim-lua/plenary.nvim' }
+    }
+
+    -- Git
+    use 'lewis6991/gitsigns.nvim'
 
     -- Slime - send code to tmux/terminal
     use 'jpalardy/vim-slime'
 
-    -- Dadbod is a plugin for database interaction in Neovim
-    -- use 'kristijanhusak/cmp-dadbod-completion' -- dadbod completion source
-    -- use 'tpope/vim-dadbod'
-    -- use 'kristijanhusak/vim-dadbod-ui'
-    -- use 'kristijanhusak/vim-dadbod-completion'
-
     -- Noice is a notification system for Neovim
-    use 'MunifTanjim/nui.nvim' -- noice dependency
+    use 'MunifTanjim/nui.nvim'
     use 'folke/noice.nvim'
 
-    -- Nerdtree replacement (neo-tree and its dependencies)
-    use 'nvim-tree/nvim-web-devicons' -- optional, for file icons
-    use 'MunifTanjim/nui.nvim'        -- required dependency (already listed above for noice)
+    -- Neo-tree (file explorer)
+    use 'nvim-tree/nvim-web-devicons'
     use {
         'nvim-neo-tree/neo-tree.nvim',
         branch = 'v3.x',
@@ -58,12 +68,9 @@ require('packer').startup(function(use)
         }
     }
 
-    -- Commentary - comment/uncomment lines
-    -- gcc - comment/uncomment line
-    -- gc - comment/uncomment visually selected text
+    -- Commentary - gcc to comment/uncomment
     use 'tpope/vim-commentary'
 
-    -- Automatically set up your configuration after cloning packer.nvim
     if packer_bootstrap then
         require('packer').sync()
     end
