@@ -109,6 +109,7 @@ checkout_default_branch() {
 # Requires the github command line installed
 alias pulls="gh pr view --web"
 
+alias gs="git-spice"
 
 # source ~/.sshAliases.sh
 
@@ -220,3 +221,19 @@ alias clean_cursor='rm -rf ~/Library/Application\ Support/Cursor/User/workspaceS
 # Claude
 ########################################
 alias thermonuclearwar='claude --dangerously-skip-permissions'
+
+
+########################################
+# Kubernetes (k8s)
+########################################
+kctx() {
+  local ctx
+  ctx=$(kubectl config get-contexts | tail -n +2 | fzf --prompt="k8s context> " | awk '{print $2}') || return
+  kubectl config use-context "$ctx"
+}
+
+kns() {
+  local ns
+  ns=$(kubectl get ns -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | fzf --prompt="namespace> ") || return
+  kubectl config set-context --current --namespace="$ns"
+}
