@@ -31,6 +31,8 @@
 	aliases = !nvim ~/.gitconfig
 	merge-master-into = "!f() {\n  branch=\"$1\"\n  dir=\"/tmp/git-merge-$branch-$$\"\n\n  git fetch origin &&\n\n  # create worktree directly from remote branch\n  git worktree add -f \"$dir\" -b \"$branch-tmp-$$\" \"origin/$branch\" &&\n\n  (\n    cd \"$dir\" &&\n    git merge --no-edit origin/master &&\n    git push origin HEAD:\"$branch\"\n  )\n\n  status=$?\n  git worktree remove \"$dir\"\n  git branch -D \"$branch-tmp-$$\" 2>/dev/null\n  return $status\n}; f"
 
+force-build = commit --allow-empty -m 'force a build'
+
 [grep]
     lineNumber = true
 
@@ -41,7 +43,7 @@
     tool = vimdiff
 
 [core]
-    editor = gvim -f
+    editor = nvim
 	excludesfile = /Users/jq/.gitignore
 	pager = less -R
 [pager]
