@@ -131,6 +131,7 @@ alias sandboxdb="psql -h hightouch-sync-2.chqia4iykr0y.us-east-1.rds.amazonaws.c
 alias replica="psql -h production-htdb-replica -U readonly -d htdb --set=PROMPT1='%[%033[33m%][replica] %/%R%#%[%033[0m%]'"
 alias prod_readonly="psql -h production-htdb -U readonly -d htdb --set=PROMPT1='%[%033[31m%][PROD (RO)] %/%R%#%[%033[0m%]'"
 alias prod_readwrite="psql -h production-htdb -U readwrite -d htdb --set=PROMPT1='%[%033[1;31m%][!!! PROD (RW)] %/%R%#%[%033[0m%]'"
+alias prod_admin="psql -h production-htdb -U admin -d htdb --set=PROMPT1='%[%033[1;31m%][!!! PROD (ADMIN)] %/%R%#%[%033[0m%]'"
 alias prod_operator="psql -h production-htdb -U operator -d htdb --set=PROMPT1='%[%033[1;31m%][!!! PROD (operator)] %/%R%#%[%033[0m%]'"
 
 ## Sync DBs
@@ -142,6 +143,11 @@ alias sync_queues_eu_west_1="psql -h production-sync-queues-eu-west-1 -U readonl
 alias sync_queues_eu_west_1_ro="psql -h production-sync-queues-eu-west-1-ro -U readonly -d sync_queues --set=PROMPT1='%[%033[33m%][sync_queues eu-west-1 (RO)] %/%R%#%[%033[0m%]'"
 alias sync_queues_us_east_1="psql -h production-sync-queues-us-east-1 -U readonly -d sync_queues --set=PROMPT1='%[%033[33m%][sync_queues us-east-1] %/%R%#%[%033[0m%]'"
 alias sync_queues_us_east_1_ro="psql -h production-sync-queues-us-east-1-ro -U readonly -d sync_queues --set=PROMPT1='%[%033[33m%][sync_queues us-east-1 (RO)] %/%R%#%[%033[0m%]'"
+
+## Snowflake (E2E test warehouses from warehouses.yaml, key-pair auth)
+# Connections defined in ~/.snowsql/config; private key at ~/.snowsql/keys/ci_user.p8
+alias snowflake_local="/Applications/SnowSQL.app/Contents/MacOS/snowsql -c snowflake_local -o prompt_format='snowflake-local> '"
+alias snowflake_ci="/Applications/SnowSQL.app/Contents/MacOS/snowsql -c snowflake_ci -o prompt_format='snowflake-ci> '"
 
 ## Agent DBs
 alias local_agents_db="PGOPTIONS='-c search_path=ad_artifacts,hightouch_content,competitor_ads,public' psql -h localhost -p 5435 -U agents -d agents --set=PROMPT1='%[%033[32m%][localhost] %/%R%#%[%033[0m%]'"
@@ -237,3 +243,6 @@ kns() {
   ns=$(kubectl get ns -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | fzf --prompt="namespace> ") || return
   kubectl config set-context --current --namespace="$ns"
 }
+
+alias kubectx=kctx
+alias kubens=kns

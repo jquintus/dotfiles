@@ -83,6 +83,13 @@ export JAVA_HOME=/Library/Java/JavaVirtualMachines/amazon-corretto-8.jdk/Content
 export AWS_PROFILE=prod
 export AWS_REGION=us-east-1
 
+########################################
+# peon-ping quick controls
+########################################
+alias peon="bash /Users/jq/.claude/hooks/peon-ping/peon.sh"
+autoload -Uz compinit && compinit -C
+[ -f /Users/jq/.claude/hooks/peon-ping/completions.bash ] && source /Users/jq/.claude/hooks/peon-ping/completions.bash
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
 ########################################
 # Hightouch configs
@@ -119,8 +126,4 @@ unset __conda_setup
 # <<< conda initialize <<<
 
 
-# peon-ping quick controls
-alias peon="bash /Users/jq/.claude/hooks/peon-ping/peon.sh"
-autoload -Uz compinit && compinit -C
-[ -f /Users/jq/.claude/hooks/peon-ping/completions.bash ] && source /Users/jq/.claude/hooks/peon-ping/completions.bash
-export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+eval "$(mise activate zsh)"
