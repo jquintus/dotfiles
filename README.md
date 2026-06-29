@@ -32,3 +32,48 @@ brew bundle cleanup
 
 - [Tons of git aliases to add](https://kapeli.com/cheat_sheets/Oh-My-Zsh_Git.docset/Contents/Resources/Documents/index)
 - [Yet another dotfiles manager](https://yadm.io/)
+
+# Applications installed 
+
+```bash
+ls /Applications /Applications/Utilities 2>/dev/null >> README.md
+```
+* /Applications
+  * 1Password
+  * Alfred 5
+  * AltTab
+  * Amphetamine
+  * Bear
+  * ChatGPT
+  * Claude
+  * cmux
+  * ColorSlurp
+  * Commander One
+  * Cryptomator
+  * Cursor
+  * Docker
+  * Ghostty
+  * Granola
+  * Itsycal
+  * Karabiner-Elements
+  * Keynote
+  * logioptionsplus
+  * Maccy
+  * MacVim
+  * Magnet
+  * Monosnap
+  * Mouse Glide
+  * Obsidian
+  * OneDrive
+  * OrbStack
+  * Rectangle
+  * Shottr
+  * Slack
+  * Spotify
+  * Utilities
+  * Whatsapp
+  * Wispr Flow
+* /Applications/Utilities:
+  * Logi Options+ Driver Installer.bundle
+  * LogiPluginService
+  * MB-EngineHostApp-NCEP
