@@ -10,6 +10,34 @@ To install the dotfiles, simply link them. The easiest way is to use the install
 ./scripts/install-mac.sh
 ```
 
+# Vim & Neovim plugins
+
+The install script symlinks both configs (`~/.vimrc` and `~/.config/nvim/init.lua`),
+but plugins are managed separately. Each editor uses a different plugin manager, and
+both auto-bootstrap the manager on first launch.
+
+## Vim (vim-plug)
+
+```bash
+# Installs vim-plug automatically if missing, then installs all plugins
+vim +PlugInstall +qall
+```
+
+Or open `vim` and run `:PlugInstall`.
+
+## Neovim (Packer)
+
+Packer auto-clones itself on the first launch, so this is a three-step dance:
+
+```bash
+nvim        # 1. prints "Installing packer.nvim..." and clones it, then quit
+nvim        # 2. reopen so packer is on the runtime path
+            # 3. run :PackerSync inside nvim to install/sync all plugins
+```
+
+> Note: `neo-vim/int.lua` hardcodes the repo path (`/Users/jq/dotfiles/neo-vim/lua`),
+> so the Neovim config will break if the repo is moved.
+
 # Homebrew packages
 
 The `Brewfile` is a snapshot of all installed Homebrew taps, formulae, casks, and Mac App Store apps.
