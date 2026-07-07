@@ -1,0 +1,13 @@
+# Per-host config for the machine whose `hostname -s` is `dirty` (DirtLabs work laptop).
+# Auto-sourced by _zshrc via the _zshrc-<hostname> convention.
+
+# uv lives in ~/.local/bin; Homebrew must precede /bin so `env bash` picks up
+# bash 5 (macOS ships 3.2, which breaks scripts using `declare -A`).
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+
+# Worktrunk (worktree workflow) and direnv (per-repo .envrc → auto-activates
+# the uv-managed .venv so `python` resolves inside project dirs).
+if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
+
+eval "$(direnv hook zsh)"
