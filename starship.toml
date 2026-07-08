@@ -1,18 +1,19 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
-# Rainbow powerline: directory → git → language → clock as colored segments.
+# Rainbow powerline: rounded ends ( ) with solid  arrows
+# (powerlevel10k style) transitioning between the colored segments.
 format = """
-[](fg:color_dir)\
+[](fg:color_dir)\
 $directory\
-[](fg:color_dir bg:color_git)\
+[](fg:color_dir bg:color_git)\
 $git_branch\
 $git_status\
-[](fg:color_git bg:color_lang)\
+[](fg:color_git bg:color_lang)\
 $nodejs\
 $python\
-[](fg:color_lang bg:color_time)\
+[](fg:color_lang bg:color_time)\
 $time\
-[](fg:color_time)\
+[](fg:color_time)\
 $line_break\
 $character"""
 
@@ -69,7 +70,7 @@ style = "bold yellow"
 success_symbol = "[❯](bold green)"
 error_symbol = "[❯](bold red)"
 
-# Explicitly off — too noisy for this setup.
+# Explicitly off - too noisy for this setup.
 [docker_context]
 disabled = true
 
