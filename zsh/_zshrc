@@ -120,3 +120,8 @@ _config() {
   compadd -- reload $names
 }
 compdef _config config
+
+########################################
+# Starship prompt (config: ~/.config/starship.toml -> dotfiles/starship.toml)
+########################################
+command -v starship >/dev/null && eval "$(starship init zsh)"

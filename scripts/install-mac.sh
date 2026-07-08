@@ -127,7 +127,8 @@ main() {
     print_status "Installing shell configs"
     ########################################
     create_symlink "$DOTFILES_ROOT/zsh/_zshrc" "$HOME/.zshrc" "Zsh configuration"
-    
+    create_symlink "$DOTFILES_ROOT/starship.toml" "$HOME/.config/starship.toml" "Starship prompt configuration"
+
     ########################################
     print_status "Installing git configs"
     ########################################

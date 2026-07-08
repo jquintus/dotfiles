@@ -1,0 +1,28 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Clock pinned to the right edge of the prompt line.
+right_format = "$time"
+
+add_newline = true
+
+[time]
+disabled = false
+time_format = "%H:%M:%S"
+format = "[ $time]($style)"
+style = "bold yellow"
+
+# How long the last command took. On by default above min_time; lowered here
+# so it shows for anything over half a second.
+[cmd_duration]
+min_time = 500
+format = "took [$duration]($style) "
+style = "bold red"
+
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+style = "bold cyan"
+
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
