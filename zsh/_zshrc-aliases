@@ -114,13 +114,6 @@ alias gs="git-spice"
 # source ~/.sshAliases.sh
 
 ########################################
-# Dirt Labs Aliases
-########################################
-alias localdb="psql postgresql://postgres:postgres@localhost:5432/dirtlabs-db"
-
-alias backend="cd ~/code/backend/"
-
-########################################
 # Hightouch Aliases
 ########################################
 
