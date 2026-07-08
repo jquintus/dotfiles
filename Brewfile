@@ -91,7 +91,7 @@ brew "pnpm"
 # Object-relational database system
 brew "postgresql@14"
 # Object-relational database system
-brew "postgresql@15"
+brew "postgresql@17"
 # Prettier daemon
 brew "prettierd"
 # Easily download, build, install, upgrade, and uninstall Python packages
@@ -108,6 +108,8 @@ brew "slack-mcp-server"
 brew "snow"
 # SOcket CAT: netcat on steroids
 brew "socat"
+# Cross-shell prompt for astronauts
+brew "starship"
 # Opinionated Lua code formatter
 brew "stylua"
 # Define your dev environment as code. For microservice apps on Kubernetes
@@ -140,6 +142,8 @@ cask "1password-cli"
 cask "alt-tab"
 # Terminal-based AI coding assistant
 cask "claude-code"
+# Meslo LG Nerd Font (patched with dev icons/glyphs)
+cask "font-meslo-lg-nerd-font"
 # Set of tools to manage resources and applications hosted on Google Cloud
 cask "gcloud-cli"
 # Terminal emulator that uses platform-native UI and GPU acceleration
