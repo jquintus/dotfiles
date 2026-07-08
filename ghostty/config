@@ -1,0 +1,4 @@
+# Ghostty terminal config. cmux uses Ghostty as its embedded terminal engine
+# and reads this file; apply changes with `cmux reload-config`.
+# Nerd Font so Starship prompt glyphs render.
+font-family = MesloLGS Nerd Font

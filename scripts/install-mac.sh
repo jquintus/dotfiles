@@ -129,6 +129,8 @@ main() {
     create_symlink "$DOTFILES_ROOT/zsh/_zshrc" "$HOME/.zshrc" "Zsh configuration"
     create_symlink "$DOTFILES_ROOT/starship.toml" "$HOME/.config/starship.toml" "Starship prompt configuration"
     create_symlink "$DOTFILES_ROOT/cmux/cmux.json" "$HOME/.config/cmux/cmux.json" "cmux terminal configuration"
+    # cmux reads terminal appearance (font, etc.) from Ghostty's config.
+    create_symlink "$DOTFILES_ROOT/ghostty/config" "$HOME/.config/ghostty/config" "Ghostty terminal configuration (used by cmux)"
 
     ########################################
     print_status "Installing git configs"
