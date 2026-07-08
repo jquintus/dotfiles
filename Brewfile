@@ -20,6 +20,8 @@ brew "caddy"
 brew "cloudflared"
 # GNU File, Shell, and Text utilities
 brew "coreutils"
+# Load/unload environment variables based on $PWD
+brew "direnv"
 # Pack, ship and run any application as a lightweight container
 brew "docker"
 # Isolated development environments using Docker
@@ -72,8 +74,6 @@ brew "macvim", link: false
 brew "miller"
 # Menu-driven communications program
 brew "minicom"
-# Polyglot runtime manager (asdf rust clone)
-brew "mise"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
 # Utility for managing network connections
@@ -130,6 +130,8 @@ brew "viu"
 brew "volta"
 # Executes a program periodically, showing output fullscreen
 brew "watch"
+# CLI for Git worktree management, designed for parallel AI agent workflows
+brew "worktrunk"
 # XML command-line utilities
 brew "xmlstarlet"
 # Command-line XML and HTML beautifier and content extractor
@@ -140,14 +142,14 @@ brew "yq"
 cask "1password-cli"
 # Enable Windows-like alt-tab
 cask "alt-tab"
+# Anthropic's official Claude AI desktop app
+cask "claude"
 # Terminal-based AI coding assistant
 cask "claude-code"
 # Meslo LG Nerd Font (patched with dev icons/glyphs)
 cask "font-meslo-lg-nerd-font"
 # Set of tools to manage resources and applications hosted on Google Cloud
 cask "gcloud-cli"
-# Terminal emulator that uses platform-native UI and GPU acceleration
-cask "ghostty"
 # Utility to hide menu bar items
 cask "hiddenbar"
 # Menu bar calendar
@@ -168,8 +170,10 @@ cask "openinterminal"
 cask "orbstack"
 # Administration and development platform for PostgreSQL
 cask "pgadmin4"
-# Command-line client for connecting to Snowflake
-cask "snowflake-snowsql"
+# Move and resize windows using keyboard shortcuts or snap areas
+cask "rectangle"
+cask "slack"
+cask "visual-studio-code"
 vscode "anthropic.claude-code"
 vscode "anysphere.cursorpyright"
 vscode "anysphere.remote-ssh"
