@@ -15,8 +15,6 @@ eval "$(direnv hook zsh)"
 ########################################
 # Dirt Labs Aliases
 ########################################
-alias localdb="psql postgresql://postgres:postgres@localhost:5432/dirtlabs-db"
-
 alias backend="cd ~/code/backend/"
 alias dirtdocs="cd ~/code/dirtdocs/"
 alias eng-docs="cd ~/code/eng-docs/"
