@@ -159,5 +159,39 @@ dbs() {
   [[ -n "$choice" ]] && eval "$choice"
 }
 
+# db_add — interactively add a DB connection: prompts for the details, appends a
+# pgalias line to db.local.zsh, and stores the password in ~/.pgpass (chmod 600).
+db_add() {
+  local name host port db user label color pass f esc
+  read "name?alias name (e.g. db_prod_ro): "
+  read "host?host: "
+  read "port?port [5432]: "; port=${port:-5432}
+  read "db?database: "
+  read "user?username: "
+  read "label?prompt label [$name]: "; label=${label:-$name}
+  color=$(printf 'green\ncyan\nyellow\nred\ndanger\n' | fzf --prompt="color> ") || return
+  read -s "pass?password (hidden; stored in ~/.pgpass, blank to skip): "; echo
+
+  [[ -z "$name" || -z "$host" || -z "$db" || -z "$user" ]] && {
+    echo "db_add: name, host, database and username are required" >&2; return 1; }
+
+  f=~/.config/zsh/db.local.zsh
+  mkdir -p "${f:h}"
+  if [[ -f "$f" ]] && grep -qE "^pgalias +$name " "$f"; then
+    echo "db_add: alias '$name' already exists in $f — remove it first" >&2; return 1
+  fi
+  printf 'pgalias %s %s "%s" -h %s -p %s -U %s -d %s\n' \
+    "$name" "$color" "$label" "$host" "$port" "$user" "$db" >> "$f"
+
+  if [[ -n "$pass" ]]; then
+    esc=${pass//\\/\\\\}; esc=${esc//:/\\:}   # escape \ and : for .pgpass
+    printf '%s:%s:%s:%s:%s\n' "$host" "$port" "$db" "$user" "$esc" >> ~/.pgpass
+    chmod 600 ~/.pgpass
+  fi
+
+  source "$f"
+  echo "added '$name'${pass:+ (+ ~/.pgpass)}. try:  $name   or   dbs"
+}
+
 # Real connections (hostnames/users) live OUTSIDE this public repo.
 [ -f ~/.config/zsh/db.local.zsh ] && source ~/.config/zsh/db.local.zsh
