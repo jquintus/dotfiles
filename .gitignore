@@ -1,1 +1,3 @@
 .DS_Store
+# gh CLI auth tokens — never commit
+gh/hosts.yml

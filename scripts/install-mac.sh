@@ -128,12 +128,19 @@ main() {
     ########################################
     create_symlink "$DOTFILES_ROOT/zsh/_zshrc" "$HOME/.zshrc" "Zsh configuration"
     create_symlink "$DOTFILES_ROOT/starship.toml" "$HOME/.config/starship.toml" "Starship prompt configuration"
+    create_symlink "$DOTFILES_ROOT/cmux/cmux.json" "$HOME/.config/cmux/cmux.json" "cmux terminal configuration"
 
     ########################################
     print_status "Installing git configs"
     ########################################
     create_symlink "$DOTFILES_ROOT/git/_gitconfig" "$HOME/.gitconfig" "Git configuration"
-    
+
+    ########################################
+    print_status "Installing GitHub CLI configs"
+    ########################################
+    # Only config.yml — hosts.yml holds the auth token and stays machine-local.
+    create_symlink "$DOTFILES_ROOT/gh/config.yml" "$HOME/.config/gh/config.yml" "GitHub CLI configuration"
+
     ########################################
     print_status "Installing PostgreSQL configs"
     ########################################
