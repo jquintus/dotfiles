@@ -80,6 +80,7 @@ unset _host_zshrc _host
 #   config dirty      edit zsh/_zshrc-dirty   (this host's config)
 #   config aliases    edit zsh/_zshrc-aliases
 #   config zshrc      edit the base rc
+#   config db         edit ~/.config/zsh/db.local.zsh (local DB connections)
 #   config -reload    re-source ~/.zshrc
 # Defined after compinit so `compdef` is available for completion.
 ########################################
@@ -90,11 +91,14 @@ config() {
       source ~/.zshrc && echo "reloaded ~/.zshrc" ;;
     "")
       local pick
-      pick=$(command ls "$zdir" | grep -E '^_zshrc' | grep -v zwc |
+      pick=$( { command ls -d "$zdir"/_zshrc* 2>/dev/null | grep -v zwc
+        [[ -f ~/.config/zsh/db.local.zsh ]] && echo ~/.config/zsh/db.local.zsh; } |
         fzf --prompt='config ❯ ' --height=40% --reverse) &&
-        "${EDITOR:-nvim}" "$zdir/$pick" ;;
+        "${EDITOR:-nvim}" "$pick" ;;
     zshrc|rc)
       "${EDITOR:-nvim}" "$zdir/_zshrc" ;;
+    db)
+      "${EDITOR:-nvim}" ~/.config/zsh/db.local.zsh ;;
     *)
       local f="$zdir/_zshrc-$1"
       if [[ -f "$f" ]]; then
@@ -112,7 +116,7 @@ _config() {
   local -a names
   names=(${(f)"$(command ls "$zdir" | grep -E '^_zshrc' | grep -v zwc |
     sed -E 's/^_zshrc-//; s/^_zshrc$/zshrc/')"})
-  compadd -- reload $names
+  compadd -- reload db $names
 }
 compdef _config config
 
