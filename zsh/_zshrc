@@ -73,11 +73,14 @@ autoload -Uz compinit && compinit -C
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
 ########################################
-# Per-host config: source zsh/_zshrc-<hostname> if it exists
+# Per-host config: source zsh/_zshrc-<hostname> if it exists.
+# Use scutil LocalHostName on macOS — `hostname` reflects the transient DHCP
+# name and drifts with the network; LocalHostName is the stable machine name.
 ########################################
-_host_zshrc=~/dotfiles/zsh/_zshrc-$(hostname -s)
+_host=$(scutil --get LocalHostName 2>/dev/null || hostname -s)
+_host_zshrc=~/dotfiles/zsh/_zshrc-$_host
 [[ -f "$_host_zshrc" ]] && source "$_host_zshrc"
-unset _host_zshrc
+unset _host_zshrc _host
 
 ########################################
 # config: open/reload shell config files (convention: zsh/_zshrc-<name>)
