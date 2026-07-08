@@ -129,3 +129,35 @@ kns() {
 
 alias kubectx=kctx
 alias kubens=kns
+
+########################################
+# Database connections
+########################################
+# pgalias <name> <color> <label> <psql args...>
+#   Defines <name> to run psql with a color-coded prompt so you always know
+#   which DB you're in. Colors: green, cyan, yellow, red, danger (bold red).
+#   NEVER put a password here — psql reads ~/.pgpass (chmod 600).
+pgalias() {
+  local name=$1 color=$2 label=$3; shift 3
+  local code
+  case "$color" in
+    green)  code='32'   ;;
+    cyan)   code='36'   ;;
+    yellow) code='33'   ;;
+    red)    code='31'   ;;
+    danger) code='1;31' ;;
+    *)      code='0'    ;;
+  esac
+  alias "$name=psql $* --set=PROMPT1='%[%033[${code}m%][${label}] %/%R%#%[%033[0m%]'"
+}
+
+# dbs — fzf picker over every psql alias, for when you forget the exact name.
+dbs() {
+  local aliases choice
+  aliases=$(alias | awk -F'[ =]' '/psql / { gsub(/alias /, "", $1); print $1 }')
+  choice=$(printf '%s\n' "$aliases" | fzf --height 10 --border --prompt="Select DB: ")
+  [[ -n "$choice" ]] && eval "$choice"
+}
+
+# Real connections (hostnames/users) live OUTSIDE this public repo.
+[ -f ~/.config/zsh/db.local.zsh ] && source ~/.config/zsh/db.local.zsh
