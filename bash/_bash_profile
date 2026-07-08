@@ -5,7 +5,7 @@ export PATH="/usr/local/opt/mysql@5.7/bin:$PATH:/Applications/calibre.app/Conten
 # Command Line Aliases
 # Some of these came from https://gist.github.com/natelandau/10654137
 ########################################
-source ~/.aliases
+source ~/dotfiles/zsh/_zshrc-aliases
 
 trash () { command mv "$@" ~/.Trash ; }     # trash:        Moves a file to the MacOS trash
 

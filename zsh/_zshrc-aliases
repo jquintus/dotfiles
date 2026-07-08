@@ -1,7 +1,7 @@
 export PATH="/usr/local/opt/mysql@5.7/bin:$PATH:/Applications/calibre.app/Contents/console.app/Contents/MacOS/:~/bin"
 # export CODE="/Users/jq/code"
 
-alias bpr="source ~/.aliases"
+alias bpr="source ~/dotfiles/zsh/_zshrc-aliases"
 
 ########################################
 # Command Line Aliases
@@ -19,9 +19,9 @@ alias dl='pushd ~/Downloads'
 alias home='~'
 alias profile='vim ~/.bash_profile'
 alias gprofile='gvim ~/.bash_profile'
-alias aliases='nvim ~/.aliases'
-alias galiases='gvim ~/.aliases'
-alias zshrc='vim ~/.bash_zshrc'
+alias aliases='config aliases'
+alias galiases='gvim ~/dotfiles/zsh/_zshrc-aliases'
+alias zshrc='config zshrc'
 alias gzshrc='gvim ~/.zshrc'
 alias :wq='exit'
 
@@ -114,6 +114,13 @@ alias gs="git-spice"
 # source ~/.sshAliases.sh
 
 ########################################
+# Dirt Labs Aliases
+########################################
+alias localdb="psql postgresql://postgres:postgres@localhost:5432/dirtlabs-db"
+
+alias backend="cd ~/code/backend/"
+
+########################################
 # Hightouch Aliases
 ########################################
 
@@ -125,7 +132,7 @@ alias ht='pushd ~/code/Hightouch'
 alias infra='pushd ~/code/infra'
 
 # DB Aliases
-alias localdb="psql -h localhost -p 5432 -U htu -d htdb --set=PROMPT1='%[%033[32m%][localhost] %/%R%#%[%033[0m%]'"
+#alias localdb="psql -h localhost -p 5432 -U htu -d htdb --set=PROMPT1='%[%033[32m%][localhost] %/%R%#%[%033[0m%]'"
 alias localdb_sync_queues="psql -h localhost -p 5434 -U sync_queues -d sync_queues --set=PROMPT1='%[%033[32m%][localhost sync queues] %/%R%#%[%033[0m%]'"
 alias sandboxdb="psql -h hightouch-sync-2.chqia4iykr0y.us-east-1.rds.amazonaws.com -p 5432 -U postgres -d postgres --set=PROMPT1='%[%033[32m%][sandbox] %/%R%#%[%033[0m%]'"
 alias replica="psql -h production-htdb-replica -U readonly -d htdb --set=PROMPT1='%[%033[33m%][replica] %/%R%#%[%033[0m%]'"

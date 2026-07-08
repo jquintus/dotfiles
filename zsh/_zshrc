@@ -1,8 +1,5 @@
-# source ~/.zshrc-antigen
-# source /usr/local/share/antigen/antigen.zsh
-
 # Josh starts here
-source ~/.aliases
+source ~/dotfiles/zsh/_zshrc-aliases
 export PATH="$HOME/bin:$PATH"
 export EDITOR=nvim 
 
@@ -31,20 +28,6 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 # Makes working with git from the command line 
 # quicker by substituting numeric shortcuts for files.
 # eval "$(scmpuff init -s)"   # https://github.com/mroth/scmpuff
-
-
-########################################
-# Power Level 9K Prompt
-# https://github.com/bhilburn/powerlevel9k#prompt-customization
-########################################
-POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND='clear'
-POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND='yellow'
-
-# Default: (status root_indicator background_jobs history time)	
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(command_execution_time vcs status root_indicator background_jobs time)
-
-# Default: (context dir vcs)
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(virtualenv dir)
 
 ########################################
 # NVM Settings
@@ -97,3 +80,45 @@ export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 _host_zshrc=~/dotfiles/zsh/_zshrc-$(hostname -s)
 [[ -f "$_host_zshrc" ]] && source "$_host_zshrc"
 unset _host_zshrc
+
+########################################
+# config: open/reload shell config files (convention: zsh/_zshrc-<name>)
+#   config            fzf picker over all config files
+#   config dirty      edit zsh/_zshrc-dirty   (this host's config)
+#   config aliases    edit zsh/_zshrc-aliases
+#   config zshrc      edit the base rc
+#   config -reload    re-source ~/.zshrc
+# Defined after compinit so `compdef` is available for completion.
+########################################
+config() {
+  local zdir=~/dotfiles/zsh
+  case "$1" in
+    -reload|--reload|reload)
+      source ~/.zshrc && echo "reloaded ~/.zshrc" ;;
+    "")
+      local pick
+      pick=$(command ls "$zdir" | grep -E '^_zshrc' | grep -v zwc |
+        fzf --prompt='config ❯ ' --height=40% --reverse) &&
+        "${EDITOR:-nvim}" "$zdir/$pick" ;;
+    zshrc|rc)
+      "${EDITOR:-nvim}" "$zdir/_zshrc" ;;
+    *)
+      local f="$zdir/_zshrc-$1"
+      if [[ -f "$f" ]]; then
+        "${EDITOR:-nvim}" "$f"
+      else
+        print -u2 "config: no config named '$1'  ($f)"
+        print -u2 "try: config           (picker)   |   config -reload"
+        return 1
+      fi ;;
+  esac
+}
+
+_config() {
+  local zdir=~/dotfiles/zsh
+  local -a names
+  names=(${(f)"$(command ls "$zdir" | grep -E '^_zshrc' | grep -v zwc |
+    sed -E 's/^_zshrc-//; s/^_zshrc$/zshrc/')"})
+  compadd -- reload $names
+}
+compdef _config config

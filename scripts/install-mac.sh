@@ -127,7 +127,6 @@ main() {
     print_status "Installing shell configs"
     ########################################
     create_symlink "$DOTFILES_ROOT/zsh/_zshrc" "$HOME/.zshrc" "Zsh configuration"
-    create_symlink "$DOTFILES_ROOT/_aliases" "$HOME/.aliases" "Shell aliases"
     
     ########################################
     print_status "Installing git configs"
