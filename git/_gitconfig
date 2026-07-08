@@ -2,7 +2,7 @@
     helper = osxkeychain
 [user]
     name = Josh Quintus
-    email = josh.quintus@hightouch.io
+    email = josh@dirtlabs.ai
 [alias]
     unstage = reset HEAD --
     unadd = reset
@@ -55,3 +55,9 @@
 	prune = true
 [init]
 	defaultBranch = main
+[credential "https://github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
