@@ -61,8 +61,6 @@ zstyle :bracketed-paste-magic paste-finish pastefinish
 ########################################
 export LESS="-F -X $LESS"
 
-export JAVA_HOME=`/usr/libexec/java_home -v 8`
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/amazon-corretto-8.jdk/Contents/Home
 export AWS_PROFILE=admin
 export AWS_REGION=us-east-1
 
