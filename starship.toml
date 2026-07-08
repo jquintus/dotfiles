@@ -1,28 +1,83 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
-# Clock pinned to the right edge of the prompt line.
-right_format = "$time"
+# Rainbow powerline: directory → git → language → clock as colored segments.
+format = """
+[](fg:color_dir)\
+$directory\
+[](fg:color_dir bg:color_git)\
+$git_branch\
+$git_status\
+[](fg:color_git bg:color_lang)\
+$nodejs\
+$python\
+[](fg:color_lang bg:color_time)\
+$time\
+[](fg:color_time)\
+$line_break\
+$character"""
+
+# Command duration hugs the right edge (only shows for commands over min_time).
+right_format = "$cmd_duration"
 
 add_newline = true
+palette = 'rainbow'
+
+[palettes.rainbow]
+color_dir = '#DA627D'
+color_git = '#FCA17D'
+color_lang = '#A3BE8C'
+color_time = '#86BBD8'
+color_fg = '#1C1C1C'
+
+[directory]
+format = "[  $path ]($style)"
+style = "fg:color_fg bg:color_dir"
+truncation_length = 3
+truncate_to_repo = true
+
+[git_branch]
+symbol = " "
+format = "[ $symbol$branch ]($style)"
+style = "fg:color_fg bg:color_git"
+
+[git_status]
+format = "[$all_status$ahead_behind ]($style)"
+style = "fg:color_fg bg:color_git"
+
+[nodejs]
+symbol = " "
+format = "[ $symbol$version ]($style)"
+style = "fg:color_fg bg:color_lang"
+
+[python]
+symbol = " "
+format = "[ $symbol$version ]($style)"
+style = "fg:color_fg bg:color_lang"
 
 [time]
 disabled = false
 time_format = "%H:%M:%S"
-format = "[ $time]($style)"
-style = "bold yellow"
+format = "[  $time ]($style)"
+style = "fg:color_fg bg:color_time"
 
-# How long the last command took. On by default above min_time; lowered here
-# so it shows for anything over half a second.
 [cmd_duration]
 min_time = 500
-format = "took [$duration]($style) "
-style = "bold red"
-
-[directory]
-truncation_length = 3
-truncate_to_repo = true
-style = "bold cyan"
+format = "took [ $duration]($style)"
+style = "bold yellow"
 
 [character]
 success_symbol = "[❯](bold green)"
 error_symbol = "[❯](bold red)"
+
+# Explicitly off — too noisy for this setup.
+[docker_context]
+disabled = true
+
+[package]
+disabled = true
+
+[aws]
+disabled = true
+
+[gcloud]
+disabled = true
