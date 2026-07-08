@@ -80,6 +80,8 @@ brew "neovim"
 brew "netcat"
 # Development kit for the Java programming language
 brew "openjdk"
+# Sound effects and desktop notifications for AI coding agents
+brew "peon-ping"
 # PostgreSQL syntax beautifier
 brew "pgformatter"
 # PGP packet visualizer
