@@ -154,6 +154,7 @@ main() {
     # Per-skill symlinks — ~/.claude/skills is shared (other tools install skills there),
     # so link individual skills rather than the whole directory.
     create_symlink "$DOTFILES_ROOT/.claude/skills/dictionary/SKILL.md" "$HOME/.claude/skills/dictionary/SKILL.md" "dictionary skill"
+    create_symlink "$DOTFILES_ROOT/.claude/skills/define/SKILL.md" "$HOME/.claude/skills/define/SKILL.md" "define skill"
 
     ########################################
     print_status "Installing bin scripts"
