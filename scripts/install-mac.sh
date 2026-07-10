@@ -147,7 +147,14 @@ main() {
     print_status "Installing PostgreSQL configs"
     ########################################
     create_symlink "$DOTFILES_ROOT/_psqlrc" "$HOME/.psqlrc" "PostgreSQL configuration"
-    
+
+    ########################################
+    print_status "Installing Claude Code skills"
+    ########################################
+    # Per-skill symlinks — ~/.claude/skills is shared (other tools install skills there),
+    # so link individual skills rather than the whole directory.
+    create_symlink "$DOTFILES_ROOT/.claude/skills/dictionary/SKILL.md" "$HOME/.claude/skills/dictionary/SKILL.md" "dictionary skill"
+
     ########################################
     print_status "Installing bin scripts"
     ########################################

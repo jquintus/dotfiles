@@ -124,3 +124,9 @@ compdef _config config
 # Starship prompt (config: ~/.config/starship.toml -> dotfiles/starship.toml)
 ########################################
 command -v starship >/dev/null && eval "$(starship init zsh)"
+
+
+########################################
+# Aliases
+########################################
+readme() { glow -p "${1:-README.md}"; }

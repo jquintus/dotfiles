@@ -15,6 +15,8 @@ eval "$(direnv hook zsh)"
 ########################################
 # Dirt Labs Aliases
 ########################################
+
+# Repos
 alias backend="cd ~/code/backend/"
 alias dirtdocs="cd ~/code/dirtdocs/"
 alias eng-docs="cd ~/code/eng-docs/"
@@ -22,3 +24,18 @@ alias eng-tools="cd ~/code/eng-tools/"
 alias infra="cd ~/code/infra/"
 alias product="cd ~/code/product/"
 alias web="cd ~/code/web/"
+
+# Run tests
+# Usage: 
+#          pt
+#          pt [path to test file]
+pt() {
+  local target="."
+  if [[ -n "$1" && "$1" != -* ]]; then
+    target="$1"; shift
+  fi
+  local cmd=(uv run pytest "$target" --create-db "$@")
+  print -r -- "+ ${cmd[*]}"
+  "${cmd[@]}"
+}
+
