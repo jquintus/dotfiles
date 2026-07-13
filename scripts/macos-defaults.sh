@@ -50,6 +50,10 @@ killall Finder 2>/dev/null || true
 print_status "Disabling UI sound effects"
 defaults write -g com.apple.sound.uiaudio.enabled -int 0
 
+# Mute the alert/beep volume (Sound > Alert volume slider to zero).
+print_status "Muting alert volume"
+defaults write -g com.apple.sound.beep.volume -float 0
+
 # Mute the startup chime. Stored in firmware (NVRAM), so this needs sudo.
 print_status "Muting startup chime (requires sudo)"
 sudo nvram StartupMute=%01
