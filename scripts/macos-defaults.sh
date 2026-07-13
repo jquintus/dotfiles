@@ -35,6 +35,10 @@ print_status "Applying macOS defaults..."
 print_status "Disabling press-and-hold (enables key repeat)"
 defaults write -g ApplePressAndHoldEnabled -bool false
 
+# Disable double-space -> period (Keyboard > Text Input > "Add period with double-space").
+print_status "Disabling double-space period substitution"
+defaults write -g NSAutomaticPeriodSubstitutionEnabled -bool false
+
 ########################################
 # Finder
 ########################################
