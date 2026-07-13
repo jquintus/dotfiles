@@ -43,4 +43,15 @@ print_status "Showing Finder path bar"
 defaults write com.apple.finder ShowPathbar -bool true
 killall Finder 2>/dev/null || true
 
+########################################
+# Sound
+########################################
+# Disable UI sound effects (Sound > Play user interface sound effects).
+print_status "Disabling UI sound effects"
+defaults write -g com.apple.sound.uiaudio.enabled -int 0
+
+# Mute the startup chime. Stored in firmware (NVRAM), so this needs sudo.
+print_status "Muting startup chime (requires sudo)"
+sudo nvram StartupMute=%01
+
 print_status "Done. Some changes require a logout/restart to take effect."
