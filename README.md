@@ -10,6 +10,18 @@ To install the dotfiles, simply link them. The easiest way is to use the install
 ./scripts/install-mac.sh
 ```
 
+# macOS system defaults
+
+`install-mac.sh` only symlinks dotfiles. System preferences (`defaults write`)
+live in a separate script so linking never mutates OS state. Run it explicitly
+on a new machine (safe to re-run; each setting is idempotent):
+
+```bash
+./scripts/macos-defaults.sh
+```
+
+Some changes require a logout/restart to take effect.
+
 # Vim & Neovim plugins
 
 The install script symlinks both configs (`~/.vimrc` and `~/.config/nvim/init.lua`),
