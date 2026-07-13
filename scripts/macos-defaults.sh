@@ -35,4 +35,12 @@ print_status "Applying macOS defaults..."
 print_status "Disabling press-and-hold (enables key repeat)"
 defaults write -g ApplePressAndHoldEnabled -bool false
 
+########################################
+# Finder
+########################################
+# Show the path bar at the bottom of Finder windows (View > Show Path Bar).
+print_status "Showing Finder path bar"
+defaults write com.apple.finder ShowPathbar -bool true
+killall Finder 2>/dev/null || true
+
 print_status "Done. Some changes require a logout/restart to take effect."
