@@ -149,6 +149,13 @@ main() {
     create_symlink "$DOTFILES_ROOT/_psqlrc" "$HOME/.psqlrc" "PostgreSQL configuration"
 
     ########################################
+    print_status "Installing VS Code user settings"
+    ########################################
+    # User settings live under Application Support (not a dotfile in $HOME).
+    # Symlinking means UI setting changes write straight back to the repo.
+    create_symlink "$DOTFILES_ROOT/vscode/settings.json" "$HOME/Library/Application Support/Code/User/settings.json" "VS Code user settings"
+
+    ########################################
     print_status "Installing Claude Code skills"
     ########################################
     # Per-skill symlinks — ~/.claude/skills is shared (other tools install skills there),
