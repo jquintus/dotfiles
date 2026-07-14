@@ -22,6 +22,25 @@ on a new machine (safe to re-run; each setting is idempotent):
 
 Some changes require a logout/restart to take effect.
 
+# App user configs (VS Code, Claude Code)
+
+Some apps keep their user config outside `$HOME` (e.g. under `Application
+Support`). Those live in their own repo dirs and are symlinked into place by
+`install-mac.sh`:
+
+| Repo dir              | Symlinked to                                                  |
+| --------------------- | ------------------------------------------------------------- |
+| `vscode/settings.json` | `~/Library/Application Support/Code/User/settings.json`      |
+| `claude/settings.json` | `~/.claude/settings.json`                                     |
+
+Because they're symlinks, editing the app's settings (via its UI or by hand)
+writes **straight back to this repo**. So after changing a setting, remember to
+`git commit && git push` here — the diff shows up under `vscode/` or `claude/`.
+
+Note: the Claude source dir is `claude/`, **not** `.claude/`, on purpose — a
+`.claude/settings.json` would be read as *project* settings whenever Claude runs
+in this repo (double-registering hooks). Keep it as `claude/`.
+
 # Vim & Neovim plugins
 
 The install script symlinks both configs (`~/.vimrc` and `~/.config/nvim/init.lua`),
