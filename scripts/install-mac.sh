@@ -156,6 +156,13 @@ main() {
     create_symlink "$DOTFILES_ROOT/vscode/settings.json" "$HOME/Library/Application Support/Code/User/settings.json" "VS Code user settings"
 
     ########################################
+    print_status "Installing Claude Code settings"
+    ########################################
+    # User settings (theme, permissions, hooks). Source lives in claude/ (not
+    # .claude/) so it isn't picked up as project settings when working in this repo.
+    create_symlink "$DOTFILES_ROOT/claude/settings.json" "$HOME/.claude/settings.json" "Claude Code user settings"
+
+    ########################################
     print_status "Installing Claude Code skills"
     ########################################
     # Per-skill symlinks — ~/.claude/skills is shared (other tools install skills there),
