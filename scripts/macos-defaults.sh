@@ -62,4 +62,17 @@ defaults write -g com.apple.sound.beep.volume -float 0
 print_status "Muting startup chime (requires sudo)"
 sudo nvram StartupMute=%01
 
+########################################
+# Default apps
+########################################
+# Open .csv files in MacVim. Uses `duti` to set the LaunchServices handler for
+# the CSV UTI. `duti` is brew-installed and not guaranteed present, so skip
+# (with a warning) rather than fail if it's missing.
+if command -v duti >/dev/null 2>&1; then
+    print_status "Setting MacVim as default handler for .csv files"
+    duti -s org.vim.MacVim public.comma-separated-values-text all
+else
+    print_warning "duti not found; skipping .csv -> MacVim association (brew install duti)"
+fi
+
 print_status "Done. Some changes require a logout/restart to take effect."
