@@ -70,6 +70,8 @@ brew "libpq"
 brew "libxml2"
 # GUI for vim, made for macOS
 brew "macvim", link: false
+# Tools to read/export data from MS Access .mdb/.accdb databases
+brew "mdbtools"
 # Like sed, awk, cut, join & sort for name-indexed data such as CSV
 brew "miller"
 # Menu-driven communications program
@@ -160,6 +162,8 @@ cask "itsycal"
 cask "keepingyouawake"
 # Screenshot and annotation tool
 cask "ksnip"
+# Free cross-platform office suite
+cask "libreoffice"
 # Clipboard manager
 cask "maccy"
 # Text editor
@@ -168,6 +172,8 @@ cask "macvim-app"
 cask "neovide-app"
 # Reverse proxy, secure introspectable tunnels to localhost
 cask "ngrok"
+# Knowledge base and Markdown note editor (the ~/notes vault)
+cask "obsidian"
 # Finder Toolbar app to open the current directory in Terminal or Editor
 cask "openinterminal"
 # Replacement for Docker Desktop
@@ -177,6 +183,8 @@ cask "pgadmin4"
 # Move and resize windows using keyboard shortcuts or snap areas
 cask "rectangle"
 cask "slack"
+# Music streaming
+cask "spotify"
 cask "visual-studio-code"
 vscode "anthropic.claude-code"
 vscode "anysphere.cursorpyright"
