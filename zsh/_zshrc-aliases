@@ -62,13 +62,12 @@ alias greb='grep'
 ########################################
 # alias cat='ccat'         # ccat adds syntax highlighting to the output
 # alias cat='bat'            # bat adds syntax highlighting and formatting to the output
+readme() { glow -p "${1:-README.md}"; }
 
 ########################################
 # Make my mac more windowsy
 ########################################
-
 alias ex="open"
-
 
 ########################################
 # Git Stuffs
@@ -82,6 +81,7 @@ alias pull="git pull"
 alias push="git pushup"
 alias pushup="git pushup"
 alias c="git add -A && git commit"
+alias branches="git branches"
 
 alias s="git status"
 

@@ -13,6 +13,12 @@ if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)
 eval "$(direnv hook zsh)"
 
 ########################################
+# AWS CLI settings
+########################################
+export AWS_PROFILE=admin
+export AWS_REGION=us-east-1
+
+########################################
 # Dirt Labs Aliases
 ########################################
 
@@ -25,10 +31,13 @@ alias infra="cd ~/code/infra/"
 alias product="cd ~/code/product/"
 alias web="cd ~/code/web/"
 
+########################################
 # Run tests
+########################################
 # Usage: 
 #          pt
 #          pt [path to test file]
+########################################
 pt() {
   local target="."
   if [[ -n "$1" && "$1" != -* ]]; then
@@ -39,3 +48,7 @@ pt() {
   "${cmd[@]}"
 }
 
+
+alias localdb="db_local"
+
+alias sql='cd ~/workspace/sql && SVIM=1 nvim'

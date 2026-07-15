@@ -11,7 +11,9 @@ export EDITOR=nvim
 #   iterm2_set_user_var gitBranch "$(__git_ps1)"
 # }
 
-#source /usr/local/etc/bash_completion.d/git-prompt.sh
+# Make # comments in the shell
+setopt interactive_comments
+
 GIT_PS1_SHOWDIRTYSTATE=true
 
 # Set CLICOLOR if you want Ansi Colors in iTerm2 
@@ -52,9 +54,6 @@ zstyle :bracketed-paste-magic paste-finish pastefinish
 # https://stackoverflow.com/questions/2183900/how-do-i-prevent-git-diff-from-using-a-pager
 ########################################
 export LESS="-F -X $LESS"
-
-export AWS_PROFILE=admin
-export AWS_REGION=us-east-1
 
 ########################################
 # peon-ping quick controls
@@ -125,8 +124,3 @@ compdef _config config
 ########################################
 command -v starship >/dev/null && eval "$(starship init zsh)"
 
-
-########################################
-# Aliases
-########################################
-readme() { glow -p "${1:-README.md}"; }
