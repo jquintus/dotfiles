@@ -67,10 +67,17 @@ sudo nvram StartupMute=%01
 ########################################
 # Open .csv files in MacVim. Uses `duti` to set the LaunchServices handler for
 # the CSV UTI. `duti` is brew-installed and not guaranteed present, so skip
-# (with a warning) rather than fail if it's missing.
+# (with a warning) rather than fail if it's missing. The MacVim bundle id is
+# looked up at runtime rather than hardcoded, so this works regardless of how
+# MacVim was installed (and skips gracefully if it isn't).
 if command -v duti >/dev/null 2>&1; then
-    print_status "Setting MacVim as default handler for .csv files"
-    duti -s org.vim.MacVim public.comma-separated-values-text all
+    macvim_id=$(osascript -e 'id of app "MacVim"' 2>/dev/null || true)
+    if [[ -n "$macvim_id" ]]; then
+        print_status "Setting MacVim ($macvim_id) as default handler for .csv files"
+        duti -s "$macvim_id" public.comma-separated-values-text all
+    else
+        print_warning "MacVim not found; skipping .csv association"
+    fi
 else
     print_warning "duti not found; skipping .csv -> MacVim association (brew install duti)"
 fi
