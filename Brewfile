@@ -70,8 +70,6 @@ brew "libpq"
 brew "libxml2"
 # GUI for vim, made for macOS
 brew "macvim", link: false
-# Mac App Store command-line interface
-brew "mas"
 # Like sed, awk, cut, join & sort for name-indexed data such as CSV
 brew "miller"
 # Menu-driven communications program
@@ -158,6 +156,8 @@ cask "gcloud-cli"
 cask "hiddenbar"
 # Menu bar calendar
 cask "itsycal"
+# Prevents the system from going to sleep (Amphetamine alternative)
+cask "keepingyouawake"
 # Screenshot and annotation tool
 cask "ksnip"
 # Clipboard manager
@@ -209,5 +209,3 @@ vscode "usernamehw.errorlens"
 vscode "vitest.explorer"
 vscode "vscodevim.vim"
 npm "corepack"
-# Mac App Store apps (installed via mas; requires being signed into the App Store)
-mas "Amphetamine", id: 937984704
