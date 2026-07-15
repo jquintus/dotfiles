@@ -15,6 +15,7 @@
     "datadog.vscode.notification.suppressMcpMigrationMessage": true,
     "todo-tree.ripgrep.ripgrep": "/opt/homebrew/bin/rg",
     "cSpell.userWords": [
+        "actuals",
         "argjson",
         "arieswell",
         "ASGI",
@@ -35,7 +36,11 @@
         "propnums",
         "psql",
         "Quintus",
+        "ROLLUP",
+        "rollups",
+        "Sundance",
         "temporalio",
+        "upserts",
         "worktrees",
         "worktrunk",
         "Worktrunks"
