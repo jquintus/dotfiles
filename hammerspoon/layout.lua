@@ -11,9 +11,11 @@
 
 local M = {}
 
-local FULL  = hs.geometry.rect(0, 0, 1, 1)
-local LEFT  = hs.geometry.rect(0, 0, 0.5, 1)
-local RIGHT = hs.geometry.rect(0.5, 0, 0.5, 1)
+local FULL    = hs.geometry.rect(0, 0, 1, 1)
+local LEFT    = hs.geometry.rect(0, 0, 0.5, 1)
+local RIGHT   = hs.geometry.rect(0.5, 0, 0.5, 1)
+local LEFT23  = hs.geometry.rect(0, 0, 2 / 3, 1)     -- left two-thirds
+local RIGHT23 = hs.geometry.rect(1 / 3, 0, 2 / 3, 1) -- right two-thirds
 
 -- The built-in laptop display (falls back to the primary screen if the name
 -- match fails on some future macOS).
@@ -53,23 +55,24 @@ function M.apply()
   if n == 0 then
     -- Laptop only: work apps split the screen, Slack maximized behind them.
     rows = {
-      { "cmux",          nil, builtin, LEFT,  nil, nil },
-      { "Google Chrome", nil, builtin, RIGHT, nil, nil },
+      { "cmux",          nil, builtin, RIGHT, nil, nil },
+      { "Google Chrome", nil, builtin, LEFT,  nil, nil },
       { "Slack",         nil, builtin, FULL,  nil, nil },
     }
   elseif n == 1 then
     -- One external: work apps share the big screen, Slack on the laptop.
     rows = {
-      { "cmux",          nil, ext[1],  LEFT,  nil, nil },
-      { "Google Chrome", nil, ext[1],  RIGHT, nil, nil },
+      { "cmux",          nil, ext[1],  RIGHT, nil, nil },
+      { "Google Chrome", nil, ext[1],  LEFT,  nil, nil },
       { "Slack",         nil, builtin, FULL,  nil, nil },
     }
   else
-    -- Two (or more) externals: one work app per external, Slack on the laptop.
+    -- Two (or more) externals: cmux + Chrome overlap on the first external
+    -- (right 2/3 and left 2/3), Slack on the left 2/3 of the second external.
     rows = {
-      { "cmux",          nil, ext[1],  FULL, nil, nil },
-      { "Google Chrome", nil, ext[2],  FULL, nil, nil },
-      { "Slack",         nil, builtin, FULL, nil, nil },
+      { "cmux",          nil, ext[1], RIGHT23, nil, nil },
+      { "Google Chrome", nil, ext[1], LEFT23,  nil, nil },
+      { "Slack",         nil, ext[2], LEFT23,  nil, nil },
     }
   end
 
