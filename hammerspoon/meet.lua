@@ -107,6 +107,19 @@ function M.copyLink()
   hs.alert.show("🔗 Meet link copied")
 end
 
+-- Current mic state, for external readers such as the menu-bar indicator.
+-- Returns "muted", "live", or nil when there is no active call / control.
+function M.micState()
+  local js = "(function(){"
+    .. "var b=document.querySelector('[data-is-muted][aria-label*=microphone i]');"
+    .. "return b?b.getAttribute('data-is-muted'):'none';"
+    .. "})()"
+  local res = meetJS(js)
+  if res == "true" then return "muted"
+  elseif res == "false" then return "live" end
+  return nil
+end
+
 -- Bind all Meet hotkeys. mods defaults to Option+Ctrl+Shift (vim M-C-S; on
 -- macOS vim "M"/Meta = Option). Pass your own set if your macropad differs.
 function M.bind(mods)

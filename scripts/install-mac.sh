@@ -177,6 +177,7 @@ main() {
     # module by name, so both must land in ~/.hammerspoon/ (Lua's module path).
     create_symlink "$DOTFILES_ROOT/hammerspoon/init.lua" "$HOME/.hammerspoon/init.lua" "Hammerspoon main config"
     create_symlink "$DOTFILES_ROOT/hammerspoon/meet.lua" "$HOME/.hammerspoon/meet.lua" "Hammerspoon Google Meet module"
+    create_symlink "$DOTFILES_ROOT/hammerspoon/mutebar.lua" "$HOME/.hammerspoon/mutebar.lua" "Hammerspoon Meet mic menu-bar module"
 
     ########################################
     print_status "Installing bin scripts"
