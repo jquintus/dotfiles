@@ -4,6 +4,10 @@
 -- repo into ~/.hammerspoon/) and are loaded here via require. To add a feature,
 -- drop a new module next to this file and require it below.
 
+-- Load IPC so the `hs` command-line tool can drive Hammerspoon,
+-- e.g. `hs -c "hs.reload()"`. (Requires one manual reload to take effect.)
+require("hs.ipc")
+
 require("meet").bind() -- Google Meet global controls (see meet.lua)
 
 hs.alert.show("Hammerspoon config loaded")
