@@ -120,14 +120,14 @@ unset _host_zshrc _host
 #   config aliases    edit zsh/_zshrc-aliases
 #   config zshrc      edit the base rc
 #   config db         edit ~/.config/zsh/db.local.zsh (local DB connections)
-#   config -reload    re-source ~/.zshrc
+#   config -reload    fresh login shell (exec zsh -l), same as `rl`
 # Defined after compinit so `compdef` is available for completion.
 ########################################
 config() {
   local zdir=~/dotfiles/zsh
   case "$1" in
     -reload|--reload|reload)
-      source ~/.zshrc && echo "reloaded ~/.zshrc" ;;
+      exec zsh -l ;;
     "")
       local pick
       pick=$( { command ls -d "$zdir"/_zshrc* 2>/dev/null | grep -v zwc
@@ -160,12 +160,14 @@ _config() {
 compdef _config config
 
 ########################################
-# Fast reload: `rl` alias, or Ctrl-X Ctrl-R.
-# `exec zsh` replaces the shell with a fresh one (cleaner than re-sourcing;
-# combined with `typeset -U path` above, PATH stays deduped across reloads).
+# Fast reload: `rl`, Ctrl-X Ctrl-R, and `config -reload` are all identical.
+# `exec zsh -l` replaces this shell with a fresh login shell, exactly like
+# opening a new tab: re-runs /etc/zprofile (path_helper) so the system PATH is
+# restored, and typeset -U keeps it deduped. Trade-off: background jobs and any
+# interactively-defined vars/functions in this shell are discarded.
 ########################################
-alias rl='exec zsh'
-_reload_shell() { BUFFER='exec zsh'; zle accept-line }
+alias rl='exec zsh -l'
+_reload_shell() { BUFFER='exec zsh -l'; zle accept-line }
 zle -N _reload_shell
 bindkey '^X^R' _reload_shell
 
