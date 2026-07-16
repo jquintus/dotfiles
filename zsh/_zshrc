@@ -106,7 +106,9 @@ bindkey '^[.' insert-last-word
 # Use scutil LocalHostName on macOS — `hostname` reflects the transient DHCP
 # name and drifts with the network; LocalHostName is the stable machine name.
 ########################################
-_host=$(scutil --get LocalHostName 2>/dev/null || hostname -s)
+# Absolute path + zsh's built-in $HOST so this never depends on PATH being
+# fully set up (a `source ~/.zshrc` reload skips /etc/zprofile's path_helper).
+_host=$(/usr/sbin/scutil --get LocalHostName 2>/dev/null || echo ${HOST%%.*})
 _host_zshrc=~/dotfiles/zsh/_zshrc-$_host
 [[ -f "$_host_zshrc" ]] && source "$_host_zshrc"
 unset _host_zshrc _host
