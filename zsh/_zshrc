@@ -64,6 +64,43 @@ autoload -Uz compinit && compinit -C
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
 ########################################
+# History: bigger, deduped, shared across sessions, timestamped.
+########################################
+HISTSIZE=50000
+SAVEHIST=50000
+setopt EXTENDED_HISTORY        # record command timestamp + duration
+setopt SHARE_HISTORY           # share history live across all open sessions
+setopt HIST_IGNORE_ALL_DUPS    # drop older duplicates of a command
+setopt HIST_IGNORE_SPACE       # a leading space keeps a command out of history
+setopt HIST_REDUCE_BLANKS      # trim superfluous whitespace before saving
+setopt HIST_VERIFY             # let me edit a !history expansion before it runs
+setopt HIST_FIND_NO_DUPS       # skip dupes when cycling through searches
+
+########################################
+# fzf: fuzzy Ctrl-R history search (also Ctrl-T files, Alt-C cd).
+########################################
+[ -f /opt/homebrew/opt/fzf/shell/key-bindings.zsh ] && source /opt/homebrew/opt/fzf/shell/key-bindings.zsh
+[ -f /opt/homebrew/opt/fzf/shell/completion.zsh ]   && source /opt/homebrew/opt/fzf/shell/completion.zsh
+
+########################################
+# history-substring-search: type a prefix, then ↑/↓ to cycle matching commands.
+########################################
+if [ -f /opt/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh ]; then
+  source /opt/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+  zmodload zsh/terminfo 2>/dev/null
+  bindkey '^[[A' history-substring-search-up      # up arrow
+  bindkey '^[[B' history-substring-search-down    # down arrow
+  [[ -n "$terminfo[kcuu1]" ]] && bindkey "$terminfo[kcuu1]" history-substring-search-up    # up (application mode)
+  [[ -n "$terminfo[kcud1]" ]] && bindkey "$terminfo[kcud1]" history-substring-search-down  # down (application mode)
+fi
+
+########################################
+# insert-last-word: Esc-.  (also Alt-. if your terminal sends Option as Meta).
+# Repeat to walk back through earlier commands — the classic bash trick.
+########################################
+bindkey '^[.' insert-last-word
+
+########################################
 # Per-host config: source zsh/_zshrc-<hostname> if it exists.
 # Use scutil LocalHostName on macOS — `hostname` reflects the transient DHCP
 # name and drifts with the network; LocalHostName is the stable machine name.
