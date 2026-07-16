@@ -63,6 +63,21 @@ print_status "Muting startup chime (requires sudo)"
 sudo nvram StartupMute=%01
 
 ########################################
+# Google Chrome
+########################################
+# Allow AppleScript to run JavaScript in Chrome tabs (execute ... javascript).
+# This powers the Hammerspoon Google Meet hotkeys (hammerspoon/meet.lua).
+# Equivalent to Chrome menu: View > Developer > Allow JavaScript from Apple
+# Events. Takes effect on Chrome's next launch.
+#
+# NOTE: two related permissions are TCC-protected and CANNOT be scripted here;
+# grant them manually the first time Hammerspoon runs:
+#   - Hammerspoon: Accessibility (for global hotkeys)
+#   - Automation: Hammerspoon -> Google Chrome (to control Chrome)
+print_status "Allowing JavaScript from Apple Events in Chrome"
+defaults write com.google.Chrome AllowJavaScriptAppleEvents -bool true
+
+########################################
 # Default apps
 ########################################
 # Open .csv files in MacVim. Uses `duti` to set the LaunchServices handler for

@@ -154,6 +154,8 @@ cask "claude-code"
 cask "font-meslo-lg-nerd-font"
 # Set of tools to manage resources and applications hosted on Google Cloud
 cask "gcloud-cli"
+# Powerful macOS automation via Lua scripting and global hotkeys (Meet controls)
+cask "hammerspoon"
 # Utility to hide menu bar items
 cask "hiddenbar"
 # Menu bar calendar

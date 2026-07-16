@@ -171,6 +171,14 @@ main() {
     create_symlink "$DOTFILES_ROOT/.claude/skills/define/SKILL.md" "$HOME/.claude/skills/define/SKILL.md" "define skill"
 
     ########################################
+    print_status "Installing Hammerspoon config"
+    ########################################
+    # Main config plus one file per feature module. init.lua require()s each
+    # module by name, so both must land in ~/.hammerspoon/ (Lua's module path).
+    create_symlink "$DOTFILES_ROOT/hammerspoon/init.lua" "$HOME/.hammerspoon/init.lua" "Hammerspoon main config"
+    create_symlink "$DOTFILES_ROOT/hammerspoon/meet.lua" "$HOME/.hammerspoon/meet.lua" "Hammerspoon Google Meet module"
+
+    ########################################
     print_status "Installing bin scripts"
     ########################################
     # Create ~/bin directory if it doesn't exist
