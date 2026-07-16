@@ -10,5 +10,6 @@ require("hs.ipc")
 
 require("meet").bind()      -- Google Meet global controls (see meet.lua)
 require("mutebar").start()  -- Menu-bar Meet mic indicator (see mutebar.lua)
+require("layout").start()   -- Desktop layout chord (see layout.lua)
 
 hs.alert.show("Hammerspoon config loaded")
