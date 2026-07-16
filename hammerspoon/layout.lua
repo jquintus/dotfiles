@@ -5,8 +5,13 @@
 -- (0 / 1 / 2+). Also re-applies automatically when you plug or unplug a
 -- display. Loaded from init.lua via require("layout").start().
 --
--- To retune, edit the three tables in M.apply() below. Positions are fractional
--- unit rects on the target screen, so they are resolution-independent:
+-- With 0 externals (laptop only) cmux, Chrome, and Spotify go into native
+-- macOS full screen (as if you clicked the green traffic-light button, each in
+-- its own Space); Slack is maximized behind them. With 1+ externals those apps
+-- are pulled back out of full screen and tiled, so nothing stays green-dotted.
+--
+-- To retune, edit the tables in M.apply() below. Positions are fractional unit
+-- rects on the target screen, so they are resolution-independent:
 --   FULL = whole screen, LEFT = left half, RIGHT = right half.
 
 local M = {}
@@ -36,6 +41,10 @@ local function externalScreens(builtin)
   return ext
 end
 
+-- Apps that go native full screen (green traffic-light button) when the laptop
+-- is running standalone, and get pulled back out otherwise.
+local FULLSCREEN_APPS = { "cmux", "Google Chrome", "Spotify" }
+
 -- Keep only rows whose app is actually running, so hs.layout.apply never trips
 -- over a missing app.
 local function present(rows)
@@ -46,37 +55,69 @@ local function present(rows)
   return out
 end
 
+-- Put each named app's main window into native full screen (its own Space).
+local function enterFullScreen(names)
+  for _, name in ipairs(names) do
+    local app = hs.application.find(name)
+    local win = app and app:mainWindow()
+    if win and not win:isFullScreen() then win:setFullScreen(true) end
+  end
+end
+
+-- Pull each named app's main window out of native full screen. Returns true if
+-- any window was actually toggled (the exit animation takes ~1s, so callers
+-- that want to tile afterwards should wait for it to settle first).
+local function exitFullScreen(names)
+  local changed = false
+  for _, name in ipairs(names) do
+    local app = hs.application.find(name)
+    local win = app and app:mainWindow()
+    if win and win:isFullScreen() then
+      win:setFullScreen(false)
+      changed = true
+    end
+  end
+  return changed
+end
+
 function M.apply()
   local builtin = builtinScreen()
   local ext = externalScreens(builtin)
   local n = #ext
-  local rows
 
   if n == 0 then
-    -- Laptop only: work apps split the screen, Slack maximized behind them.
-    rows = {
-      { "cmux",          nil, builtin, RIGHT, nil, nil },
-      { "Google Chrome", nil, builtin, LEFT,  nil, nil },
-      { "Slack",         nil, builtin, FULL,  nil, nil },
-    }
-  elseif n == 1 then
-    -- One external: work apps share the big screen, Slack on the laptop.
-    rows = {
-      { "cmux",          nil, ext[1],  RIGHT, nil, nil },
-      { "Google Chrome", nil, ext[1],  LEFT,  nil, nil },
-      { "Slack",         nil, builtin, FULL,  nil, nil },
-    }
+    -- Laptop only: cmux, Chrome, Spotify go native full screen (green button),
+    -- Slack maximized behind them.
+    enterFullScreen(FULLSCREEN_APPS)
+    hs.layout.apply(present({
+      { "Slack", nil, builtin, FULL, nil, nil },
+    }))
   else
-    -- Two (or more) externals: cmux + Chrome overlap on the first external
-    -- (right 2/3 and left 2/3), Slack on the left 2/3 of the second external.
-    rows = {
-      { "cmux",          nil, ext[1], RIGHT23, nil, nil },
-      { "Google Chrome", nil, ext[1], LEFT23,  nil, nil },
-      { "Slack",         nil, ext[2], LEFT23,  nil, nil },
-    }
+    local rows
+    if n == 1 then
+      -- One external: work apps share the big screen, Slack on the laptop.
+      rows = {
+        { "cmux",          nil, ext[1],  RIGHT, nil, nil },
+        { "Google Chrome", nil, ext[1],  LEFT,  nil, nil },
+        { "Slack",         nil, builtin, FULL,  nil, nil },
+      }
+    else
+      -- Two (or more) externals: cmux + Chrome overlap on the first external
+      -- (right 2/3 and left 2/3), Slack on the left 2/3 of the second external.
+      rows = {
+        { "cmux",          nil, ext[1], RIGHT23, nil, nil },
+        { "Google Chrome", nil, ext[1], LEFT23,  nil, nil },
+        { "Slack",         nil, ext[2], LEFT23,  nil, nil },
+      }
+    end
+
+    -- Nothing stays green-dotted with externals attached. If we had to exit
+    -- full screen, wait for the animation to settle before tiling.
+    local changed = exitFullScreen(FULLSCREEN_APPS)
+    local tile = function() hs.layout.apply(present(rows)) end
+    if changed then hs.timer.doAfter(1.0, tile) else tile() end
   end
 
-  hs.layout.apply(present(rows))
   hs.alert.show("🪟 Layout: " .. (n == 0 and "laptop only" or (n .. " external")))
 end
 
