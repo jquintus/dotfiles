@@ -1,6 +1,6 @@
 -- Desktop layout chord.
 --
--- One chord (default Option+Ctrl+Shift+Return) arranges your windows into the
+-- One chord (default Option+Ctrl+Shift+F2) arranges your windows into the
 -- layout that matches however many external monitors are currently connected
 -- (0 / 1 / 2+). Also re-applies automatically when you plug or unplug a
 -- display. Loaded from init.lua via require("layout").start().
@@ -81,7 +81,7 @@ end
 -- mods defaults to Option+Ctrl+Shift (vim M-C-S; on macOS vim "M"/Meta = Option).
 function M.start(mods)
   mods = mods or { "alt", "ctrl", "shift" }
-  hs.hotkey.bind(mods, "return", M.apply) -- Arrange desktop (M-C-S-Return)
+  hs.hotkey.bind(mods, "f2", M.apply) -- Arrange desktop (M-C-S-F2)
 
   -- Re-apply after displays settle when a monitor is connected/disconnected.
   M.watcher = hs.screen.watcher.new(function()
