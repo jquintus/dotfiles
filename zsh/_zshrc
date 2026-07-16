@@ -1,4 +1,5 @@
 # Josh starts here
+typeset -U path PATH   # keep PATH entries unique (survives repeated reloads)
 source ~/dotfiles/zsh/_zshrc-aliases
 export PATH="$HOME/bin:$PATH"
 export EDITOR=nvim 
@@ -155,6 +156,16 @@ _config() {
   compadd -- reload db $names
 }
 compdef _config config
+
+########################################
+# Fast reload: `rl` alias, or Ctrl-X Ctrl-R.
+# `exec zsh` replaces the shell with a fresh one (cleaner than re-sourcing;
+# combined with `typeset -U path` above, PATH stays deduped across reloads).
+########################################
+alias rl='exec zsh'
+_reload_shell() { BUFFER='exec zsh'; zle accept-line }
+zle -N _reload_shell
+bindkey '^X^R' _reload_shell
 
 ########################################
 # Starship prompt (config: ~/.config/starship.toml -> dotfiles/starship.toml)
