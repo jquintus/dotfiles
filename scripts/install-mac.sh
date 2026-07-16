@@ -179,6 +179,7 @@ main() {
     create_symlink "$DOTFILES_ROOT/hammerspoon/meet.lua" "$HOME/.hammerspoon/meet.lua" "Hammerspoon Google Meet module"
     create_symlink "$DOTFILES_ROOT/hammerspoon/mutebar.lua" "$HOME/.hammerspoon/mutebar.lua" "Hammerspoon Meet mic menu-bar module"
     create_symlink "$DOTFILES_ROOT/hammerspoon/layout.lua" "$HOME/.hammerspoon/layout.lua" "Hammerspoon desktop layout module"
+    create_symlink "$DOTFILES_ROOT/hammerspoon/meeting.lua" "$HOME/.hammerspoon/meeting.lua" "Hammerspoon join-next-meeting module"
 
     ########################################
     print_status "Installing bin scripts"
