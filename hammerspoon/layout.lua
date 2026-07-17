@@ -22,13 +22,19 @@ local RIGHT   = hs.geometry.rect(0.5, 0, 0.5, 1)
 local LEFT23  = hs.geometry.rect(0, 0, 2 / 3, 1)     -- left two-thirds
 local RIGHT23 = hs.geometry.rect(1 / 3, 0, 2 / 3, 1) -- right two-thirds
 
--- The built-in laptop display (falls back to the primary screen if the name
--- match fails on some future macOS).
-local function builtinScreen()
+-- The built-in laptop display, or nil if it isn't currently attached (e.g. the
+-- lid is closed in clamshell mode, so macOS reports only the external).
+local function findBuiltin()
   for _, s in ipairs(hs.screen.allScreens()) do
     if s:name():lower():find("built") then return s end
   end
-  return hs.screen.primaryScreen()
+  return nil
+end
+
+-- Same, but falls back to the primary screen if the name match fails on some
+-- future macOS, so M.apply() always has a screen to target.
+local function builtinScreen()
+  return findBuiltin() or hs.screen.primaryScreen()
 end
 
 -- External displays, ordered left-to-right by physical position.
@@ -127,9 +133,24 @@ function M.start(mods)
   mods = mods or { "alt", "ctrl", "shift" }
   hs.hotkey.bind(mods, "f2", M.apply) -- Arrange desktop (M-C-S-F2)
 
-  -- Re-apply after displays settle when a monitor is connected/disconnected.
+  -- Track whether we've ever actually seen the built-in display, so a future
+  -- macOS that stops matching the "built" name doesn't make us skip forever.
+  M.sawBuiltin = findBuiltin() ~= nil
+
+  -- Re-apply after displays settle when a monitor is connected/disconnected,
+  -- EXCEPT when the built-in display vanishes while an external stays attached.
+  -- That's closing the laptop lid in clamshell mode: "I'm done for the day",
+  -- not "rearrange". Leave the windows where they are. (The M-C-S-F2 chord
+  -- still re-tiles on demand if you ever want a clamshell layout.)
   M.watcher = hs.screen.watcher.new(function()
-    hs.timer.doAfter(1.5, M.apply)
+    hs.timer.doAfter(1.5, function()
+      if findBuiltin() then
+        M.sawBuiltin = true
+      elseif M.sawBuiltin and #hs.screen.allScreens() > 0 then
+        return -- lid closed with a monitor still connected: don't touch windows
+      end
+      M.apply()
+    end)
   end)
   M.watcher:start()
 end
