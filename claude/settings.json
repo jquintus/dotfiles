@@ -1,7 +1,6 @@
 {
-  "theme": "dark",
   "permissions": {
-    "defaultMode": "acceptEdits"
+    "defaultMode": "auto"
   },
   "hooks": {
     "SessionStart": [
@@ -161,5 +160,21 @@
         ]
       }
     ]
-  }
+  },
+  "enabledPlugins": {
+    "eng-skills@dirtlabs": true,
+    "marketplace-tools@dirtlabs": true
+  },
+  "extraKnownMarketplaces": {
+    "dirtlabs": {
+      "source": {
+        "source": "github",
+        "repo": "DirtLabsAI/claude-plugins",
+        "path": "/Users/jq/code/claude-plugins"
+      },
+      "autoUpdate": true
+    }
+  },
+  "theme": "dark",
+  "todoFeatureEnabled": true
 }
