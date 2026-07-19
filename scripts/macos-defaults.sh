@@ -39,6 +39,24 @@ defaults write -g ApplePressAndHoldEnabled -bool false
 print_status "Disabling double-space period substitution"
 defaults write -g NSAutomaticPeriodSubstitutionEnabled -bool false
 
+# Disable the F11 "Show Desktop" shortcut that scatters all windows aside.
+# It's a macOS default (not stored in the user plist until overridden), so we
+# add explicit disabled entries. IDs 36 and 37 are the two Show Desktop hotkeys.
+print_status "Disabling F11 Show Desktop shortcut"
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 36 '{ enabled = 0; }'
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 37 '{ enabled = 0; }'
+# Apply the hotkey change without requiring a logout.
+/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u 2>/dev/null || true
+
+########################################
+# Menu bar
+########################################
+# Show seconds in the menu bar clock (Control Center > Clock > "Display the time
+# with seconds").
+print_status "Showing seconds in the menu bar clock"
+defaults write com.apple.menuextra.clock ShowSeconds -bool true
+killall SystemUIServer 2>/dev/null || true
+
 ########################################
 # Finder
 ########################################
