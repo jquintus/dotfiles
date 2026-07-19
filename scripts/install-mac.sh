@@ -109,77 +109,26 @@ main() {
     print_status "Dotfiles root: $DOTFILES_ROOT"
     
     ########################################
-    print_status "Installing NeoVim Configs"
+    print_status "Installing configs from manifest"
     ########################################
-    create_symlink "$DOTFILES_ROOT/neo-vim/int.lua" "$HOME/.config/nvim/init.lua" "NeoVim configuration"
-    
-    ########################################
-    print_status "Installing gVim configs"
-    ########################################
-    create_symlink "$DOTFILES_ROOT/vim/init.vim" "$HOME/.vimrc" "Vim configuration"
-    
-    ########################################
-    print_status "Installing tmux configs"
-    ########################################
-    create_symlink "$DOTFILES_ROOT/tmux/_tmux.conf" "$HOME/.tmux.conf" "tmux configuration"
-    
-    ########################################
-    print_status "Installing shell configs"
-    ########################################
-    create_symlink "$DOTFILES_ROOT/zsh/_zshrc" "$HOME/.zshrc" "Zsh configuration"
-    create_symlink "$DOTFILES_ROOT/starship.toml" "$HOME/.config/starship.toml" "Starship prompt configuration"
-    create_symlink "$DOTFILES_ROOT/cmux/cmux.json" "$HOME/.config/cmux/cmux.json" "cmux terminal configuration"
-    # cmux reads terminal appearance (font, etc.) from Ghostty's config.
-    create_symlink "$DOTFILES_ROOT/ghostty/config" "$HOME/.config/ghostty/config" "Ghostty terminal configuration (used by cmux)"
-
-    ########################################
-    print_status "Installing git configs"
-    ########################################
-    create_symlink "$DOTFILES_ROOT/git/_gitconfig" "$HOME/.gitconfig" "Git configuration"
-
-    ########################################
-    print_status "Installing GitHub CLI configs"
-    ########################################
-    # Only config.yml — hosts.yml holds the auth token and stays machine-local.
-    create_symlink "$DOTFILES_ROOT/gh/config.yml" "$HOME/.config/gh/config.yml" "GitHub CLI configuration"
-
-    ########################################
-    print_status "Installing PostgreSQL configs"
-    ########################################
-    create_symlink "$DOTFILES_ROOT/_psqlrc" "$HOME/.psqlrc" "PostgreSQL configuration"
-
-    ########################################
-    print_status "Installing VS Code user settings"
-    ########################################
-    # User settings live under Application Support (not a dotfile in $HOME).
-    # Symlinking means UI setting changes write straight back to the repo.
-    create_symlink "$DOTFILES_ROOT/vscode/settings.json" "$HOME/Library/Application Support/Code/User/settings.json" "VS Code user settings"
-
-    ########################################
-    print_status "Installing Claude Code settings"
-    ########################################
-    # User settings (theme, permissions, hooks). Source lives in claude/ (not
-    # .claude/) so it isn't picked up as project settings when working in this repo.
-    create_symlink "$DOTFILES_ROOT/claude/settings.json" "$HOME/.claude/settings.json" "Claude Code user settings"
-
-    ########################################
-    print_status "Installing Claude Code skills"
-    ########################################
-    # Per-skill symlinks — ~/.claude/skills is shared (other tools install skills there),
-    # so link individual skills rather than the whole directory.
-    create_symlink "$DOTFILES_ROOT/.claude/skills/dictionary/SKILL.md" "$HOME/.claude/skills/dictionary/SKILL.md" "dictionary skill"
-    create_symlink "$DOTFILES_ROOT/.claude/skills/define/SKILL.md" "$HOME/.claude/skills/define/SKILL.md" "define skill"
-
-    ########################################
-    print_status "Installing Hammerspoon config"
-    ########################################
-    # Main config plus one file per feature module. init.lua require()s each
-    # module by name, so both must land in ~/.hammerspoon/ (Lua's module path).
-    create_symlink "$DOTFILES_ROOT/hammerspoon/init.lua" "$HOME/.hammerspoon/init.lua" "Hammerspoon main config"
-    create_symlink "$DOTFILES_ROOT/hammerspoon/meet.lua" "$HOME/.hammerspoon/meet.lua" "Hammerspoon Google Meet module"
-    create_symlink "$DOTFILES_ROOT/hammerspoon/mutebar.lua" "$HOME/.hammerspoon/mutebar.lua" "Hammerspoon Meet mic menu-bar module"
-    create_symlink "$DOTFILES_ROOT/hammerspoon/layout.lua" "$HOME/.hammerspoon/layout.lua" "Hammerspoon desktop layout module"
-    create_symlink "$DOTFILES_ROOT/hammerspoon/meeting.lua" "$HOME/.hammerspoon/meeting.lua" "Hammerspoon join-next-meeting module"
+    # One-to-one symlinks are declared in scripts/links.manifest (source |
+    # target | description). Pipe-delimited because some targets contain
+    # spaces; parsed with bash builtins so linking never depends on yq/brew.
+    local manifest="$DOTFILES_ROOT/scripts/links.manifest"
+    if [[ ! -f "$manifest" ]]; then
+        print_error "Link manifest not found: $manifest"
+        return 1
+    fi
+    while IFS='|' read -r src dest desc; do
+        # Skip comments and blank lines
+        [[ "$src" =~ ^[[:space:]]*# || -z "${src// /}" ]] && continue
+        # Trim surrounding whitespace from each field
+        src="${src#"${src%%[![:space:]]*}"}";  src="${src%"${src##*[![:space:]]}"}"
+        dest="${dest#"${dest%%[![:space:]]*}"}"; dest="${dest%"${dest##*[![:space:]]}"}"
+        desc="${desc#"${desc%%[![:space:]]*}"}"; desc="${desc%"${desc##*[![:space:]]}"}"
+        # Expand a leading ~ to $HOME
+        create_symlink "$DOTFILES_ROOT/$src" "${dest/#\~/$HOME}" "$desc"
+    done < "$manifest"
 
     ########################################
     print_status "Installing bin scripts"

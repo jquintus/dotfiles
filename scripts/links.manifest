@@ -1,0 +1,46 @@
+# Symlink manifest for install-mac.sh
+#
+# Format:  source | target | description
+#   source      repo-relative path (from dotfiles root)
+#   target      destination; a leading ~ expands to $HOME
+#   description human label shown during install
+#
+# Pipe-delimited (not whitespace) because some targets contain spaces.
+# Blank lines and lines starting with # are ignored. Surrounding
+# whitespace around each field is trimmed, so align columns freely.
+#
+# NOTE: bin/* is NOT listed here. Those are linked by a glob loop in
+# install-mac.sh so new scripts get picked up automatically.
+
+# --- editors ---
+neo-vim/int.lua       | ~/.config/nvim/init.lua | NeoVim configuration
+vim/init.vim          | ~/.vimrc                | Vim configuration
+tmux/_tmux.conf       | ~/.tmux.conf            | tmux configuration
+
+# --- shell / prompt / terminals ---
+zsh/_zshrc            | ~/.zshrc                 | Zsh configuration
+starship.toml         | ~/.config/starship.toml  | Starship prompt configuration
+cmux/cmux.json        | ~/.config/cmux/cmux.json | cmux terminal configuration
+ghostty/config        | ~/.config/ghostty/config | Ghostty terminal configuration (used by cmux)
+
+# --- git / GitHub CLI (config.yml only; hosts.yml stays machine-local) ---
+git/_gitconfig        | ~/.gitconfig             | Git configuration
+gh/config.yml         | ~/.config/gh/config.yml  | GitHub CLI configuration
+
+# --- PostgreSQL ---
+_psqlrc               | ~/.psqlrc                | PostgreSQL configuration
+
+# --- app configs outside $HOME (edits write straight back to the repo) ---
+vscode/settings.json  | ~/Library/Application Support/Code/User/settings.json | VS Code user settings
+claude/settings.json  | ~/.claude/settings.json  | Claude Code user settings
+
+# --- Claude Code skills (per-file; ~/.claude/skills is shared) ---
+.claude/skills/dictionary/SKILL.md | ~/.claude/skills/dictionary/SKILL.md | dictionary skill
+.claude/skills/define/SKILL.md     | ~/.claude/skills/define/SKILL.md     | define skill
+
+# --- Hammerspoon: main config + one module per feature ---
+hammerspoon/init.lua    | ~/.hammerspoon/init.lua    | Hammerspoon main config
+hammerspoon/meet.lua    | ~/.hammerspoon/meet.lua    | Hammerspoon Google Meet module
+hammerspoon/mutebar.lua | ~/.hammerspoon/mutebar.lua | Hammerspoon Meet mic menu-bar module
+hammerspoon/layout.lua  | ~/.hammerspoon/layout.lua  | Hammerspoon desktop layout module
+hammerspoon/meeting.lua | ~/.hammerspoon/meeting.lua | Hammerspoon join-next-meeting module

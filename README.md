@@ -10,6 +10,11 @@ To install the dotfiles, simply link them. The easiest way is to use the install
 ./scripts/install-mac.sh
 ```
 
+The one-to-one symlinks are declared in `scripts/links.manifest` (a
+`source | target | description` table), which the install script loops over.
+To add a config, add a line to the manifest instead of editing the script.
+`bin/*` is linked by a glob so new scripts there are picked up automatically.
+
 # macOS system defaults
 
 `install-mac.sh` only symlinks dotfiles. System preferences (`defaults write`)
