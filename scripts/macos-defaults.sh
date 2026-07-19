@@ -116,3 +116,4 @@ else
 fi
 
 print_status "Done. Some changes require a logout/restart to take effect."
+print_status "Remaining manual steps (permissions, sign-ins) are in README.md > Fresh machine setup > step 7."
