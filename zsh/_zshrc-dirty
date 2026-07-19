@@ -18,6 +18,8 @@ eval "$(direnv hook zsh)"
 export AWS_PROFILE=admin
 export AWS_REGION=us-east-1
 
+alias tail_api_dev="aws logs tail /aws/ecs/dev/dirtlabs/api --follow --since 1m --region us-east-1"
+
 ########################################
 # Dirt Labs Aliases
 ########################################
@@ -52,3 +54,43 @@ pt() {
 alias localdb="db_local"
 
 alias sql='cd ~/workspace/sql && SVIM=1 nvim'
+
+
+########################################
+# Working with worktrunks
+########################################
+# _wt_port <key> <file> — numeric port for KEY from a .env.worktree (KEY=val) or registry json ("key": val)
+_wt_port() { grep -oE "\"?$1\"? *[:=] *[0-9]+" "$2" 2>/dev/null | grep -oE '[0-9]+' | tail -1; }
+
+# urls — app / admin / temporal URLs for whatever backend|web repo (worktree or main) you're in
+urls() {
+  local root repo web admin temporal ef api br reg
+  root="$(git rev-parse --show-toplevel 2>/dev/null)" || { echo "urls: not in a git repo" >&2; return 1; }
+  repo="${${root:t}%%.*}"                      # basename, minus the .<branch> worktree suffix
+  ef="$root/.env.worktree"
+  case "$repo" in
+    backend)
+      if [[ -f "$ef" ]]; then admin=$(_wt_port WEB_PORT "$ef"); temporal=$(_wt_port TEMPORAL_UI_PORT "$ef")
+      else admin=8000; temporal=8080; fi                        # main: Makefile/default ports
+      if [[ -f "$root/.pair-web" ]]; then                       # paired web trunk → its dev port
+        br="$(<"$root/.pair-web")"; reg="$HOME/.config/worktrees/web.${br//\//-}.json"
+        [[ -f "$reg" ]] && web=$(_wt_port web "$reg")
+      fi
+      web="${web:-3000}"
+      ;;
+    web)
+      if [[ -f "$ef" ]]; then web=$(_wt_port WEB_PORT "$ef"); else web=3000; fi
+      api="$root/.env"
+      if [[ -f "$api" ]] && grep -q NEXT_PUBLIC_API_URL "$api"; then
+        admin=$(grep NEXT_PUBLIC_API_URL "$api" | grep -oE '[0-9]+' | tail -1)   # backend it's wired to
+        reg=$(grep -lE "\"web\" *: *${admin}([^0-9]|\$)" "$HOME"/.config/worktrees/backend.*.json 2>/dev/null | head -1)
+        [[ -n "$reg" ]] && temporal=$(_wt_port temporal_ui "$reg")
+      fi
+      admin="${admin:-8000}"; temporal="${temporal:-8080}"
+      ;;
+    *) echo "urls: '$repo' is not backend/web" >&2; return 1 ;;
+  esac
+  print -r -- "app:      http://localhost:$web"
+  print -r -- "admin:    http://localhost:$admin/admin/"
+  print -r -- "temporal: http://localhost:$temporal"
+}
