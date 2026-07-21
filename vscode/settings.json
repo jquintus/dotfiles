@@ -15,6 +15,7 @@
     "datadog.vscode.notification.suppressMcpMigrationMessage": true,
     "todo-tree.ripgrep.ripgrep": "/opt/homebrew/bin/rg",
     "cSpell.userWords": [
+        "accum",
         "actuals",
         "agentic",
         "argjson",
