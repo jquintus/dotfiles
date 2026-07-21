@@ -117,7 +117,7 @@ run() {
   emulate -L zsh
   local name="$1" line cmd
   if [[ -z "$name" ]]; then
-    line=$(for k in ${(ok)_run_cmds}; do printf '%-10s %s\n' "$k" "$_run_cmds[$k]"; done \
+    line=$(for k in ${(ok)_run_cmds}; do printf '%-15s %s\n' "$k" "$_run_cmds[$k]"; done \
       | fzf --prompt='run> ' --height=40% --reverse) || return
     name="${line%% *}"
   fi
@@ -125,6 +125,10 @@ run() {
   if [[ -z "$cmd" ]]; then
     print -r -- "run: unknown command '$name' (have: ${(ok)_run_cmds})" >&2
     return 1
+  fi
+  # In cmux, label the current tab with what we're running (e.g. "Run Web").
+  if [[ -n "$CMUX_WORKSPACE_ID" ]] && command -v cmux >/dev/null 2>&1; then
+    CMUX_QUIET=1 cmux rename-workspace "Run ${(C)name}" >/dev/null 2>&1
   fi
   print -r -- "+ $cmd"
   eval "$cmd"
