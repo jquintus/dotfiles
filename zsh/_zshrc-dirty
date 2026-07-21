@@ -106,10 +106,11 @@ urls() {
 ########################################
 typeset -gA _run_cmds
 _run_cmds=(
-  temporal    'make temporal-worker'
-  web         'NEXT_PUBLIC_API_URL=http://localhost:8000 npm run dev'
-  admin       'uv run python manage.py runserver'
-  migrations  'uv run python manage.py migrations'
+  temporal        'make temporal-worker'
+  web             'NEXT_PUBLIC_API_URL=http://localhost:8000 npm run dev'
+  admin           'uv run python manage.py runserver'
+  migrate         'uv run python manage.py migrate'
+  makemigrations  'uv run python manage.py makemigrations'
 )
 
 run() {
