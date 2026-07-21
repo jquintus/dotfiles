@@ -94,3 +94,41 @@ urls() {
   print -r -- "admin:    http://localhost:$admin/admin/"
   print -r -- "temporal: http://localhost:$temporal"
 }
+
+########################################
+# run — quick launcher for common dev commands
+########################################
+# Usage:
+#   run            # fzf-pick a command to run
+#   run web        # run the named command directly
+#
+# Add a new command: add one `name 'command'` line to the map below.
+########################################
+typeset -gA _run_cmds
+_run_cmds=(
+  temporal    'make temporal-worker'
+  web         'NEXT_PUBLIC_API_URL=http://localhost:8000 npm run dev'
+  admin       'uv run python manage.py runserver'
+  migrations  'uv run python manage.py migrations'
+)
+
+run() {
+  emulate -L zsh
+  local name="$1" line cmd
+  if [[ -z "$name" ]]; then
+    line=$(for k in ${(ok)_run_cmds}; do printf '%-10s %s\n' "$k" "$_run_cmds[$k]"; done \
+      | fzf --prompt='run> ' --height=40% --reverse) || return
+    name="${line%% *}"
+  fi
+  cmd="${_run_cmds[$name]}"
+  if [[ -z "$cmd" ]]; then
+    print -r -- "run: unknown command '$name' (have: ${(ok)_run_cmds})" >&2
+    return 1
+  fi
+  print -r -- "+ $cmd"
+  eval "$cmd"
+}
+
+# Tab-complete the command names (no-op if completion isn't loaded yet).
+_run() { compadd -- ${(ok)_run_cmds} }
+(( $+functions[compdef] )) && compdef _run run
