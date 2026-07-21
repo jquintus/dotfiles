@@ -109,13 +109,14 @@ _run_cmds=(
   temporal        'make temporal-worker'
   web             'NEXT_PUBLIC_API_URL=http://localhost:8000 npm run dev'
   admin           'uv run python manage.py runserver'
+  backend         'uv run python manage.py runserver'
   migrate         'uv run python manage.py migrate'
   makemigrations  'uv run python manage.py makemigrations'
 )
 
 run() {
   emulate -L zsh
-  local name="$1" line cmd
+  local name="$1" line cmd ref old in_cmux=0
   if [[ -z "$name" ]]; then
     line=$(for k in ${(ok)_run_cmds}; do printf '%-15s %s\n' "$k" "$_run_cmds[$k]"; done \
       | fzf --prompt='run> ' --height=40% --reverse) || return
@@ -126,12 +127,18 @@ run() {
     print -r -- "run: unknown command '$name' (have: ${(ok)_run_cmds})" >&2
     return 1
   fi
-  # In cmux, label the current tab with what we're running (e.g. "Run Web").
+  # In cmux, label the current tab while running (e.g. "Run Web"), then restore
+  # the tab's original title once the command exits (or is interrupted).
   if [[ -n "$CMUX_WORKSPACE_ID" ]] && command -v cmux >/dev/null 2>&1; then
+    in_cmux=1
+    ref=$(CMUX_QUIET=1 cmux current-workspace 2>/dev/null)
+    old=$(CMUX_QUIET=1 cmux workspace list 2>/dev/null | grep " ${ref}  ")
+    old="${old#* ${ref}  }"; old="${old%%  \[selected\]}"
     CMUX_QUIET=1 cmux rename-workspace "Run ${(C)name}" >/dev/null 2>&1
   fi
   print -r -- "+ $cmd"
   eval "$cmd"
+  (( in_cmux )) && [[ -n "$old" ]] && CMUX_QUIET=1 cmux rename-workspace "$old" >/dev/null 2>&1
 }
 
 # Tab-complete the command names (no-op if completion isn't loaded yet).
