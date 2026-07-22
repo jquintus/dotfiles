@@ -44,6 +44,14 @@ style = "fg:color_fg bg:color_git"
 [git_status]
 format = "[$all_status$ahead_behind ]($style)"
 style = "fg:color_fg bg:color_git"
+modified   = "*"          # changed (unstaged) tracked files
+untracked  = "+"          # new files not yet tracked
+staged     = "●"          # staged, ready to commit
+ahead      = "↑${count}"  # commits to push
+behind     = "↓${count}"  # commits to pull
+diverged   = "↕"          # both ahead and behind
+conflicted = "✖"          # merge conflict
+stashed    = "⚑"          # stashed changes
 
 [nodejs]
 symbol = " "
