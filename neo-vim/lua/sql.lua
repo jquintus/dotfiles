@@ -82,12 +82,19 @@ local function layout_sql(vertical)
     vim.cmd("Neotree show left")
 end
 
--- Deterministic relayout keymaps, defined at module level so they survive an
--- <F3> reload and work any time a SQL terminal exists (they no-op with a notice
--- otherwise). | and \ are the same physical key (shift / no-shift).
-vim.keymap.set("n", "<leader>|", function() layout_sql(true) end,
+-- Commands + keymaps, defined at module level so they survive an <F3> reload and
+-- work any time a SQL terminal exists (they no-op with a notice otherwise).
+--   :SqlLayoutVertical   -> vertical split   -> columns  (editor | terminal)  <leader>\
+--   :SqlLayoutHorizontal -> horizontal split -> stacked  (editor / terminal)  <leader>-
+-- Both keys are unshifted so they feel balanced.
+vim.api.nvim_create_user_command("SqlLayoutVertical", function() layout_sql(true) end,
+    { desc = "SQL layout: columns (vertical split, editor | terminal)" })
+vim.api.nvim_create_user_command("SqlLayoutHorizontal", function() layout_sql(false) end,
+    { desc = "SQL layout: stacked (horizontal split, editor / terminal)" })
+
+vim.keymap.set("n", "<leader>\\", "<cmd>SqlLayoutVertical<CR>",
     { silent = true, desc = "SQL layout: columns (editor | terminal)" })
-vim.keymap.set("n", "<leader>\\", function() layout_sql(false) end,
+vim.keymap.set("n", "<leader>-", "<cmd>SqlLayoutHorizontal<CR>",
     { silent = true, desc = "SQL layout: stacked (editor / terminal)" })
 
 local function open_sql_workspace()
