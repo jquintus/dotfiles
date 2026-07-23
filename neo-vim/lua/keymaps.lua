@@ -55,6 +55,13 @@ vim.keymap.set('n', '<leader>z', function()
     end
 end, { silent = true, desc = 'Zoom / restore focused window' })
 
+-- Toggle the file browser on demand (open if closed, close if open).
+-- Lives here, not in neo-tree.lua, because that file's module name collides with
+-- the neo-tree plugin and doesn't reliably run at startup. Press ? inside the
+-- tree for its full keybinding help.
+vim.keymap.set('n', '<leader>n', ':Neotree toggle left<CR>',
+    { silent = true, desc = 'Toggle file browser (Neo-tree)' })
+
 vim.keymap.set('n', '<F5>', ':e!<CR>zz', { noremap = true })
 vim.keymap.set('n', '<S-F5>', ':e!<CR>Gzz', { noremap = true })
 
