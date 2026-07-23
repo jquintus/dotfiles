@@ -8,11 +8,21 @@ local function open_sql_workspace()
     -- Start with a clean layout
     vim.cmd("only")
 
-    -- Vertical split: editor (left) | terminal (right)
-    vim.cmd("vsplit")
+    -- Pick the initial orientation based on how wide the window is *right now*.
+    -- Wide (external monitor): side-by-side columns, editor | terminal.
+    -- Narrow (laptop / half-screen): stacked, editor on top / terminal on bottom
+    --   so wide psql result rows get the full width.
+    -- You can reflow live at any time without restarting (see :Halp):
+    --   <C-w>H makes columns, <C-w>J stacks them.
+    local wide = vim.o.columns >= 200
 
-    -- Move to right pane
-    vim.cmd("wincmd l")
+    if wide then
+        vim.cmd("vsplit")   -- editor | terminal
+        vim.cmd("wincmd l") -- move to right pane
+    else
+        vim.cmd("split")    -- editor / terminal (stacked)
+        vim.cmd("wincmd j") -- move to bottom pane
+    end
 
     -- Open terminal
     vim.cmd("terminal zsh")
@@ -24,7 +34,7 @@ local function open_sql_workspace()
     local terminal_win = vim.api.nvim_get_current_win()
 
     -- Go back to editor pane
-    vim.cmd("wincmd h")
+    vim.cmd("wincmd " .. (wide and "h" or "k"))
 
     -- Optional: open Neo-tree
     vim.cmd("Neotree reveal left")
@@ -79,6 +89,24 @@ local function open_sql_workspace()
 
         vim.notify("No SQL terminal found", vim.log.levels.ERROR)
     end, { desc = "Send visual selection to SQL terminal" })
+
+    -- Switch DB connection: jump to the terminal and fire the `dbs` fzf picker
+    -- (defined in _zshrc-aliases). Pick a connection and psql relaunches with its
+    -- color-coded / banner prompt so you always know where you are.
+    -- Note: run this from the shell prompt, not from inside an active psql session
+    -- (\q first if you're already connected).
+    vim.keymap.set("n", "<leader>C", function()
+        for _, win in ipairs(vim.api.nvim_list_wins()) do
+            local buf = vim.api.nvim_win_get_buf(win)
+            if vim.b[buf].sql and vim.bo[buf].buftype == "terminal" then
+                vim.api.nvim_set_current_win(win)
+                vim.fn.chansend(vim.bo[buf].channel, "dbs\n")
+                vim.cmd("startinsert")
+                return
+            end
+        end
+        vim.notify("No SQL terminal found", vim.log.levels.ERROR)
+    end, { desc = "Switch DB connection (dbs picker)" })
 end
 
 -- Open SQL workspace when vim is opened like this

@@ -135,20 +135,29 @@ alias kubens=kns
 ########################################
 # pgalias <name> <color> <label> <psql args...>
 #   Defines <name> to run psql with a color-coded prompt so you always know
-#   which DB you're in. Colors: green, cyan, yellow, red, danger (bold red).
+#   which DB you're in.
+#   Inline colors:  green, cyan, yellow, red, danger (bold red).
+#   Full-width BANNER (a colored bar across the whole line, impossible to miss
+#   even when the pane is a sliver — use for prod / read-write):
+#     alert    bold white on RED     (e.g. prod)
+#     caution  black on YELLOW       (e.g. dev-rw)
 #   NEVER put a password here — psql reads ~/.pgpass (chmod 600).
 pgalias() {
   local name=$1 color=$2 label=$3; shift 3
-  local code
+  local p1
   case "$color" in
-    green)  code='32'   ;;
-    cyan)   code='36'   ;;
-    yellow) code='33'   ;;
-    red)    code='31'   ;;
-    danger) code='1;31' ;;
-    *)      code='0'    ;;
+    green)   p1="%[%033[32m%][${label}] %/%R%#%[%033[0m%]"   ;;
+    cyan)    p1="%[%033[36m%][${label}] %/%R%#%[%033[0m%]"   ;;
+    yellow)  p1="%[%033[33m%][${label}] %/%R%#%[%033[0m%]"   ;;
+    red)     p1="%[%033[31m%][${label}] %/%R%#%[%033[0m%]"   ;;
+    danger)  p1="%[%033[1;31m%][${label}] %/%R%#%[%033[0m%]" ;;
+    # Banner: set bg color, print label + db, then ESC[K fills the rest of the
+    # line with that bg, newline, then the real prompt char underneath.
+    alert)   p1=$'%[\033[1;37;41m%]  \342\232\240  '"${label}"$'  %/  %[\033[K%]%[\033[0m%]\n%R%# ' ;;
+    caution) p1=$'%[\033[1;30;43m%]  \342\232\240  '"${label}"$'  %/  %[\033[K%]%[\033[0m%]\n%R%# ' ;;
+    *)       p1="[${label}] %/%R%#" ;;
   esac
-  alias "$name=psql $* --set=PROMPT1='%[%033[${code}m%][${label}] %/%R%#%[%033[0m%]'"
+  alias "$name=psql $* --set=PROMPT1='$p1'"
 }
 
 # dbs — fzf picker over every psql alias, for when you forget the exact name.
@@ -169,7 +178,7 @@ db_add() {
   read "db?database: "
   read "user?username: "
   read "label?prompt label [$name]: "; label=${label:-$name}
-  color=$(printf 'green\ncyan\nyellow\nred\ndanger\n' | fzf --prompt="color> ") || return
+  color=$(printf 'green\ncyan\nyellow\nred\ndanger\nalert\ncaution\n' | fzf --prompt="color> ") || return
   read -s "pass?password (hidden; stored in ~/.pgpass, blank to skip): "; echo
 
   [[ -z "$name" || -z "$host" || -z "$db" || -z "$user" ]] && {

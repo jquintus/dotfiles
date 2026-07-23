@@ -41,6 +41,17 @@ vim.keymap.set('n', '<C-h>', '<C-w>h', { noremap = true })
 vim.keymap.set('n', '<C-k>', '<C-w>k', { noremap = true })
 vim.keymap.set('n', '<C-l>', '<C-w>l', { noremap = true })
 
+-- Zoom toggle: blow the focused window up to a full-screen tab, press again to
+-- restore the exact split underneath. Manual only. tmux prefix+z, basically.
+vim.keymap.set('n', '<leader>z', function()
+    if vim.t.zoomed then
+        vim.cmd('tabclose')
+    else
+        vim.cmd('tab split')
+        vim.t.zoomed = true
+    end
+end, { silent = true, desc = 'Zoom / restore focused window' })
+
 vim.keymap.set('n', '<F5>', ':e!<CR>zz', { noremap = true })
 vim.keymap.set('n', '<S-F5>', ':e!<CR>Gzz', { noremap = true })
 

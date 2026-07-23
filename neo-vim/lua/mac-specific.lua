@@ -29,14 +29,17 @@ vim.keymap.set('n', '<leader>P', '"+P', { noremap = true, desc = "Paste before c
 -- Insert mode: Ctrl-V to paste from system clipboard (works in terminal)
 vim.keymap.set('i', '<C-v>', '<C-r>+', { noremap = true, silent = true })
 
--- GUI-specific Cmd key mappings (for Neovide, not for terminal)
-if vim.g.neovide then
-    vim.keymap.set('v', '<D-x>', '"+x', { noremap = true })
-    vim.keymap.set('v', '<D-c>', '"+y', { noremap = true })
-    vim.keymap.set('n', '<D-v>', '"+p', { noremap = true })
-    vim.keymap.set('v', '<D-v>', '"+p', { noremap = true })
-    vim.keymap.set('i', '<D-v>', '<C-r>+', { noremap = true })
-end
+-- Cmd key mappings for clipboard.
+-- These work in BOTH Neovide and terminal nvim: when the terminal forwards Cmd
+-- via the kitty keyboard protocol (cmux/Ghostty do while nvim is running), an
+-- unmapped <D-c> degrades to a bare `c` (change) and EATS the visual selection.
+-- Mapping it explicitly makes Cmd+C actually copy instead of cut. If the terminal
+-- captures Cmd+C itself, the mapping simply never fires, so this is always safe.
+vim.keymap.set('v', '<D-x>', '"+x', { noremap = true, desc = "Cut to system clipboard" })
+vim.keymap.set('v', '<D-c>', '"+y', { noremap = true, desc = "Copy to system clipboard" })
+vim.keymap.set('n', '<D-v>', '"+p', { noremap = true, desc = "Paste from system clipboard" })
+vim.keymap.set('v', '<D-v>', '"+p', { noremap = true, desc = "Paste from system clipboard" })
+vim.keymap.set('i', '<D-v>', '<C-r>+', { noremap = true, desc = "Paste from system clipboard" })
 
 -------------------------------------------------------------------------------
 -- Neovide specific settings
