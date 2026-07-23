@@ -21,6 +21,11 @@ vim.g.netrw_list_hide = [[\(^\|\s\s\)\zs\.\S\+,\(^\|\s\s\)\zs\.DS_Store]]
 -- Optional: start netrw in the directory of the current file when opening a directory
 vim.api.nvim_create_autocmd("VimEnter", {
     callback = function()
+        -- In the SQL workspace (SVIM=1), neo-tree is the file browser. Don't also
+        -- pop netrw here, or you end up with two trees and no editor pane.
+        if vim.env.SVIM == "1" then
+            return
+        end
         if vim.fn.isdirectory(vim.fn.argv(0)) == 1 then
             vim.cmd("Explore")
         end

@@ -40,10 +40,14 @@ local function pick_editor_buf()
 end
 
 -- Deterministically (re)build the SQL workspace into a known layout.
--- Always produces the same result: Neo-tree left (fixed width) + editor + the
--- SQL terminal, split either as columns (vertical=true) or stacked
--- (vertical=false), with the editor/terminal sized evenly every time. Which pane
--- is where and how big never depends on cursor position or current window sizes.
+-- Always produces the same result: editor + SQL terminal (columns when
+-- vertical=true, stacked when vertical=false) with Neo-tree on the far left.
+-- Which pane is where never depends on cursor position or current sizes.
+--
+-- Neo-tree's open/close is ASYNCHRONOUS, so we build editor+terminal fully
+-- (all synchronous) FIRST, then open Neo-tree as the very last step with no
+-- window ops depending on it. Doing window splits right after a Neotree
+-- close/show races the async and randomly drops the tree.
 local function layout_sql(vertical)
     local term = find_sql_term()
     if not term then
@@ -52,20 +56,17 @@ local function layout_sql(vertical)
     end
     local editor = pick_editor_buf()
 
-    -- Tear everything down, then lay it out from scratch.
-    pcall(vim.cmd, "Neotree close")
+    -- Collapse to a single window showing a real editor buffer. `only` also
+    -- closes any existing Neo-tree window.
     vim.cmd("only")
     if editor then
         vim.api.nvim_set_current_buf(editor)
     else
-        -- No real file open yet: use a fresh empty buffer, NOT netrw's dir listing.
+        -- No real file open yet: fresh empty buffer, NOT netrw's dir listing.
         vim.cmd("enew")
     end
 
-    -- File browser first, so the editor/terminal split evenly in what's left.
-    vim.cmd("Neotree show left")
-    vim.cmd("wincmd l") -- move out of the tree into the editor area
-
+    -- Editor + terminal, evenly split. Fully synchronous, no Neo-tree involved.
     if vertical then
         vim.cmd("vsplit")
         vim.cmd("wincmd l") -- terminal on the right
@@ -74,20 +75,20 @@ local function layout_sql(vertical)
         vim.cmd("wincmd j") -- terminal on the bottom
     end
     vim.api.nvim_set_current_buf(term)
+    vim.cmd("wincmd =")
 
-    -- Pin the tree to a fixed width so the editor/terminal balance is repeatable.
-    for _, win in ipairs(vim.api.nvim_list_wins()) do
-        local b = vim.api.nvim_win_get_buf(win)
-        if vim.bo[b].filetype == "neo-tree" then
-            vim.api.nvim_win_set_width(win, 32)
-            vim.wo[win].winfixwidth = true
-        end
-    end
-    vim.cmd("wincmd =") -- editor vs terminal 50/50 (tree is fixed, unaffected)
-
-    -- Land in the editor, ready to type.
+    -- Back to the editor, then open the file browser LAST (async-safe).
     vim.cmd("wincmd " .. (vertical and "h" or "k"))
+    vim.cmd("Neotree show left")
 end
+
+-- Deterministic relayout keymaps, defined at module level so they survive an
+-- <F3> reload and work any time a SQL terminal exists (they no-op with a notice
+-- otherwise). | and \ are the same physical key (shift / no-shift).
+vim.keymap.set("n", "<leader>|", function() layout_sql(true) end,
+    { silent = true, desc = "SQL layout: columns (editor | terminal)" })
+vim.keymap.set("n", "<leader>\\", function() layout_sql(false) end,
+    { silent = true, desc = "SQL layout: stacked (editor / terminal)" })
 
 local function open_sql_workspace()
     -- Avoid re-running if already set up
@@ -121,12 +122,6 @@ local function open_sql_workspace()
         vim.api.nvim_set_current_win(term_win)
         vim.cmd("startinsert")
     end
-
-    -- Deterministic relayout keymaps. Same panes, same places, same sizes, always.
-    vim.keymap.set("n", "<leader>|", function() layout_sql(true) end,
-        { silent = true, desc = "SQL layout: columns (editor | terminal)" })
-    vim.keymap.set("n", "<leader>\\", function() layout_sql(false) end,
-        { silent = true, desc = "SQL layout: stacked (editor / terminal)" })
 
     -- Set global <leader>r mapping for SQL workspace mode
     -- This overrides any previous <leader>r mapping (like the one from slime.lua)

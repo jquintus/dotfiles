@@ -14,6 +14,9 @@ vim.keymap.set('n', '<F3>', function()
     package.loaded.keymaps = nil
     package.loaded.autocmds = nil
     package.loaded.commands = nil
+    package.loaded.sql = nil
+    package.loaded.netrw = nil
+    package.loaded['neo-tree'] = nil
     package.loaded['mac-specific'] = nil
     package.loaded['win-specific'] = nil
 
