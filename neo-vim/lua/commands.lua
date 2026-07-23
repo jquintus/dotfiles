@@ -40,7 +40,7 @@ local halp_lines = {
     "   <leader>z      zoom / restore focused pane (full screen)",
     "   <C-h/j/k/l>    move between panes   (also <D-h/j/k/l>)",
     "   <leader>|      relayout: columns  (editor | terminal)",
-    "   <leader>-      relayout: stacked  (editor / terminal)",
+    "   <leader>\\      relayout: stacked  (editor / terminal)",
     "",
     " Files",
     "   <leader>n      toggle file browser (Neo-tree)",

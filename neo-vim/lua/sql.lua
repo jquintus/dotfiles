@@ -7,23 +7,36 @@ local function find_sql_term()
     end
 end
 
--- Pick the buffer to use as the editor pane: the current file if we're on one,
--- otherwise the first listed, named file buffer, otherwise whatever's current.
+-- A real, editable buffer: a normal file buffer, never neo-tree, netrw, the
+-- terminal, or any other special/scratch listing.
+local function is_editable(b)
+    return vim.api.nvim_buf_is_valid(b)
+        and vim.bo[b].buftype == ""
+        and vim.bo[b].buflisted
+        and vim.bo[b].filetype ~= "neo-tree"
+        and vim.bo[b].filetype ~= "netrw"
+end
+
+-- Pick the buffer for the editor pane: the current file if we're on one, else a
+-- named file buffer, else any empty normal buffer we can reuse. Returns nil when
+-- nothing suitable exists, so the caller creates a fresh empty buffer instead of
+-- falling back to netrw's directory listing.
 local function pick_editor_buf()
     local cur = vim.api.nvim_get_current_buf()
-    local function is_file(b)
-        return vim.bo[b].buftype == "" and vim.bo[b].buflisted
-            and vim.api.nvim_buf_get_name(b) ~= ""
-    end
-    if is_file(cur) then
+    if is_editable(cur) and vim.api.nvim_buf_get_name(cur) ~= "" then
         return cur
     end
     for _, b in ipairs(vim.api.nvim_list_bufs()) do
-        if is_file(b) then
+        if is_editable(b) and vim.api.nvim_buf_get_name(b) ~= "" then
             return b
         end
     end
-    return cur
+    for _, b in ipairs(vim.api.nvim_list_bufs()) do
+        if is_editable(b) then
+            return b
+        end
+    end
+    return nil
 end
 
 -- Deterministically (re)build the SQL workspace into a known layout.
@@ -42,7 +55,12 @@ local function layout_sql(vertical)
     -- Tear everything down, then lay it out from scratch.
     pcall(vim.cmd, "Neotree close")
     vim.cmd("only")
-    vim.api.nvim_set_current_buf(editor)
+    if editor then
+        vim.api.nvim_set_current_buf(editor)
+    else
+        -- No real file open yet: use a fresh empty buffer, NOT netrw's dir listing.
+        vim.cmd("enew")
+    end
 
     -- File browser first, so the editor/terminal split evenly in what's left.
     vim.cmd("Neotree show left")
@@ -88,7 +106,7 @@ local function open_sql_workspace()
     -- Pick the initial orientation from how wide the window is *at launch*:
     -- wide (external monitor) -> columns; narrow (laptop/half-screen) -> stacked
     -- so wide psql result rows get the full width. Switch anytime, deterministically:
-    --   <leader>|  -> columns     <leader>-  -> stacked   (see :Halp)
+    --   <leader>|  -> columns     <leader>\  -> stacked   (see :Halp)
     local wide = vim.o.columns >= 200
     layout_sql(wide)
 
@@ -107,7 +125,7 @@ local function open_sql_workspace()
     -- Deterministic relayout keymaps. Same panes, same places, same sizes, always.
     vim.keymap.set("n", "<leader>|", function() layout_sql(true) end,
         { silent = true, desc = "SQL layout: columns (editor | terminal)" })
-    vim.keymap.set("n", "<leader>-", function() layout_sql(false) end,
+    vim.keymap.set("n", "<leader>\\", function() layout_sql(false) end,
         { silent = true, desc = "SQL layout: stacked (editor / terminal)" })
 
     -- Set global <leader>r mapping for SQL workspace mode
