@@ -1,3 +1,76 @@
+-- Find the psql/SQL terminal buffer (marked with b:sql on creation).
+local function find_sql_term()
+    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        if vim.b[buf].sql and vim.bo[buf].buftype == "terminal" then
+            return buf
+        end
+    end
+end
+
+-- Pick the buffer to use as the editor pane: the current file if we're on one,
+-- otherwise the first listed, named file buffer, otherwise whatever's current.
+local function pick_editor_buf()
+    local cur = vim.api.nvim_get_current_buf()
+    local function is_file(b)
+        return vim.bo[b].buftype == "" and vim.bo[b].buflisted
+            and vim.api.nvim_buf_get_name(b) ~= ""
+    end
+    if is_file(cur) then
+        return cur
+    end
+    for _, b in ipairs(vim.api.nvim_list_bufs()) do
+        if is_file(b) then
+            return b
+        end
+    end
+    return cur
+end
+
+-- Deterministically (re)build the SQL workspace into a known layout.
+-- Always produces the same result: Neo-tree left (fixed width) + editor + the
+-- SQL terminal, split either as columns (vertical=true) or stacked
+-- (vertical=false), with the editor/terminal sized evenly every time. Which pane
+-- is where and how big never depends on cursor position or current window sizes.
+local function layout_sql(vertical)
+    local term = find_sql_term()
+    if not term then
+        vim.notify("No SQL terminal found", vim.log.levels.ERROR)
+        return
+    end
+    local editor = pick_editor_buf()
+
+    -- Tear everything down, then lay it out from scratch.
+    pcall(vim.cmd, "Neotree close")
+    vim.cmd("only")
+    vim.api.nvim_set_current_buf(editor)
+
+    -- File browser first, so the editor/terminal split evenly in what's left.
+    vim.cmd("Neotree show left")
+    vim.cmd("wincmd l") -- move out of the tree into the editor area
+
+    if vertical then
+        vim.cmd("vsplit")
+        vim.cmd("wincmd l") -- terminal on the right
+    else
+        vim.cmd("split")
+        vim.cmd("wincmd j") -- terminal on the bottom
+    end
+    vim.api.nvim_set_current_buf(term)
+
+    -- Pin the tree to a fixed width so the editor/terminal balance is repeatable.
+    for _, win in ipairs(vim.api.nvim_list_wins()) do
+        local b = vim.api.nvim_win_get_buf(win)
+        if vim.bo[b].filetype == "neo-tree" then
+            vim.api.nvim_win_set_width(win, 32)
+            vim.wo[win].winfixwidth = true
+        end
+    end
+    vim.cmd("wincmd =") -- editor vs terminal 50/50 (tree is fixed, unaffected)
+
+    -- Land in the editor, ready to type.
+    vim.cmd("wincmd " .. (vertical and "h" or "k"))
+end
+
 local function open_sql_workspace()
     -- Avoid re-running if already set up
     if vim.g.sql_workspace_open then
@@ -5,43 +78,37 @@ local function open_sql_workspace()
     end
     vim.g.sql_workspace_open = true
 
-    -- Start with a clean layout
+    -- Create the psql terminal, then arrange deterministically.
     vim.cmd("only")
-
-    -- Pick the initial orientation based on how wide the window is *right now*.
-    -- Wide (external monitor): side-by-side columns, editor | terminal.
-    -- Narrow (laptop / half-screen): stacked, editor on top / terminal on bottom
-    --   so wide psql result rows get the full width.
-    -- You can reflow live at any time without restarting (see :Halp):
-    --   <C-w>H makes columns, <C-w>J stacks them.
-    local wide = vim.o.columns >= 200
-
-    if wide then
-        vim.cmd("vsplit")   -- editor | terminal
-        vim.cmd("wincmd l") -- move to right pane
-    else
-        vim.cmd("split")    -- editor / terminal (stacked)
-        vim.cmd("wincmd j") -- move to bottom pane
-    end
-
-    -- Open terminal
+    vim.cmd("vsplit")
+    vim.cmd("wincmd l")
     vim.cmd("terminal zsh")
-
-    -- Mark this buffer as the SQL target
     vim.b.sql = true
 
-    -- Save the terminal window ID so we can return to it
-    local terminal_win = vim.api.nvim_get_current_win()
+    -- Pick the initial orientation from how wide the window is *at launch*:
+    -- wide (external monitor) -> columns; narrow (laptop/half-screen) -> stacked
+    -- so wide psql result rows get the full width. Switch anytime, deterministically:
+    --   <leader>|  -> columns     <leader>-  -> stacked   (see :Halp)
+    local wide = vim.o.columns >= 200
+    layout_sql(wide)
 
-    -- Go back to editor pane
-    vim.cmd("wincmd " .. (wide and "h" or "k"))
+    -- Drop into the terminal in insert mode, as before.
+    local term_win
+    for _, win in ipairs(vim.api.nvim_list_wins()) do
+        if vim.b[vim.api.nvim_win_get_buf(win)].sql then
+            term_win = win
+        end
+    end
+    if term_win then
+        vim.api.nvim_set_current_win(term_win)
+        vim.cmd("startinsert")
+    end
 
-    -- Optional: open Neo-tree
-    vim.cmd("Neotree reveal left")
-
-    -- Return to terminal window and enter insert mode
-    vim.api.nvim_set_current_win(terminal_win)
-    vim.cmd("startinsert")
+    -- Deterministic relayout keymaps. Same panes, same places, same sizes, always.
+    vim.keymap.set("n", "<leader>|", function() layout_sql(true) end,
+        { silent = true, desc = "SQL layout: columns (editor | terminal)" })
+    vim.keymap.set("n", "<leader>-", function() layout_sql(false) end,
+        { silent = true, desc = "SQL layout: stacked (editor / terminal)" })
 
     -- Set global <leader>r mapping for SQL workspace mode
     -- This overrides any previous <leader>r mapping (like the one from slime.lua)
@@ -89,24 +156,6 @@ local function open_sql_workspace()
 
         vim.notify("No SQL terminal found", vim.log.levels.ERROR)
     end, { desc = "Send visual selection to SQL terminal" })
-
-    -- Switch DB connection: jump to the terminal and fire the `dbs` fzf picker
-    -- (defined in _zshrc-aliases). Pick a connection and psql relaunches with its
-    -- color-coded / banner prompt so you always know where you are.
-    -- Note: run this from the shell prompt, not from inside an active psql session
-    -- (\q first if you're already connected).
-    vim.keymap.set("n", "<leader>C", function()
-        for _, win in ipairs(vim.api.nvim_list_wins()) do
-            local buf = vim.api.nvim_win_get_buf(win)
-            if vim.b[buf].sql and vim.bo[buf].buftype == "terminal" then
-                vim.api.nvim_set_current_win(win)
-                vim.fn.chansend(vim.bo[buf].channel, "dbs\n")
-                vim.cmd("startinsert")
-                return
-            end
-        end
-        vim.notify("No SQL terminal found", vim.log.levels.ERROR)
-    end, { desc = "Switch DB connection (dbs picker)" })
 end
 
 -- Open SQL workspace when vim is opened like this
