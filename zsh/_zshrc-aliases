@@ -160,12 +160,48 @@ pgalias() {
   alias "$name=psql $* --set=PROMPT1='$p1'"
 }
 
-# dbs — fzf picker over every psql alias, for when you forget the exact name.
+# dbs — fzf picker over every psql alias AND any running Docker Postgres
+# container, for when you forget the exact name (or the port is ephemeral).
+# Docker entries are labelled with their compose *project* (a.k.a. "stack")
+# name + the host port published for 5432, so you can fuzzy-search e.g. "456".
+# A picked Docker db reuses db_local's connection (host/user/db) with only the
+# port swapped in, so the real credentials stay in ~/.config/zsh/db.local.zsh
+# and never land in this public repo.
 dbs() {
-  local aliases choice
-  aliases=$(alias | awk -F'[ =]' '/psql / { gsub(/alias /, "", $1); print $1 }')
-  choice=$(printf '%s\n' "$aliases" | fzf --height 10 --border --prompt="Select DB: ")
-  [[ -n "$choice" ]] && eval "$choice"
+  local lines choice disp kind a b
+
+  # 1) static psql aliases  ->  display=<name>, kind=alias, a=<name>
+  lines=$(alias | awk -F'[ =]' '/psql / { gsub(/alias /, "", $1); printf "%s\talias\t%s\t\n", $1, $1 }')
+
+  # 2) live Docker Postgres containers  ->  display="🐳 <project>  :<port>", kind=docker, a=<port>, b=<project>
+  if command -v docker >/dev/null 2>&1; then
+    local id proj swarm name port stack
+    while IFS=$'\t' read -r id proj swarm name; do
+      [[ -n "$id" ]] || continue
+      port=$(docker port "$id" 5432/tcp 2>/dev/null | head -1 | sed -E 's/.*:([0-9]+)$/\1/')
+      [[ -n "$port" ]] || continue
+      stack=${proj:-${swarm:-$name}}
+      lines+=$'\n'"🐳 ${stack}  :${port}"$'\tdocker\t'"${port}"$'\t'"${stack}"
+    done < <(docker ps --format '{{.ID}}\t{{.Label "com.docker.compose.project"}}\t{{.Label "com.docker.stack.namespace"}}\t{{.Names}}' 2>/dev/null)
+  fi
+
+  choice=$(printf '%s\n' "$lines" | fzf --height 15 --border --with-nth=1 --delimiter=$'\t' --prompt="Select DB: ")
+  [[ -n "$choice" ]] || return
+
+  IFS=$'\t' read -r disp kind a b <<< "$choice"
+  case "$kind" in
+    alias)  eval "$a" ;;
+    docker)
+      local base=${aliases[db_local]}
+      if [[ -z "$base" ]]; then
+        echo "dbs: db_local alias not found — can't derive the Docker db connection" >&2
+        return 1
+      fi
+      base=$(print -r -- "$base" | sed -E "s/-p +[0-9]+/-p ${a}/")
+      local prompt=$'%[\033[36m%][🐳 '"${b}:${a}"$'] %/%R%#%[\033[0m%]'
+      eval "${base} --set=PROMPT1='${prompt}'"
+      ;;
+  esac
 }
 
 # db_add — interactively add a DB connection: prompts for the details, appends a
