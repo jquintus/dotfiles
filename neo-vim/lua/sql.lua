@@ -56,9 +56,11 @@ local function layout_sql(vertical)
     end
     local editor = pick_editor_buf()
 
-    -- Collapse to a single window showing a real editor buffer. `only` also
-    -- closes any existing Neo-tree window.
-    vim.cmd("only")
+    -- Collapse to a single window showing a real editor buffer. `only!` also
+    -- closes any existing Neo-tree window; the `!` is needed so an editor pane
+    -- with UNSAVED changes doesn't raise E445 -- with hidden=true (set globally)
+    -- the modified buffer is just hidden, so no edits are lost.
+    vim.cmd("only!")
     if editor then
         vim.api.nvim_set_current_buf(editor)
     else
