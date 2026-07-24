@@ -174,12 +174,15 @@ dbs() {
   lines=$(alias | awk -F'[ =]' '/psql / { gsub(/alias /, "", $1); printf "%s\talias\t%s\t\n", $1, $1 }')
 
   # 2) live Docker Postgres containers  ->  display="🐳 <project>  :<port>", kind=docker, a=<port>, b=<project>
+  # Skip the container publishing db_local's port — it's already the db_local alias.
   if command -v docker >/dev/null 2>&1; then
-    local id proj swarm name port stack
+    local id proj swarm name port stack localport
+    localport=$(print -r -- "${aliases[db_local]}" | sed -nE 's/.*-p +([0-9]+).*/\1/p')
     while IFS=$'\t' read -r id proj swarm name; do
       [[ -n "$id" ]] || continue
       port=$(docker port "$id" 5432/tcp 2>/dev/null | head -1 | sed -E 's/.*:([0-9]+)$/\1/')
       [[ -n "$port" ]] || continue
+      [[ -n "$localport" && "$port" == "$localport" ]] && continue
       stack=${proj:-${swarm:-$name}}
       lines+=$'\n'"🐳 ${stack}  :${port}"$'\tdocker\t'"${port}"$'\t'"${stack}"
     done < <(docker ps --format '{{.ID}}\t{{.Label "com.docker.compose.project"}}\t{{.Label "com.docker.stack.namespace"}}\t{{.Names}}' 2>/dev/null)
