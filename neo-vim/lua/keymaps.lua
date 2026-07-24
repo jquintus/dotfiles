@@ -44,16 +44,22 @@ vim.keymap.set('n', '<C-h>', '<C-w>h', { noremap = true })
 vim.keymap.set('n', '<C-k>', '<C-w>k', { noremap = true })
 vim.keymap.set('n', '<C-l>', '<C-w>l', { noremap = true })
 
--- Zoom toggle: blow the focused window up to a full-screen tab, press again to
--- restore the exact split underneath. Manual only. tmux prefix+z, basically.
-vim.keymap.set('n', '<leader>z', function()
-    if vim.t.zoomed then
-        vim.cmd('tabclose')
+-- Zoom toggle: maximize the focused window in place, press again to restore the
+-- exact previous window sizes. Done WITHOUT tabs (winrestcmd remembers sizes) so
+-- it never fights tab navigation and can't error -- no tab is opened or closed.
+local function zoom_toggle()
+    if vim.t.zoom_restore then
+        vim.cmd(vim.t.zoom_restore)
+        vim.t.zoom_restore = nil
     else
-        vim.cmd('tab split')
-        vim.t.zoomed = true
+        vim.t.zoom_restore = vim.fn.winrestcmd()
+        vim.cmd('wincmd _') -- maximize height
+        vim.cmd('wincmd |') -- maximize width
     end
-end, { silent = true, desc = 'Zoom / restore focused window' })
+end
+vim.keymap.set('n', '<leader>z', zoom_toggle, { silent = true, desc = 'Zoom / restore focused window' })
+vim.api.nvim_create_user_command('Zoom', zoom_toggle,
+    { desc = 'Zoom / restore focused window (same as <leader>z)' })
 
 -- Toggle the file browser on demand (open if closed, close if open).
 -- Lives here, not in neo-tree.lua, because that file's module name collides with

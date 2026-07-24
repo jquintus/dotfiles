@@ -37,7 +37,7 @@ local halp_lines = {
     " SQL workspace cheat sheet          :Halp / <leader>?  ",
     "",
     " Panes",
-    "   <leader>z      zoom / restore focused pane (full screen)",
+    "   <leader>z      zoom / restore focused pane  :Zoom",
     "   <C-h/j/k/l>    move between panes   (also <D-h/j/k/l>)",
     "   <leader>\\      relayout: columns  :SqlLayoutVertical",
     "   <leader>-      relayout: stacked  :SqlLayoutHorizontal",
@@ -49,10 +49,6 @@ local halp_lines = {
     " Run SQL",
     "   <leader>r      save file + run it in psql  (\\i file)",
     "   <leader>r      (visual) send selection to psql",
-    "",
-    " Clipboard",
-    "   y / <leader>y  copy selection to system clipboard",
-    "   Cmd+C          copy selection (no longer cuts)",
 }
 
 local function halp()
