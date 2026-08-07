@@ -95,6 +95,17 @@ urls() {
   print -r -- "temporal: http://localhost:$temporal"
 }
 
+# pairdown: wrap the eng-tools command (a plain script, so it can't cd this
+# shell itself). Tearing down the worktree you're standing in moves it to
+# wt's trash, stranding the shell in a dead dir (direnv then errors on the
+# stale .envrc). Run the real command, then if our cwd got removed, go home.
+pairdown() {
+  command pairdown "$@"
+  local ret=$?
+  [[ -d "$PWD" ]] || cd ~
+  return $ret
+}
+
 ########################################
 # run — quick launcher for common dev commands
 ########################################
@@ -145,3 +156,12 @@ run() {
 # Tab-complete the command names (no-op if completion isn't loaded yet).
 _run() { compadd -- ${(ok)_run_cmds} }
 (( $+functions[compdef] )) && compdef _run run
+
+
+########################################
+# Paired worktrees (pairup / pairdev / pairdown)
+########################################
+# pairup prefixes a bare branch name with this, so `pairup foo` creates the
+# jq/foo branch (matches my jq/ branch convention). Pass a fully-qualified
+# name to override, or unset this to disable prefixing.
+export PAIR_BRANCH_PREFIX=jq
