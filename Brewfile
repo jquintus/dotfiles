@@ -160,6 +160,8 @@ cask "hammerspoon"
 cask "hiddenbar"
 # Menu bar calendar
 cask "itsycal"
+# Keyboard customizer (Caps Lock -> Hyper key; see karabiner/)
+cask "karabiner-elements"
 # Prevents the system from going to sleep (Amphetamine alternative)
 cask "keepingyouawake"
 # Screenshot and annotation tool

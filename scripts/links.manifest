@@ -30,6 +30,9 @@ gh/config.yml         | ~/.config/gh/config.yml  | GitHub CLI configuration
 # --- PostgreSQL ---
 _psqlrc               | ~/.psqlrc                | PostgreSQL configuration
 
+# --- keyboard (Karabiner rewrites this file; see karabiner/README.md) ---
+karabiner/karabiner.json | ~/.config/karabiner/karabiner.json | Karabiner-Elements configuration
+
 # --- app configs outside $HOME (edits write straight back to the repo) ---
 vscode/settings.json  | ~/Library/Application Support/Code/User/settings.json | VS Code user settings
 claude/settings.json  | ~/.claude/settings.json  | Claude Code user settings
@@ -43,4 +46,6 @@ hammerspoon/init.lua    | ~/.hammerspoon/init.lua    | Hammerspoon main config
 hammerspoon/meet.lua    | ~/.hammerspoon/meet.lua    | Hammerspoon Google Meet module
 hammerspoon/mutebar.lua | ~/.hammerspoon/mutebar.lua | Hammerspoon Meet mic menu-bar module
 hammerspoon/layout.lua  | ~/.hammerspoon/layout.lua  | Hammerspoon desktop layout module
-hammerspoon/meeting.lua | ~/.hammerspoon/meeting.lua | Hammerspoon join-next-meeting module
+hammerspoon/meeting.lua  | ~/.hammerspoon/meeting.lua  | Hammerspoon join-next-meeting module
+hammerspoon/controls.lua | ~/.hammerspoon/controls.lua | Hammerspoon menu-bar controls module
+hammerspoon/launcher.lua | ~/.hammerspoon/launcher.lua | Hammerspoon hyper-key app launcher

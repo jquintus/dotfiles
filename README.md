@@ -106,6 +106,13 @@ There is no way to automate them, so run through the checklist by hand:
   first time a Google Meet hotkey runs. Needed by `hammerspoon/meet.lua`. (The
   matching Chrome-side setting, "Allow JavaScript from Apple Events," is set by
   `macos-defaults.sh` and takes effect on Chrome's next launch.)
+- **Approve the Karabiner-Elements driver:** Karabiner installs a system
+  extension, so first launch needs more than the usual permission grant. System
+  Settings > General > Login Items & Extensions > Driver Extensions > enable
+  Karabiner. Then System Settings > Privacy & Security > Input Monitoring >
+  enable both `karabiner_grabber` and `Karabiner-Elements`. Without these, Caps
+  Lock silently stays Caps Lock and every Hyper binding in
+  `hammerspoon/launcher.lua` is dead. See `karabiner/README.md`.
 - **Install App-Store-only apps** by signing into the App Store and downloading
   them (the Brewfile does not cover these).
 - **Install editor plugins** (see "Vim & Neovim plugins" below).
