@@ -29,6 +29,14 @@ local M = {}
 
 M.HYPER = { "cmd", "alt", "ctrl", "shift" }
 
+-- This file's own path, shown at the foot of the cheat sheet so the answer to
+-- "where do I add an app?" is always on screen. Hammerspoon loads this through
+-- the ~/.hammerspoon symlink, so resolve that to the real dotfiles path.
+local SOURCE = (function()
+  local path = debug.getinfo(1, "S").source:gsub("^@", "")
+  return hs.fs.symlinkAttributes(path, "target") or path
+end)()
+
 -- Ordered: position in this table is the Hyper+<number> binding.
 M.APPS = {
   { key = "t", name = "cmux" },
@@ -67,7 +75,11 @@ function M.cheatSheet()
     lines[#lines + 1] = keys .. "   " .. app.name
   end
   hs.alert.closeAll()
-  hs.alert.show("HYPER +\n\n" .. table.concat(lines, "\n"), 3)
+  hs.alert.show(
+    "HYPER +\n\n" .. table.concat(lines, "\n") ..
+    "\n\nedit: " .. SOURCE,
+    5
+  )
 end
 
 -- Bind everything. `mods` overrides the Hyper definition if you'd rather drive
