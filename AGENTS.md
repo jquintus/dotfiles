@@ -16,6 +16,7 @@ scripts/links.manifest    pipe-delimited: source | target | description
 scripts/macos-defaults.sh every `defaults write` (plus a little nvram/duti)
 Brewfile                  packages and casks
 bin/                      scripts auto-linked to ~/bin by a glob, NOT in the manifest
+TODO.md                   prioritized backlog of config ideas, one chunk per session
 ```
 
 Because they are symlinks, editing a config through an app's own UI writes
