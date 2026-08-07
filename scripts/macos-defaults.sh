@@ -49,6 +49,48 @@ defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 37 '{ en
 /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u 2>/dev/null || true
 
 ########################################
+# Dock
+########################################
+# Move the Dock to the left edge (Desktop & Dock > "Position on screen").
+# Vertical space is the scarce resource, and the bottom edge is the one the
+# pointer hits by accident, which is what makes the Dock hop between displays.
+print_status "Moving the Dock to the left edge"
+defaults write com.apple.dock orientation -string left
+
+# Auto-hide the Dock (Desktop & Dock > "Automatically hide and show the Dock").
+#   autohide-delay          seconds the pointer must rest on the edge first.
+#                           Raise to ~1000 to stop hover reveals entirely and
+#                           drive it only with Cmd+Opt+D.
+#   autohide-time-modifier  slide animation speed multiplier (lower = faster).
+print_status "Auto-hiding the Dock"
+defaults write com.apple.dock autohide -bool true
+defaults write com.apple.dock autohide-delay -float 0.15
+defaults write com.apple.dock autohide-time-modifier -float 0.4
+
+# Smaller tiles, no zoom-on-hover (Desktop & Dock > Size / Magnification).
+print_status "Shrinking Dock tiles and disabling magnification"
+defaults write com.apple.dock tilesize -int 40
+defaults write com.apple.dock magnification -bool false
+
+# Drop the trailing "recent applications" section (Desktop & Dock > "Show
+# suggested and recent apps in Dock").
+print_status "Hiding recent applications in the Dock"
+defaults write com.apple.dock show-recents -bool false
+
+killall Dock 2>/dev/null || true
+
+# NOT scripted, on purpose:
+#
+# The Dock hopping to whichever display the pointer is on is controlled by
+# Desktop & Dock > Mission Control > "Displays have separate Spaces". Turning it
+# off pins the Dock and menu bar to the primary display, but then a fullscreen
+# app blanks every other display, and it needs a logout to take effect. Left as
+# a manual decision:
+#     defaults write com.apple.spaces spans-displays -bool true   # then log out
+#
+# Finder and Trash cannot be removed from the Dock. There is no setting for it.
+
+########################################
 # Menu bar
 ########################################
 # Show seconds in the menu bar clock (Control Center > Clock > "Display the time
