@@ -46,6 +46,11 @@ Files that become real dotfiles are named with a leading underscore in the repo
   `~/.claude/settings.json`.
 - **`~/.claude` is a real directory, not a symlink.** Tools write generated
   state there. Only authored config gets versioned, file by file.
+- **This repo is public, and `claude/CLAUDE.md` is in it.** Work-specific
+  content (DirtLabs internals, service topology, internal tool names) must not
+  go in the tracked file. It belongs in `~/.claude/CLAUDE.work.md`, which is
+  machine-local and pulled back in by an `@`-import at the bottom of
+  `claude/CLAUDE.md`.
 - **`macos-defaults.sh` is separate from `install-mac.sh` on purpose.** It
   mutates system state, so it is run explicitly. Every setting must be
   idempotent and annotated with where it lives in System Settings.

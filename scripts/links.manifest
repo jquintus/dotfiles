@@ -36,6 +36,7 @@ karabiner/karabiner.json | ~/.config/karabiner/karabiner.json | Karabiner-Elemen
 # --- app configs outside $HOME (edits write straight back to the repo) ---
 vscode/settings.json  | ~/Library/Application Support/Code/User/settings.json | VS Code user settings
 claude/settings.json  | ~/.claude/settings.json  | Claude Code user settings
+claude/CLAUDE.md      | ~/.claude/CLAUDE.md      | Claude Code global instructions
 
 # --- Claude Code skills (per-file; ~/.claude/skills is shared) ---
 .claude/skills/dictionary/SKILL.md | ~/.claude/skills/dictionary/SKILL.md | dictionary skill
