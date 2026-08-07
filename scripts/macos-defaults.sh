@@ -138,6 +138,85 @@ print_status "Allowing JavaScript from Apple Events in Chrome"
 defaults write com.google.Chrome AllowJavaScriptAppleEvents -bool true
 
 ########################################
+# AltTab
+########################################
+# Trigger AltTab with Cmd+Tab instead of its default Option+Tab (AltTab Settings >
+# Controls > Shortcut 1 > hold key). AltTab owns the shortcut and disables the
+# native Cmd+Tab / Cmd+Shift+Tab symbolic hotkeys itself, so the Dock's switcher
+# stops eating the keystroke. It applies that at launch from these stored prefs,
+# which is what makes setting it here equivalent to setting it in the UI.
+#
+# Two things make this uglier than a normal `defaults write`:
+#   - The value is a dict, not a string. `secureData` is an NSKeyedArchiver blob
+#     holding an SRShortcut (keyCode 65535 = modifier-only, modifierFlags 1048576
+#     = Command); `string` is only the label drawn in the shortcut recorder.
+#   - There is no plain-string fallback. AltTab deletes any value it cannot decode
+#     and silently reverts to Option+Tab, so the blob is written verbatim.
+#
+# `nextWindowShortcut` is deliberately absent: Tab is already AltTab's registered
+# default for the first slot, so only the hold key needs overriding.
+#
+# This leaves Cmd+` alone, so macOS keeps cycling windows of the active app. That
+# covers what AltTab's second shortcut slot (Option+`) did before v11.0.0 moved
+# extra shortcut slots behind AltTab Pro.
+print_status "Setting AltTab to trigger on Cmd+Tab"
+alttab_was_running=false
+if pgrep -x AltTab >/dev/null 2>&1; then
+    alttab_was_running=true
+    osascript -e 'quit app "AltTab"' 2>/dev/null || true
+fi
+defaults write com.lwouis.alt-tab-macos holdShortcut '{
+  string = "⌘";
+  secureData = <
+    62706c6973743030d401020304050607
+    0a582476657273696f6e592461726368
+    697665725424746f7058246f626a6563
+    747312000186a05f100f4e534b657965
+    644172636869766572d1080954726f6f
+    748001a50b0c191a1b55246e756c6cd6
+    0d0e0f1011121314151417145d6d6f64
+    6966696572466c6167735f101b636861
+    7261637465727349676e6f72696e674d
+    6f646966696572735624636c6173735a
+    63686172616374657273576b6579436f
+    64655776657273696f6e800380008004
+    80008002800011ffff1200100000d21c
+    1d1e1f5a24636c6173736e616d655824
+    636c61737365735a535253686f727463
+    7574a21e20584e534f626a6563740811
+    1a24293237494c5153595f6c7a989faa
+    b2babcbec0c2c4c6c9ced3dee7f2f500
+    00000000000101000000000000002100
+    0000000000000000000000000000fe
+  >;
+}'
+# Silence the AltTab Pro upgrade campaign. v11.0.0 made AltTab freemium and added
+# a scheduled series of upgrade prompts (welcome, then days 4, 12, 15, 21, and a
+# final day-35 window). Only the day-35 window carries a "No thanks, don't ask
+# again" button, and clicking it sets exactly these two flags. Writing them up
+# front skips the whole series: `ProTransitionScheduler.computeNextFireDate`
+# returns nil as soon as both are set. Note it takes BOTH; `userOptedOut` alone
+# leaves the early-return untriggered. This is the app's own opt-out, not a
+# bypass of anything paid, and Pro features stay locked either way.
+print_status "Opting out of the AltTab Pro upgrade prompts"
+defaults write com.lwouis.alt-tab-macos.license "proTransition.userOptedOut" -bool true
+defaults write com.lwouis.alt-tab-macos.license "proTransition.hasSeenDay35" -bool true
+
+# Drop AltTab to a single shortcut slot. Slot 2 (Option+`) is still configured by
+# default, but v11 hard-gates its keypress behind Pro, so it no longer switches
+# anything and only raises an upgrade popover, which the opt-out above does NOT
+# suppress. Setting the count to 1 unregisters the slot so the popover can't fire.
+# Stored as a string ("2" by default), so -string, not -int. Raise it back to 2 if
+# AltTab Pro ever gets bought.
+print_status "Limiting AltTab to one shortcut slot"
+defaults write com.lwouis.alt-tab-macos shortcutCount -string 1
+
+# AltTab caches preferences in memory, so the new shortcut needs a relaunch.
+if [[ "$alttab_was_running" == true ]]; then
+    open -a AltTab 2>/dev/null || true
+fi
+
+########################################
 # Default apps
 ########################################
 # Open .csv files in MacVim. Uses `duti` to set the LaunchServices handler for
