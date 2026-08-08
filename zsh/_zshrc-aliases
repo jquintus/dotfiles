@@ -11,9 +11,8 @@ alias up="pushd .."
 alias lock='/System/Library/CoreServices/"Menu Extras"/User.menu/Contents/Resources/CGSession -suspend'
 
 # alias code='pushd $CODE'
-alias tst='pushd ~/test'
 alias dl='pushd ~/Downloads'
-alias home='~'
+alias home='cd ~'
 alias profile='vim ~/.bash_profile'
 alias gprofile='gvim ~/.bash_profile'
 alias aliases='config aliases'
@@ -32,7 +31,6 @@ alias less='less -FSRXc'                    # Preferred 'less' implementation
 alias f='open -a Finder '                   # Open the specified directory in MacOS Finder
 alias f.='open -a Finder ./'                # Open current directory in MacOS Finder
 
-alias ~="pushd ~"                           # Go Home
 alias cls='clear'                           # Clear terminal display
 alias clip='pbcopy'                         # I won't remember pbcopy any time soon.
 alias xclip='pbcopy'                        # I won't remember pbcopy any time soon.
