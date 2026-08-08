@@ -203,33 +203,36 @@ Still open in this section:
       be installed at all. `README.md:228` lists it, so that app inventory is
       stale. Re-evaluate on its own merits if it comes back.
 
-- [ ] **logdy** — **trialing**, wired into pairdev 2026-08-08. Alongside the
-      terminal, not replacing it: `mirror` tees each service mid-pipeline, so the
-      `[be]` / `[wrk]` / `[web]` output is byte-identical and the web UI is
-      purely additive. Verified with logdy hidden from PATH, the not-installed
-      case.
+- [ ] **logdy** — **trialing**, rebuilt 2026-08-08 as ONE shared viewer.
+      Stable port 8099 (`PAIRDEV_LOGDY_PORT`), every workspace in one view, so a
+      bookmark keeps working and there is one place to look.
 
-      **Uses `logdy follow` on files, not socket mode.** Sockets were tried first
-      and under-delivered: the UI showed 11 lines from a single origin while the
-      terminal streamed hundreds, with all three `logdy forward` processes alive.
-      Never fully diagnosed, because logdy has no read API to measure delivery
-      with. Files win on four counts anyway: lines are labelled by origin
-      filename (`be.log`) rather than "Port: 35983", there is no socket handshake
-      to wedge, the logs persist for post-mortem, and it needs one port instead
-      of four. If someone is tempted back to sockets, that is why.
+      Design forced by a constraint: `logdy follow` takes its file list at
+      startup, so a shared instance would never see pairs started later. Hence
+      one combined file, `~/.pairdev-logs/all.log`, that everything appends to.
+      Streams are told apart by a `<workspace> <service> ` prefix written only to
+      the file; the terminal still gets raw lines. Services are named
+      `django-admin`, `temporal-worker`, `web`.
 
-      Logs go to `$TMPDIR/pairdev-logs/<slug>/`, truncated per run so the UI
-      shows this run, and outside the worktree so they never hit `git status`.
+      The viewer is detached and deliberately outlives any single pairdev: it is
+      not in `pids` and its port is not freed on Ctrl-C, since other pairs are
+      using it. Log trimmed at 50MB, but only when nothing is listening, since
+      truncating mid-stream would throw away another pair's history.
 
-      Bug worth remembering from the socket version: a pick-one-port helper
-      called four times returns the SAME port every time, since each `$(...)` is
-      a subshell inheriting identical `$RANDOM` state. `pick_ports <n>` allocates
-      in one call.
+      **Facets are a UI job, and persist themselves.** `handleClientSettingsSave`
+      writes `logdy.config.json` into logdy's working directory, and startup
+      auto-loads that filename from cwd. The viewer runs with cwd
+      `~/.pairdev-logs`, so saving layout in the UI lands exactly where the next
+      start reads it. Verified: the saved file comes back as `configStr` from
+      `/api/status`. No `--config` flag needed, so that plumbing was removed.
 
-      Lives in eng-tools, not this repo, and is uncommitted pending a decision on
-      branch-and-PR versus straight to main. Verdict question: does the browser
-      UI actually get opened during a debugging session, or does the terminal
-      keep winning because it is already in front of you?
+      Two dead ends recorded so they are not retried: socket mode labels streams
+      by origin PORT (unreadable) and under-delivered for reasons never
+      diagnosed, and absolute paths under `$TMPDIR` made origins read
+      `/var/folders/f6/r3jh...`, which the sidebar truncates to nothing.
+
+      Lives in eng-tools. Verdict question unchanged: does the browser UI get
+      opened during a real debugging session?
 
 - [ ] **Taproom.** A GUI over Homebrew. Weigh against the fact that the Brewfile
       here is the source of truth: anything installed by clicking still has to
