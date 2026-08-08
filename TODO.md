@@ -258,11 +258,6 @@ until confirmed either way.
       `pager = less -R`. `side-by-side` is present but commented out, since it
       wants a wide window. Verdict question: does it stay on, or does it start
       feeling like decoration on a `git diff` you were already reading fine?
-- [ ] **pspg** — **trialing**, installed 2026-08-07 (v5.8.16). Wired into
-      `_psqlrc` as `PAGER`, with `\pset pager on`. Note this reverses the
-      `\pset pager off` that had been there since the file was created, so the
-      real question is whether a table-aware pager is worth having a pager at
-      all again. If it is not, revert to `off` rather than trying another pager.
 - [ ] **direnv** — **configured.** Hooked at `zsh/_zshrc-dirty:13`, so
       per-project venvs auto-activate on this host. Two open questions: is it
       actually relied on, and should it be promoted out of the per-host file so
@@ -294,6 +289,23 @@ until confirmed either way.
 When something is declined, move it here with the reason, so it does not come
 back around as a fresh idea later.
 
+- [x] **pspg.** Installed and removed 2026-08-07. Unreadable inside nvim's
+      `:terminal`, which is where psql actually runs, and three rounds of theme
+      work did not fix it. `_psqlrc` is back to `\pset pager off`.
+
+      The finding is worth more than the tool, and applies to any TUI evaluated
+      from here (yazi, jless, btop): pspg is an ncurses program, and given a hex
+      colour it tries to *redefine a terminal palette entry*. nvim's `:terminal`
+      does not honour that, so the colours land on whatever occupied the slot,
+      producing green backgrounds and grey-on-grey text. `termguicolors` is
+      irrelevant; it governs how nvim draws its own buffers, not what an ncurses
+      child can do to the palette. Using only named colours plus `Default` got
+      the table body readable, but the bottom menu bar draws from
+      `template_menu` rather than any theme field and could not be fixed at all,
+      only hidden with `--no-commandbar`.
+
+      So: a TUI is worth trying only if it looks right in nvim's `:terminal`
+      with no theming at all. Reaching for a custom theme is the signal to stop.
 - [x] **ccmanager.** Installed and uninstalled the same night, 2026-08-07.
       Wrong category: it manages sessions (creating, switching, worktree
       juggling), and the actual want is finding old ones. That distinction now

@@ -42,11 +42,3 @@
 - `c` stage everything and commit.
 - `n` / `N` jump to the next or previous file while paging a diff.
 
-## psql
-
-- `Ctrl-F` page forward through a result set, `Ctrl-B` back.
-- `1` freeze the first column so it stays put while scrolling right, up to `9`. `0` unfreezes.
-- `/` search within the result.
-- `n` jump to the next search hit.
-- `s` save the result set to a file.
-- `q` quit the pager, back to the psql prompt.

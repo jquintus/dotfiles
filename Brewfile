@@ -92,8 +92,6 @@ brew "pgformatter"
 brew "pgpdump"
 # Execute binaries from Python packages in isolated environments
 brew "pipx"
-# Table-aware pager for psql; frozen headers and columns. Wired up in _psqlrc
-brew "pspg"
 # Fast, disk space efficient package manager
 brew "pnpm"
 # Object-relational database system
