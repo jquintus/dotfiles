@@ -349,6 +349,49 @@ alias rl='exec zsh -l'
 command -v starship >/dev/null && eval "$(starship init zsh)"
 
 ########################################
+# Transient prompt: finished commands keep a bare ❯ instead of the full
+# powerline, so scrollback is commands and output rather than furniture.
+########################################
+# Done by hand because starship has no zsh support for this. Its transience
+# feature covers fish, PowerShell, cmd, and bash-with-ble.sh only, which is why
+# there is no `enable_transience` to call.
+#
+# PROMPT has to be saved and put back by hand. starship assigns it exactly once
+# at init, to a literal string containing $(starship prompt ...), and relies on
+# `setopt promptsubst` to re-evaluate that on every render; its precmd hook does
+# not touch PROMPT at all. So overwriting PROMPT does not last one line, it
+# destroys the prompt for the rest of the session.
+#
+# ❯ matches [character].success_symbol in starship.toml. It does not go red on
+# failure the way the live prompt does: the exit status is starship's to know,
+# and re-deriving it here would mean duplicating that logic for a glyph you
+# have already seen.
+#
+# Must be defined before zsh-syntax-highlighting is sourced below, since that
+# wraps every widget that exists when it loads.
+_STARSHIP_PROMPT="$PROMPT"
+
+# The leading newline is what keeps retired commands separated. starship's
+# `add_newline` puts a blank line above the live prompt, and swapping PROMPT
+# throws that away, so scrollback collapses into an unbroken wall. Putting it
+# back here means every retired block is spaced the same as the live one.
+_transient_accept_line() {
+    PROMPT=$'\n%B%F{green}❯%f%b '
+    zle .reset-prompt
+    zle .accept-line
+}
+zle -N accept-line _transient_accept_line
+
+# Put the real prompt back before the next one is drawn.
+autoload -Uz add-zsh-hook
+_transient_restore_prompt() { PROMPT="$_STARSHIP_PROMPT" }
+add-zsh-hook precmd _transient_restore_prompt
+
+# The right prompt (command duration) gets the same treatment, but zsh has this
+# built in rather than needing a widget.
+setopt TRANSIENT_RPROMPT
+
+########################################
 # zsh-autosuggestions: greys in the rest of a command you have typed before.
 ########################################
 # Right arrow or Ctrl-E accepts the whole suggestion, Alt-F accepts one word of

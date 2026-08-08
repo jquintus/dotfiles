@@ -99,12 +99,8 @@ Still open in this section:
 
 ### Prompt (`starship.toml`)
 
-- [ ] **Transient prompt.** Collapse previous prompts so scrollback is command
-      plus output, not repeated prompt furniture. Needs starship's zsh
-      transience integration, not just a config key.
-- [ ] **Blank line between commands.** `add_newline = true` is already set, so
-      clarify what is wanted beyond it. Likely a gap after output, which is the
-      transient prompt work above.
+
+
 
 ---
 
@@ -262,6 +258,26 @@ until confirmed either way.
       binding is silent in terminals that do not emit it, ssh included.
       Verdict question: two keys for one idea, or does the shallow default just
       want to be recursive after all?
+- [ ] **Transient prompt** — **trialing**, wired 2026-08-08. Finished commands
+      keep a bare `❯` instead of the full powerline, so scrollback is commands
+      and output rather than furniture. `setopt TRANSIENT_RPROMPT` does the same
+      for the command duration on the right.
+
+      The backlog entry was wrong about the method: starship has no zsh
+      transience at all (fish, PowerShell, cmd, and bash-with-ble.sh only), so
+      there is no `enable_transience` to call. This is a hand-rolled
+      `accept-line` widget that swaps PROMPT before redrawing, which works only
+      because starship rebuilds PROMPT on every precmd. Defined before
+      zsh-syntax-highlighting, which wraps whatever exists when it loads.
+
+      Absorbs the old "blank line between commands" item, which was the same
+      want stated twice; `add_newline` already handles the gap on the live
+      prompt.
+
+      Known limit: the retired `❯` is always green, where the live one turns red
+      on failure. Re-deriving exit status here would duplicate starship's logic
+      for a glyph already seen. Verdict question: is the denser scrollback worth
+      losing the directory context of past commands?
 - [ ] **direnv** — **configured.** Hooked at `zsh/_zshrc-dirty:13`, so
       per-project venvs auto-activate on this host. Two open questions: is it
       actually relied on, and should it be promoted out of the per-host file so
