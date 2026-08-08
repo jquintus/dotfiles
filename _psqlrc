@@ -1,4 +1,13 @@
-\pset pager off
+-- Page results through pspg, a pager that understands tables: the header row
+-- and leftmost columns stay frozen while scrolling, and the row under the
+-- cursor highlights. This reverses the earlier `\pset pager off`, which was
+-- there because plain `less` mangles a wide result set more than it helps.
+--   -X  leave the output on screen after quitting, like `less -X`
+--   -s  colour scheme
+-- `pager on` rather than `always`, so short results still print inline and
+-- this only engages when the output would not have fit anyway.
+\setenv PAGER 'pspg -X -s 6'
+\pset pager on
 \pset expanded auto
 \timing on
 

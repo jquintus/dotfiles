@@ -44,6 +44,8 @@ brew "gcalcli"
 brew "gh"
 # Distributed revision control system
 brew "git"
+# Syntax-highlighting pager for git diff, with line numbers and n/N navigation
+brew "git-delta"
 # Manage stacked Git branches
 brew "git-spice"
 # Render markdown on the CLI
@@ -90,6 +92,8 @@ brew "pgformatter"
 brew "pgpdump"
 # Execute binaries from Python packages in isolated environments
 brew "pipx"
+# Table-aware pager for psql; frozen headers and columns. Wired up in _psqlrc
+brew "pspg"
 # Fast, disk space efficient package manager
 brew "pnpm"
 # Object-relational database system

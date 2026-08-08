@@ -156,8 +156,8 @@ export FZF_CTRL_T_COMMAND="ls -A -p | grep -v -e '^\.git/$' -e '^\.DS_Store$'"
 
 # Alt-C gets the same treatment for the same reason: fzf's default walks every
 # directory below the cwd, which is 16k entries in ~/code. Directories only, one
-# level deep. Jumping somewhere far away is a different problem, and the answer
-# to it is zoxide (see TODO.md), not a longer list here.
+# level deep. Reaching somewhere far away is a separate problem, and one that
+# has not actually come up in practice, so it is not solved here.
 export FZF_ALT_C_COMMAND="ls -A -p | grep '/$' | grep -v '^\.git/$'"
 
 if command -v bat >/dev/null 2>&1; then

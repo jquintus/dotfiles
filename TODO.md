@@ -112,9 +112,6 @@ are stock widgets that only need binding.
       (`zsh/_zshrc:83`), and sync means shell history leaves the machine, which
       needs a deliberate yes on a work laptop. Self-hosting and sync-off are
       both options.
-- [ ] **zoxide.** Frecency-based directory jumping. Would retire the `pushd`
-      aliases at `zsh/_zshrc-aliases:47`. Question: `z` as a new verb, or shadow
-      `cd` outright.
 - [ ] **eza for `ll` and friends.** Partially answered: eza is now **trialing**
       inside the fzf picker (see below), but `ll` is still `ls -FGlAhp` at
       `zsh/_zshrc-aliases:32`. The open question is whether its output is wanted
@@ -122,9 +119,6 @@ are stock widgets that only need binding.
       both follow from a yes.
 - [ ] **ripgrep** — **installed.** Unclear how much it is reached for versus
       grep out of habit. Cheap thing to notice over a week.
-- [ ] **git-delta.** Not installed. Side-by-side syntax-highlighted diffs,
-      configured in `git/` rather than the shell. Probably the most visible
-      upgrade to everyday `git diff` and `git show` in this file.
 - [ ] **lazygit.** Not installed (lazydocker is, which is a useful comparison
       point: is lazydocker actually used? If not, that predicts the answer
       here).
@@ -167,9 +161,7 @@ are stock widgets that only need binding.
 - [ ] **jless.** Interactive JSON viewer. `jq`, `jd`, `yq`, and `xq` are already
       installed, so this is browsing rather than querying. Worth it only if
       there is real time spent squinting at `jq` output.
-- [ ] **pspg as the psql pager.** Lands in `_psqlrc`, which already exists and
-      is already linked. Small, self-contained, and easy to back out. Given how
-      much psql work happens here this is probably the best value in Tier 2.
+
 - [ ] **Log viewers.** logdy (streams logs to a browser UI) and nless
       (<https://github.com/mpryor/nothing-less>). Evaluate against the current
       workflow before adding either, and probably pick one.
@@ -235,6 +227,11 @@ trying standalone before any config lands in this repo.
       launching. So adopting it means replacing two working pieces with one app.
       That could still be worth it if the current setup is fiddly to maintain;
       that is the question to answer.
+- [ ] **zoxide.** Bottom of the list on purpose, moved here 2026-08-07: Josh
+      does not have the problem it solves. Frecency-based jumping is only worth
+      something if you regularly need to reach a directory far from where you
+      are, and that is not how he moves around. Not dropped, since the shallow
+      fzf pickers could change that, but do not resurface it without a reason.
 
 ---
 
@@ -255,6 +252,17 @@ until confirmed either way.
       revert (an `ls` fallback is already in the same block for machines without
       eza) and it says nothing yet about whether `ll` should change. Verdict
       question: does eza's output get missed outside the picker?
+- [ ] **git-delta** — **trialing**, installed 2026-08-07 (v0.19.2). Configured
+      in `git/_gitconfig`: `core.pager`, `interactive.diffFilter` so `git add -p`
+      matches, `navigate` for n/N between files, and line numbers. Replaces
+      `pager = less -R`. `side-by-side` is present but commented out, since it
+      wants a wide window. Verdict question: does it stay on, or does it start
+      feeling like decoration on a `git diff` you were already reading fine?
+- [ ] **pspg** — **trialing**, installed 2026-08-07 (v5.8.16). Wired into
+      `_psqlrc` as `PAGER`, with `\pset pager on`. Note this reverses the
+      `\pset pager off` that had been there since the file was created, so the
+      real question is whether a table-aware pager is worth having a pager at
+      all again. If it is not, revert to `off` rather than trying another pager.
 - [ ] **direnv** — **configured.** Hooked at `zsh/_zshrc-dirty:13`, so
       per-project venvs auto-activate on this host. Two open questions: is it
       actually relied on, and should it be promoted out of the per-host file so

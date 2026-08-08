@@ -46,7 +46,13 @@
 [core]
     editor = nvim
 	excludesfile = /Users/jq/.gitignore
-	pager = less -R
+	pager = delta                      # was `less -R`; delta shells out to less itself
+[interactive]
+	diffFilter = delta --color-only    # colours `git add -p` the same way
+[delta]
+	navigate = true                    # n / N jump between files in the diff
+	line-numbers = true                # old and new line numbers in a gutter
+	# side-by-side = true              # uncomment for two columns; wants a wide window
 [pager]
 	branch = false
 [color]
