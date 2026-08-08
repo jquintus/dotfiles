@@ -17,6 +17,7 @@ scripts/macos-defaults.sh every `defaults write` (plus a little nvram/duti)
 Brewfile                  packages and casks
 bin/                      scripts auto-linked to ~/bin by a glob, NOT in the manifest
 TODO.md                   prioritized backlog of config ideas, one chunk per session
+cheat.md                  terminal cheat sheet, paged by the `cheat` script in bin/
 ```
 
 Because they are symlinks, editing a config through an app's own UI writes
@@ -58,6 +59,11 @@ Files that become real dotfiles are named with a leading underscore in the repo
 - **Hammerspoon is one module per feature.** Each module exposes `start()` or
   `bind()`, is required from `hammerspoon/init.lua`, and needs its own manifest
   line.
+- **A new binding is not done until it is on the cheat sheet.** Anything that
+  adds a keystroke, alias, or command belongs in `cheat.md` in the same commit.
+  A binding Josh cannot recall is worth exactly as much as one that was never
+  added, and that has already cost real config. `TODO.md` has the longer version
+  of this rule.
 - **Karabiner rewrites its own config and can eat the symlink.** It writes
   `karabiner.json` atomically on any UI change, which replaces the symlink with a
   regular file and silently decouples it from the repo. Prefer editing

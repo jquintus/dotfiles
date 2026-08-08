@@ -31,6 +31,20 @@ Status tags used below:
 | **in use** | adopted, confirmed by Josh |
 | **dropped** | declined, reason recorded |
 
+## When something goes on trial
+
+Anything that reaches **trialing** gets proposed entries for `cheat.md` as part
+of wiring it up, in the same commit, not as a follow-up.
+
+This is not bookkeeping. The failure mode being guarded against is real and has
+already happened: a binding that cannot be recalled is indistinguishable from
+one that was never configured, so a trial with nothing on the cheat sheet is not
+a trial at all, it just quietly expires. Suggesting the entry is part of the
+work; whether it earns a line is Josh's call like everything else here.
+
+Keep entries to one line, and phrase them as what you would be trying to do
+rather than what the tool is called.
+
 Implementation conventions still apply when something does get adopted: a new
 config file is not done until it has a line in `scripts/links.manifest`, system
 settings go in `scripts/macos-defaults.sh`, and nothing is committed until it is

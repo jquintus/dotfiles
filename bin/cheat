@@ -1,0 +1,67 @@
+#!/bin/bash
+
+###############################################################################
+# Script Name: cheat
+# Description: Pages the terminal cheat sheet (dotfiles/cheat.md) through glow.
+#              A binding you cannot recall is the same as one you never
+#              configured, so everything in that file is something already set
+#              up in this repo and easy to forget.
+#
+#              Appends ~/.cheat.work.md when it exists. That file is
+#              machine-local and untracked on purpose: this repo is public, so
+#              work-specific commands stay out of it, mirroring how
+#              CLAUDE.work.md is kept out of claude/CLAUDE.md.
+#
+# Author: Josh Quintus
+# Usage:
+#   cheat            page the whole sheet
+#   cheat fzf        only sections whose heading matches (case-insensitive)
+# Date: August 2026
+###############################################################################
+
+set -euo pipefail
+
+SHEET="$HOME/dotfiles/cheat.md"
+WORK="$HOME/.cheat.work.md"
+
+if [[ ! -f "$SHEET" ]]; then
+    echo "cheat: no cheat sheet at $SHEET" >&2
+    exit 1
+fi
+
+# The sheet, plus the work-local one when present.
+collect() {
+    cat "$SHEET"
+    if [[ -f "$WORK" ]]; then
+        echo
+        cat "$WORK"
+    fi
+}
+
+# Keep the document title and any `## ` section whose heading matches, along
+# with everything under it up to the next heading.
+filter_sections() {
+    awk -v pat="$1" '
+        /^# /  { print; keep = 0; next }
+        /^## / { keep = (tolower($0) ~ tolower(pat)) }
+        keep   { print }
+    '
+}
+
+if [[ $# -gt 0 ]]; then
+    content=$(collect | filter_sections "$1")
+    # The title always survives, so test for an actual section body.
+    if [[ -z $(printf '%s\n' "$content" | grep -v '^# ' | tr -d '[:space:]') ]]; then
+        echo "cheat: no section matching '$1'" >&2
+        exit 1
+    fi
+else
+    content=$(collect)
+fi
+
+if command -v glow >/dev/null 2>&1; then
+    printf '%s\n' "$content" | glow -p -
+else
+    # Still readable without glow, just unstyled.
+    printf '%s\n' "$content" | ${PAGER:-less -R}
+fi
