@@ -63,7 +63,20 @@ Files that become real dotfiles are named with a leading underscore in the repo
   adds a keystroke, alias, or command belongs in `cheat.md` in the same commit.
   A binding Josh cannot recall is worth exactly as much as one that was never
   added, and that has already cost real config. `TODO.md` has the longer version
-  of this rule.
+  of this rule. How to write entries there:
+  - **One item per bullet.** Never two keystrokes on one line. Bulleted lists
+    exist to be scanned, and packing three bindings into a sentence defeats the
+    only thing the file is for.
+  - **Phrase it as the thing he is trying to do**, not as what the tool is
+    called.
+  - **Nothing meta.** No preamble explaining what the file is, no maintenance
+    instructions, no notes to agents. That content is a distraction to the
+    person reading it under time pressure, and it belongs in this file instead.
+  - **Only what is easy to forget.** Anything already in daily use is noise, and
+    Josh will cut it.
+  - **Nothing work-specific**, since this repo is public. Those go in
+    `~/.cheat.work.md`, which is machine-local, untracked, and appended
+    automatically by the `cheat` script when it exists.
 - **Karabiner rewrites its own config and can eat the symlink.** It writes
   `karabiner.json` atomically on any UI change, which replaces the symlink with a
   regular file and silently decouples it from the repo. Prefer editing

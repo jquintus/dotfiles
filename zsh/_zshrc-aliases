@@ -1,7 +1,5 @@
 # export CODE="/Users/jq/code"
 
-alias bpr="source ~/dotfiles/zsh/_zshrc-aliases"
-
 ########################################
 # Command Line Aliases
 # Some of these came from https://gist.github.com/natelandau/10654137

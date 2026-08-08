@@ -1,10 +1,5 @@
 # Terminal cheat sheet
 
-Things this machine is already configured to do and that are easy to forget.
-Run `cheat` to page this file, or `cheat <section>` for one part (`cheat fzf`).
-
-If something here is wrong, the config changed and this file did not. Fix both.
-
 ## fzf
 
 - `Ctrl-T` insert a file path into the current command. Preview pane shows file
@@ -20,55 +15,40 @@ If something here is wrong, the config changed and this file did not. Fix both.
 - `Esc .` insert the last word of the previous command. Repeat to walk further
   back through history.
 - `Ctrl-W` delete the word before the cursor.
-- `Ctrl-U` clear the line, `Ctrl-A` jump to start, `Ctrl-E` jump to end.
-- `Ctrl-X Ctrl-R` reload the shell (`exec zsh -l`). Same as `rl`.
+- `Ctrl-U` clear the line.
+- `Ctrl-A` jump to the start of the line.
+- `Ctrl-E` jump to the end of the line.
 
 ## History
 
 - Type a prefix, then `Up` / `Down` to cycle only commands that start with it.
 - Start a command with a leading space to keep it out of history entirely.
-- History is shared live between open shells, and records timestamps.
-- `!!` is the previous command, `!$` its last argument. Expansions are shown for
-  confirmation before they run rather than firing blind.
+- History is shared live between open shells.
+- `!!` the previous command.
+- `!$` the last argument of the previous command.
 
 ## Navigation
 
-- `..` `...` `....` go up one, two, or three directories. `back` returns.
-- `~` home, `dl` Downloads, `tst` ~/test.
-- `f.` open the current directory in Finder, `f <dir>` opens a specific one.
-- `clip` pipe into the macOS clipboard (`pbcopy` by another name).
+- `..` go up one directory.
+- `...` go up two directories.
+- `....` go up three directories.
+- `back` return to the directory you came from.
+- `~` go home.
+- `dl` go to Downloads.
+- `tst` go to ~/test.
+- `f.` open the current directory in Finder.
+- `f <dir>` open a specific directory in Finder.
+- `clip` pipe into the macOS clipboard.
 
 ## Git
 
-- `s` status, `c` stage everything and commit, `co` checkout, `cob` new branch.
-- `coi` fzf branch picker, `main` / `master` switch to the default branch.
-- `branches` list branches, `pushup` push and set upstream, `pulls` open the PR
-  in a browser.
+- `s` status.
+- `c` stage everything and commit.
+- `co` checkout.
+- `cob` create and switch to a new branch.
+- `coi` fzf branch picker.
+- `main` switch to the default branch.
+- `branches` list branches.
+- `pushup` push and set upstream.
+- `pulls` open the PR in a browser.
 - `prune-branches.sh` delete local branches whose remote branch is gone.
-
-## Config
-
-- `config` fzf picker over shell config files.
-- `config zshrc | aliases | dirty | db` open one directly. `zshrc` and `aliases`
-  are shortcuts for the first two.
-- `bpr` re-source the alias file after editing it, without a full reload.
-- `readme [file]` page a markdown file with glow. `cheat` is its sibling.
-
-## macOS keys
-
-- `Cmd-Tab` AltTab switcher across all windows.
-- ``Cmd-` `` cycle windows of the active app (macOS native, not AltTab).
-- Caps Lock held is Hyper (Cmd+Ctrl+Opt+Shift). Tapped alone it is Escape.
-- `Hyper+<letter>` or `Hyper+<number>` jump straight to an app. Same key again
-  hides it. `Hyper+0` shows the app launcher's own cheat sheet.
-
-## Adding to this file
-
-Anything that goes on trial in `TODO.md` should land here in the same commit,
-otherwise it gets configured and then forgotten, which is the whole problem this
-file exists to solve. Keep entries to one line and phrase them as what you would
-be trying to do, not what the tool is called.
-
-Work-specific commands do not belong in this file, since this repo is public.
-Put those in `~/.cheat.work.md`, which is machine-local and untracked; `cheat`
-appends it automatically when it exists.
