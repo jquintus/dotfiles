@@ -83,10 +83,10 @@ alias greb='grep'
 # every markdown file instead. To read this repo's, type `README.md`.
 ########################################
 alias -s md='glow -p'
-# Considered pointing this at jless once that was adopted, and decided against
-# it: typing a bare filename should print the thing and get out of the way.
-# jless is for browsing a document you do not know yet, and that is a choice
-# worth making explicitly rather than by default.
+# Considered pointing this at jless once that was adopted, and kept jq as of
+# 2026-08-08: typing a bare filename should print the thing and get out of the
+# way, where jless is for browsing a document you do not know yet. Worth asking
+# again sometime; this is a preference rather than a settled fact.
 alias -s json='jq .'
 alias -s {png,jpg,gif}='viu'
 

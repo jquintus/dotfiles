@@ -341,7 +341,13 @@ until confirmed either way.
 ## Dropped
 
 When something is declined, move it here with the reason, so it does not come
-back around as a fresh idea later.
+back around as a *fresh* idea later.
+
+Dropped is not permanent. Raising one again is fine, and sometimes right:
+circumstances change and so do preferences. What the recorded reason buys is
+that the conversation restarts from what was already learned rather than from
+zero. Bring it back with the history attached, instead of either pretending it
+never came up or treating it as settled forever.
 
 - [x] **Global aliases (`alias -g`).** Declined 2026-08-08, without trying
       them. The downsides landed harder than the upside: single capitals collide
