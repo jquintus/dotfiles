@@ -67,9 +67,10 @@ Files that become real dotfiles are named with a leading underscore in the repo
   - **One item per bullet.** Never two keystrokes on one line. Bulleted lists
     exist to be scanned, and packing three bindings into a sentence defeats the
     only thing the file is for.
-  - **One physical line per bullet.** Do not hard-wrap at 80 columns the way the
-    rest of this repo's prose does. A wrapped bullet reads as two entries when
-    skimming, so let the line run long and let the terminal wrap it.
+  - **One physical line per bullet, unwrapped.** This file only, and only
+    because it is read through glow, which re-wraps to the terminal width and
+    renders a hard-wrapped bullet as ragged, broken lines. Everywhere else in
+    this repo, wrap prose normally.
   - **Phrase it as the thing he is trying to do**, not as what the tool is
     called.
   - **Nothing meta.** No preamble explaining what the file is, no maintenance

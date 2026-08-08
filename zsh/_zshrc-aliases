@@ -12,7 +12,6 @@ alias lock='/System/Library/CoreServices/"Menu Extras"/User.menu/Contents/Resour
 
 # alias code='pushd $CODE'
 alias dl='pushd ~/Downloads'
-alias home='cd ~'
 alias profile='vim ~/.bash_profile'
 alias gprofile='gvim ~/.bash_profile'
 alias aliases='config aliases'
