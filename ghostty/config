@@ -2,3 +2,16 @@
 # and reads this file; apply changes with `cmux reload-config`.
 # Nerd Font so Starship prompt glyphs render.
 font-family = MesloLGS Nerd Font
+
+# Desert, the same palette nvim uses (neo-vim/lua/settings.lua sets `color
+# desert`), so the editor and the shell around it stop disagreeing. Ghostty's
+# version is derived from the vim colorscheme: background #333333 on #ffffff,
+# khaki #f0e68c where vim puts Statement, #ffa0a0 where it puts Constant.
+#
+# Side effect worth knowing: the magenta slot is #ffdead (navajowhite) rather
+# than a purple, so the bold-magenta that LS_COLORS assigns to images turns
+# into a warm cream without LS_COLORS being touched. Those codes name palette
+# slots, not colours, so the theme decides what they look like.
+#
+# `ghostty +list-themes` browses the other 462 with live previews.
+theme = Desert
