@@ -66,6 +66,9 @@ brew "jq"
 brew "jless"
 # Kubernetes CLI To Manage Your Clusters In Style!
 brew "k9s"
+# Web UI for streaming logs. pairdev mirrors its three services into one
+# instance, optionally: without this installed pairdev is unchanged.
+brew "logdy"
 # Lazier way to manage everything docker
 brew "lazydocker"
 # Lazier way to manage everything git

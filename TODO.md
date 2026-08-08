@@ -203,26 +203,27 @@ Still open in this section:
       be installed at all. `README.md:228` lists it, so that app inventory is
       stale. Re-evaluate on its own merits if it comes back.
 
-- [ ] **logdy**, for the pairdev log streams. Josh picked this over nless
-      2026-08-08. The goal is the one pairdev already serves: the three services'
-      logs in one place worth looking at.
+- [ ] **logdy** — **trialing**, wired into pairdev 2026-08-08. Alongside the
+      terminal, not replacing it: a `mirror` helper tees each service into logdy
+      mid-pipeline, so the `[be]` / `[wrk]` / `[web]` output is byte-identical to
+      before and the web UI is purely additive. Verified with logdy hidden from
+      PATH, which is the "not installed" case.
 
-      Socket mode fits exactly. `logdy socket 8233 8234 8235` serves one UI over
-      three ports and marks each line with its origin port, which replaces
-      pairdev's `[be]` / `[wrk]` / `[web]` awk prefixes with something the UI can
-      filter on. Each service pipes through `logdy forward <port>`. UI port is
-      `--port` or `LOGDY_PORT`.
+      One `logdy socket` over three ports, each service piping through
+      `logdy forward`; logdy tags lines by origin port, which is what separates
+      the three in the browser. Four ports picked at run time by `pick_ports`,
+      since engine-allocated worktree ports are scattered with no block to carve
+      offsets from. Several pairs can run at once. URL prints in the banner
+      beside app/admin/temporal.
 
-      The integration question is ports, and it fits: pairdev already allocates
-      isolated ports per worktree, so a UI port plus three socket ports slot into
-      the same scheme. Several pairs can run at once without collision.
+      Bug worth remembering, hit while building it: a pick-one-port helper called
+      four times returns the SAME port every time, because each `$(...)` is a
+      subshell inheriting identical `$RANDOM` state. All four are allocated in
+      one call now.
 
-      Costs to weigh: it trades "all logs in one terminal, Ctrl-C stops all" for
-      a browser surface, and keeping both needs a `tee`. Upside beyond filtering
-      is that the UI can open as a cmux split next to the terminal, given the
-      browser routing already wired into pairup/pairdev.
-
-      Lives in eng-tools, not this repo.
+      Lives in eng-tools, not this repo. Verdict question: does the browser UI
+      actually get opened during a debugging session, or does the terminal keep
+      winning because it is already in front of you?
 
 - [ ] **Taproom.** A GUI over Homebrew. Weigh against the fact that the Brewfile
       here is the source of truth: anything installed by clicking still has to
