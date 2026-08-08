@@ -126,12 +126,37 @@ Still open in this section:
 
 ## Tier 2: needs a decision or a real trial
 
-- [ ] **Retire MacVim for a Neovim GUI.** Stated goal: one vim to support.
-      `neovide-app` is already in the Brewfile alongside `macvim` and
-      `macvim-app`, so a GUI is already available to trial without installing
-      anything. Blocking question: `vim/` and `neo-vim/` both exist in this
-      repo, so the config merge is the actual work. The `.csv` handler in
-      `scripts/macos-defaults.sh` hardcodes MacVim and would need repointing.
+- [ ] **Retire MacVim** — **in progress**, 2026-08-08. Reframed once the actual
+      usage came out: MacVim is not a redundant editor, it is open all day as a
+      scratchpad for jotting notes, and it "lives in a separate place in my mind
+      than terminal nvim". So this is replacing a daily-use app, not deleting a
+      duplicate.
+
+      Done: the three `gvim` aliases (gprofile, galiases, gzshrc) are gone, dead
+      for a while. The `.csv` Finder handler now points at VimR.
+
+      **VimR over Neovide**, though both are installed and both are maintained
+      (VimR pushed 2026-07-26, Neovide 2026-08-07). Neovide is structurally the
+      terminal nvim floated into a window, one process per window; VimR is a
+      native Mac app with windows, tabs and a file drawer, which is the same
+      shape as MacVim and so more likely to keep occupying that separate mental
+      slot rather than collapsing into "nvim again". Not a strong preference,
+      easy to switch: it is one bundle id in `macos-defaults.sh`.
+
+      `vim/` stays. Josh has Windows machines, and the gVim `guioptions` line in
+      `vim/settings.vim` is for those. The win is not one config, it is one
+      editor on the Mac, with `vim/` becoming Windows-only.
+
+      Two things learned while wiring it: `duti -s <id> public.comma-separated-
+      values-text all` reports success and changes nothing, so the script now
+      also sets the `csv` extension, which is what LaunchServices honours.
+      And nvim starts in 30ms, so a GUI wrapping it is not paying a startup tax.
+
+      Left to do, deliberately not yet: `macvim` and `macvim-app` stay in the
+      Brewfile until VimR has actually held the all-day-scratchpad job for a
+      while. Removing a daily app before its replacement is proven is how you
+      end up reinstalling it. README's app list goes at the same time.
+
 - [ ] **cmux feature sweep.** Mostly answered 2026-08-08. What the six notes
       turned out to be, and what is left:
   - **Port links: done.** Josh wired browser routing himself. It composes with

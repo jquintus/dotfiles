@@ -219,21 +219,35 @@ fi
 ########################################
 # Default apps
 ########################################
-# Open .csv files in MacVim. Uses `duti` to set the LaunchServices handler for
-# the CSV UTI. `duti` is brew-installed and not guaranteed present, so skip
-# (with a warning) rather than fail if it's missing. The MacVim bundle id is
-# looked up at runtime rather than hardcoded, so this works regardless of how
-# MacVim was installed (and skips gracefully if it isn't).
+# Open .csv files in VimR. The point is that double-clicking a CSV in Finder
+# must not summon Numbers; any editor beats a spreadsheet here.
+#
+# Was MacVim. VimR reads the same nvim config as the terminal, so classic vim
+# is no longer the thing that runs when a file is opened from Finder, while
+# `vim/` stays for Windows. VimR over Neovide because it is a native Mac app
+# with windows, tabs and a file drawer, which is the same shape as MacVim;
+# Neovide is closer to the terminal nvim floated into a window. It declares 77
+# document types including csv and a `*` wildcard.
+#
+# `duti` is brew-installed and not guaranteed present, so skip with a warning
+# rather than fail. The bundle id is looked up at runtime rather than hardcoded,
+# so this works however Neovide was installed, and skips if it is absent.
 if command -v duti >/dev/null 2>&1; then
-    macvim_id=$(osascript -e 'id of app "MacVim"' 2>/dev/null || true)
-    if [[ -n "$macvim_id" ]]; then
-        print_status "Setting MacVim ($macvim_id) as default handler for .csv files"
-        duti -s "$macvim_id" public.comma-separated-values-text all
+    vimr_id=$(osascript -e 'id of app "VimR"' 2>/dev/null || true)
+    if [[ -n "$vimr_id" ]]; then
+        print_status "Setting VimR ($vimr_id) as default handler for .csv files"
+        # Both forms, deliberately. Setting only the UTI reports success and
+        # changes nothing: after `duti -s <id> public.comma-separated-values-text
+        # all`, `duti -x csv` still named the old app. The extension form is what
+        # LaunchServices actually honours here. The UTI line stays because it is
+        # the correct thing to claim; the extension line is the one that works.
+        duti -s "$vimr_id" public.comma-separated-values-text all
+        duti -s "$vimr_id" csv all
     else
-        print_warning "MacVim not found; skipping .csv association"
+        print_warning "VimR not found; skipping .csv association"
     fi
 else
-    print_warning "duti not found; skipping .csv -> MacVim association (brew install duti)"
+    print_warning "duti not found; skipping .csv -> VimR association (brew install duti)"
 fi
 
 print_status "Done. Some changes require a logout/restart to take effect."

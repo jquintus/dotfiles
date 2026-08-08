@@ -13,11 +13,8 @@ alias lock='/System/Library/CoreServices/"Menu Extras"/User.menu/Contents/Resour
 # alias code='pushd $CODE'
 alias dl='pushd ~/Downloads'
 alias profile='vim ~/.bash_profile'
-alias gprofile='gvim ~/.bash_profile'
 alias aliases='config aliases'
-alias galiases='gvim ~/dotfiles/zsh/_zshrc-aliases'
 alias zshrc='config zshrc'
-alias gzshrc='gvim ~/.zshrc'
 alias :wq='exit'
 
 alias copy='cp -iv'                         # Preferred 'cp' implementation
