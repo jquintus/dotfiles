@@ -217,6 +217,53 @@ if [[ "$alttab_was_running" == true ]]; then
 fi
 
 ########################################
+# VimR
+########################################
+# Open files from Finder in the window that is already there, instead of
+# spawning a new VimR instance per file. Double-clicking five files should give
+# five buffers, not five windows.
+#
+# `inCurrentWindow` is the enum's own raw value; VimR's AppDelegate switches on
+# exactly two cases, .inCurrentWindow (open in the key window) and everything
+# else (new main window), so this is the only value that changes the behaviour.
+#
+# Two reasons this is PlistBuddy rather than `defaults write`:
+#   - The key lives nested inside a numeric state-version dict (168 at time of
+#     writing), so there is no top-level key to target. The version is discovered
+#     rather than hardcoded, since it moves with VimR releases.
+#   - VimR rewrites its whole plist when it quits, so writing while it runs is
+#     pointless. Quit first, write, relaunch, exactly like the AltTab block.
+#
+# Deliberately NOT touching open-new-window-on-reactivation or
+# open-new-window-when-launching. Zeroing those means clicking the Dock icon
+# with no window open does nothing at all, which reads as a broken app.
+vimr_plist="$HOME/Library/Preferences/com.qvacua.VimR.plist"
+if [[ -f "$vimr_plist" ]]; then
+    vimr_was_running=false
+    if pgrep -x VimR >/dev/null 2>&1; then
+        vimr_was_running=true
+        osascript -e 'quit app "VimR"' 2>/dev/null || true
+        sleep 2
+    fi
+    vimr_state_key=$(/usr/libexec/PlistBuddy -c "Print" "$vimr_plist" 2>/dev/null |
+        grep -oE "^    [0-9]+ = Dict" | head -1 | tr -dc '0-9')
+    if [[ -n "$vimr_state_key" ]]; then
+        print_status "Setting VimR to open files in the current window"
+        /usr/libexec/PlistBuddy \
+            -c "Set :${vimr_state_key}:open-files-from-applications-action inCurrentWindow" \
+            "$vimr_plist" 2>/dev/null || true
+        killall cfprefsd 2>/dev/null || true
+    else
+        print_warning "Could not find VimR's state key; skipping open-in-current-window"
+    fi
+    if [[ "$vimr_was_running" == true ]]; then
+        open -a VimR 2>/dev/null || true
+    fi
+else
+    print_warning "VimR has no preferences file yet; launch it once, then re-run"
+fi
+
+########################################
 # Default apps
 ########################################
 # Open text, code and data files in VimR from Finder, rather than TextEdit,
