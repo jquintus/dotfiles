@@ -4,6 +4,7 @@ tap "datadog-labs/pack"
 tap "hashicorp/tap"
 tap "hightouchio/hightouch"
 tap "peonping/tap", "https://github.com/PeonPing/homebrew-tap"
+tap "sinzin91/tap"
 # Official Amazon AWS command-line interface
 brew "awscli"
 # Microsoft Azure CLI 2.0
@@ -108,6 +109,8 @@ brew "python@3.11"
 brew "python@3.12"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
+# Search all Claude Code session history at once, across every project directory
+brew "search-sessions"
 # Powerful MCP Slack Server with multiple transports and smart history fetch logic
 brew "slack-mcp-server"
 # Whitespace steganography: coded messages using whitespace

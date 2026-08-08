@@ -163,7 +163,8 @@
   },
   "enabledPlugins": {
     "eng-skills@dirtlabs": true,
-    "marketplace-tools@dirtlabs": true
+    "marketplace-tools@dirtlabs": true,
+    "search-sessions@search-sessions": true
   },
   "extraKnownMarketplaces": {
     "dirtlabs": {
@@ -173,6 +174,12 @@
         "path": "/Users/jq/code/claude-plugins"
       },
       "autoUpdate": true
+    },
+    "search-sessions": {
+      "source": {
+        "source": "github",
+        "repo": "sinzin91/search-sessions"
+      }
     }
   },
   "theme": "dark",

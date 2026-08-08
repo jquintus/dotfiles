@@ -99,6 +99,14 @@ There is no way to automate them, so run through the checklist by hand:
 - **Authenticate the GitHub CLI:** `gh auth login`. The token lives in
   `gh/hosts.yml`, which is gitignored and machine-local by design, so it is
   never in this repo.
+- **Install the Claude Code plugins declared in settings:** `claude/settings.json`
+  lists the marketplaces and enables the plugins, but declaring one does not
+  fetch it. Claude Code prompts on first run; to skip the prompt:
+  ```
+  claude plugin install search-sessions@search-sessions
+  ```
+  The `search-sessions` binary itself comes from the Brewfile. The plugin is the
+  separate piece that lets Claude search session history on your behalf.
 - **Grant Hammerspoon Accessibility permission:** System Settings > Privacy &
   Security > Accessibility > enable Hammerspoon. Required for the global hotkeys
   in `hammerspoon/`.

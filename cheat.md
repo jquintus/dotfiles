@@ -37,6 +37,13 @@
 - `f <dir>` open a specific directory in Finder.
 - `clip` pipe into the macOS clipboard.
 
+## Claude sessions
+
+- `search-sessions --deep <words>` find an old conversation by what was said in it, across every project directory. Without `--deep` it only searches session metadata and usually finds nothing.
+- Each hit prints a `cd ... && claude -r <uuid>` line; run it to reopen that conversation.
+- `--project <name>` narrow to one repo, `--since "3 days ago"` narrow by date.
+- `--obsidian ~/notes` search the vault with the same command.
+
 ## Git
 
 - `c` stage everything and commit.

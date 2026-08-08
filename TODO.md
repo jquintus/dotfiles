@@ -171,26 +171,7 @@ are stock widgets that only need binding.
 - [ ] **Context compression for CLAUDE.md.** repomix or similar, if any
       `CLAUDE.md` grows big enough to eat context budget. Not a problem yet.
       Revisit when one stops fitting comfortably.
-- [ ] **Find OLD Claude sessions across directories.** Sharpened after the
-      ccmanager attempt: the want is a *history browser*, not a session
-      manager. Searching and reopening past conversations, not spawning,
-      orchestrating, or monitoring live ones. Anything that "manages sessions"
-      is the wrong category, which rules out ccmanager, claude-squad, forestui,
-      tazuna, and Agent Deck in one stroke.
 
-      The corpus is already local: `~/.claude/projects/<escaped-path>/*.jsonl`,
-      currently 99 session files across 13 project directories, with the
-      working directory encoded in the folder name. `claude --resume` reads
-      only the current directory's slice of that, which is exactly the gap.
-
-      Two shapes to consider:
-  - [claude-code-viewer](https://github.com/d-kimuson/claude-code-viewer):
-    browses and searches session history across all projects. The closest fit
-    by description, but it is a web UI, and the ask was CLI or TUI.
-  - Build it. fzf over those JSONL files, previewing the first user message
-    with bat or jq, selecting one to `claude --resume`. All four tools are
-    already installed and already wired up, and it would answer the exact
-    question rather than a neighbouring one.
 - [ ] **cmux `set-status` / `set-progress` from hooks.** Cheap given the hooks
       already in place. Payoff is at-a-glance triage across many panes.
 - [ ] **uBlock to block cookie banners.** A browser extension, so nothing to
@@ -258,6 +239,17 @@ until confirmed either way.
       `pager = less -R`. `side-by-side` is present but commented out, since it
       wants a wide window. Verdict question: does it stay on, or does it start
       feeling like decoration on a `git diff` you were already reading fine?
+- [ ] **search-sessions, for finding old Claude sessions** — **trialing**,
+      installed 2026-08-08 (v0.3.1, `sinzin91/tap`). Josh found it; it is the
+      right category where ccmanager was not, a search tool rather than a
+      session manager. Prints project path, date, snippet, and a
+      `cd ... && claude -r <uuid>` line per hit, across every project at once.
+      Being a plain CLI it also sidesteps the ncurses-in-nvim problem that
+      killed pspg. Also searches the Obsidian vault via `--obsidian ~/notes`.
+      Gotcha worth remembering: the default search reads session metadata only
+      and returns nothing useful; `--deep` searches content and is the real
+      mode. Verdict question: does searching past sessions actually become a
+      habit, or is it a thing wanted once and then forgotten?
 - [ ] **direnv** — **configured.** Hooked at `zsh/_zshrc-dirty:13`, so
       per-project venvs auto-activate on this host. Two open questions: is it
       actually relied on, and should it be promoted out of the per-host file so
