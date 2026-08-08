@@ -25,7 +25,14 @@ alias cp='cp -iv'                           # Preferred 'cp' implementation
 alias move='mv -iv'                         # Preferred 'mv' implementation
 alias mv='mv -iv'                           # Preferred 'mv' implementation
 alias mkdir='mkdir -pv'                     # Preferred 'mkdir' implementation
-alias ll='ls -FGlAhp'                       # Preferred 'ls' implementation
+# ll: eza rather than ls. Directories first, a git status column, and file-type
+# icons from the Nerd Font the Brewfile installs.
+#   --icons     without a WHEN it means "auto", so glyphs appear at a terminal
+#               and are dropped when the output is piped
+#   --git       `--` untracked or clean, `-I` ignored, plus staged/modified marks
+# `ls` itself is deliberately left alone, so anything reading its exact output
+# keeps working and the muscle memory for plain `ls` still holds.
+alias ll='eza -lah --git --icons --group-directories-first'
 alias less='less -FSRXc'                    # Preferred 'less' implementation
 alias f='open -a Finder '                   # Open the specified directory in MacOS Finder
 alias f.='open -a Finder ./'                # Open current directory in MacOS Finder
@@ -35,8 +42,12 @@ alias clip='pbcopy'                         # I won't remember pbcopy any time s
 alias xclip='pbcopy'                        # I won't remember pbcopy any time soon.
 alias back='popd'
 
-#   lr:  Full Recursive Directory Listing
-alias lr='ls -R | grep ":$" | sed -e '\''s/:$//'\'' -e '\''s/[^-][^\/]*\//--/g'\'' -e '\''s/^/   /'\'' -e '\''s/-/|/'\'' | less'
+#   lr:  Recursive directory listing, two levels deep.
+# Was `ls -R` piped through grep and four sed expressions to fake a tree. eza
+# draws one natively, with icons and colour. Depth is capped because the old
+# version walked the whole tree and needed `less` to survive it; pass
+# `--level=N` to go deeper.
+alias lr='eza --tree --level=2 --icons --group-directories-first'
 
 # up 'n' folders
 alias ...='pushd ../..'

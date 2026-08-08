@@ -82,19 +82,6 @@ Two notes from wiring it up worth keeping:
 
 Still open in this section:
 
-- [ ] **`compdef eza ls`.** Trivial, but only meaningful if eza is actually
-      adopted (below).
-
-
-
-**"What are widgets?"**: a zle widget is a shell function registered with
-`zle -N` so it can be bound to a key and manipulate the command line buffer
-(`$BUFFER`, `$CURSOR`) rather than just run a command. There is already one in
-the repo: `_git_commit_am`, bound to `^X^G`, which writes a command onto the
-line and moves the cursor without running anything. Most items above are stock
-widgets that only need binding.
-
-### Shell tooling
 
 - [ ] **zsh-autosuggestions.** Not installed. Note the repo already carries the
       bracketed-paste workaround for it at `zsh/_zshrc:36` with no plugin
@@ -107,11 +94,7 @@ widgets that only need binding.
       (`zsh/_zshrc:83`), and sync means shell history leaves the machine, which
       needs a deliberate yes on a work laptop. Self-hosting and sync-off are
       both options.
-- [ ] **eza for `ll` and friends.** Partially answered: eza is now **trialing**
-      inside the fzf picker (see below), but `ll` is still `ls -FGlAhp` at
-      `zsh/_zshrc-aliases:32`. The open question is whether its output is wanted
-      outside the picker too. `compdef eza ls` and the `LS_COLORS` item above
-      both follow from a yes.
+
 - [ ] **ripgrep** — **installed.** Unclear how much it is reached for versus
       grep out of habit. Cheap thing to notice over a week.
 - [ ] **lazygit.** Not installed (lazydocker is, which is a useful comparison
@@ -253,6 +236,14 @@ until confirmed either way.
       without running, which is the thing `c` cannot do since `c` always opens
       an editor. Verdict question: does typing a bare filename become reflex,
       and does the commit chord beat just typing `c`?
+- [ ] **eza for `ll` and `lr`** — **trialing**, wired 2026-08-08.
+      `ll` is now `eza -lah --git --icons --group-directories-first`, and `lr`
+      is `eza --tree --level=2`, replacing a `ls -R | grep | sed x4 | less`
+      pipeline that faked a tree. `ls` itself is deliberately untouched.
+      `compdef eza ls` turned out to be unnecessary: eza ships its own `_eza`
+      completion in Homebrew's site-functions, so that item is closed rather
+      than done. Verdict question: is the git column and icon noise worth it
+      every single listing, or does the denser `ls` output get missed?
 - [ ] **direnv** — **configured.** Hooked at `zsh/_zshrc-dirty:13`, so
       per-project venvs auto-activate on this host. Two open questions: is it
       actually relied on, and should it be promoted out of the per-host file so
