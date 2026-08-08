@@ -178,9 +178,10 @@ Still open in this section:
     `~/code/web.*` directly. Aimed at the too-many-workspaces problem.
   - **Vault** is agent session restore: `vault.agents` registers JSONL-backed
     coding agents that Vault can detect, list, and resume. Not a secrets store.
-  - **claude-teams** is a CLI command, `cmux claude-teams [claude-args...]`,
-    with `codex-teams`, `omo`, `omx`, `omc` alongside it. Multi-agent, not org
-    teams. Unexplored.
+  - **claude-teams**: parked to 2026-08-15 at Josh's request, alongside the
+    verdict pass. A CLI command, `cmux claude-teams [claude-args...]`, with
+    `codex-teams`, `omo`, `omx`, `omc` alongside it. Multi-agent, not org teams.
+    Relevant because his agent count is rising with the new job.
   - **cmux top: done.** Josh poked at it; it was a command he wanted to try and
     he has now tried it. Closed.
   - **Cmd+Shift+U**: does not appear in `cmux shortcuts` at all. Either an
@@ -197,13 +198,32 @@ Still open in this section:
       log viewer, in a persistent cmux or tmux layout. Evaluate one system
       monitor rather than installing three. Prior question: is a monitor
       actually looked at, or is it decoration?
-- [ ] **yazi.** Terminal file manager. Overlaps Commander One, which is already
-      installed, so the question is whether either gets used.
+- [ ] **yazi.** Deferred 2026-08-08, "ignore for now". Note the entry's premise
+      was wrong: it weighed yazi against Commander One, which turns out not to
+      be installed at all. `README.md:228` lists it, so that app inventory is
+      stale. Re-evaluate on its own merits if it comes back.
 
+- [ ] **logdy**, for the pairdev log streams. Josh picked this over nless
+      2026-08-08. The goal is the one pairdev already serves: the three services'
+      logs in one place worth looking at.
 
-- [ ] **Log viewers.** logdy (streams logs to a browser UI) and nless
-      (<https://github.com/mpryor/nothing-less>). Evaluate against the current
-      workflow before adding either, and probably pick one.
+      Socket mode fits exactly. `logdy socket 8233 8234 8235` serves one UI over
+      three ports and marks each line with its origin port, which replaces
+      pairdev's `[be]` / `[wrk]` / `[web]` awk prefixes with something the UI can
+      filter on. Each service pipes through `logdy forward <port>`. UI port is
+      `--port` or `LOGDY_PORT`.
+
+      The integration question is ports, and it fits: pairdev already allocates
+      isolated ports per worktree, so a UI port plus three socket ports slot into
+      the same scheme. Several pairs can run at once without collision.
+
+      Costs to weigh: it trades "all logs in one terminal, Ctrl-C stops all" for
+      a browser surface, and keeping both needs a `tee`. Upside beyond filtering
+      is that the UI can open as a cmux split next to the terminal, given the
+      browser routing already wired into pairup/pairdev.
+
+      Lives in eng-tools, not this repo.
+
 - [ ] **Taproom.** A GUI over Homebrew. Weigh against the fact that the Brewfile
       here is the source of truth: anything installed by clicking still has to
       be written back by hand.
