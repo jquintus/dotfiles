@@ -107,11 +107,11 @@ are stock widgets that only need binding.
       question is not whether to install it but whether its output is actually
       preferred day to day. Aliases, colors, icons (Meslo Nerd Font is already
       installed), and `compdef` all follow from a yes.
-- [ ] **bat** — **installed, mostly unused.** The `cat` alias is commented out
-      at `zsh/_zshrc-aliases:64`, which suggests it was tried and backed out.
-      Worth knowing why before wiring it in further. Separately it would be the
-      preview command for fzf `^T`, which is a smaller commitment than aliasing
-      `cat`.
+- [ ] **bat as the fzf `^T` previewer** — **installed.** fzf's key bindings are
+      already sourced at `zsh/_zshrc:83`, so this is one `FZF_CTRL_T_OPTS`
+      export with `--style` and a line range. Entirely separate from bat as a
+      `cat` replacement, which is already dropped: this only shows up inside the
+      file picker, where syntax highlighting is doing real work.
 - [ ] **ripgrep** — **installed.** Unclear how much it is reached for versus
       grep out of habit. Cheap thing to notice over a week.
 - [ ] **git-delta.** Not installed. Side-by-side syntax-highlighted diffs,
@@ -243,5 +243,12 @@ until confirmed either way.
 
 ## Dropped
 
-Nothing yet. When something is declined, move it here with the reason, so it
-does not come back around as a fresh idea later.
+When something is declined, move it here with the reason, so it does not come
+back around as a fresh idea later.
+
+- [x] **bat as a `cat` replacement.** Tried and disliked, 2026-08-07. The alias
+      stays commented out at `zsh/_zshrc-aliases:64`; leave it that way rather
+      than deleting it, since the comment is the record of the decision. bat
+      stays installed and is still wanted as the fzf `^T` previewer (Tier 1),
+      which is a different job: highlighting inside a picker, not replacing a
+      tool that already does its job fine.
