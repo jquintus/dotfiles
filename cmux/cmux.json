@@ -8,6 +8,40 @@
   // cmux creates this template on launch when ~/.config/cmux/cmux.json is missing.
   // Legacy settings.json files are read only as fallback for keys not present here.
 
+  // --- Agent triage -------------------------------------------------------
+  // These are pinned rather than left to defaults. Every value below IS the
+  // current default, so nothing changes today; the point is that behaviour
+  // stays put across machines and app versions instead of drifting when
+  // upstream changes its mind.
+  //
+  // The one real change is agentIdleReminder. It fires roughly 60s after a
+  // turn ends, which produced both notification complaints: it re-nags about
+  // output already read, and it fires after a /clear, since an agent sitting
+  // at an empty prompt genuinely is idle waiting for input. The permission
+  // prompt is the alert worth acting on, and that stays on.
+  "notifications": {
+    "agentIdleReminder": false,
+    "agentPermissionPrompt": true,
+    "agentTurnComplete": "whenIdle",
+    "unreadPaneRing": true,
+    "dockBadge": true,
+    "showInMenuBar": true
+  },
+
+  "sidebar": {
+    "showAgentActivity": true,
+    "showProgress": true,
+    "showNotificationMessage": true
+  },
+
+  "app": {
+    "reorderOnNotification": true
+  },
+
+  "automation": {
+    "claudeCodeIntegration": true
+  },
+
   //   "app" : {
   //     "commandPaletteSearchesAllSurfaces" : false,
   //     "menuBarOnly" : false,
