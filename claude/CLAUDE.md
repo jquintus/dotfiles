@@ -19,14 +19,20 @@ injected into Claude's context, so maintainer notes cost no tokens.
 - Short version so you know what you're looking for: config is symlink-based via `scripts/install-mac.sh` + `scripts/links.manifest`; system settings go in `scripts/macos-defaults.sh`; a new config file is not done until it has a manifest line.
 - The repo is public. Keep work-specific detail out of it.
 
+## Terminal: cmux
+- I run [cmux](https://cmux.com) as my terminal. When `CMUX_SOCKET_PATH` is in your environment, you can drive the live UI from Bash with the `cmux` CLI: open browser splits, spawn panes, read screens, and post notifications/status/progress back to me.
+- Two things I actively want you to do with it: **open a browser split and visually verify** anything web-facing you changed instead of telling me it should work, and **run long or watchable jobs in a visible pane** (including child `claude -p` agents) so I can follow along or take over.
+- `cmux docs [browser|agents|settings|shortcuts]` prints curl commands for the current upstream docs. Short refs like `surface:3` are positional and renumber, so grab UUIDs (`--json --id-format uuids`) for anything you hold across commands.
+- Clean up splits, panes, and statuses you created when you're done.
+
 ## Git branches
 - Every branch you create for me MUST be prefixed with `jq/` (e.g. `jq/fix-flaky-tests`). This applies to all repositories, always.
 
 ## GitHub Actions
-- When adding or editing any GitHub Action, use a current major that runs on **Node 24** — never Node 16/20 (they emit deprecation warnings the user actively dislikes). Before committing a new/changed `uses:`, verify the action.yml `runs.using` is `node24` (e.g. `gh api "repos/<owner>/<repo>/contents/action.yml?ref=<tag>"`). This includes helper actions like `actions/cache`, `actions/upload-artifact`, `actions/download-artifact`.
+- When adding or editing any GitHub Action, use a current major that runs on **Node 24**, never Node 16/20 (they emit deprecation warnings the user actively dislikes). Before committing a new/changed `uses:`, verify the action.yml `runs.using` is `node24` (e.g. `gh api "repos/<owner>/<repo>/contents/action.yml?ref=<tag>"`). This includes helper actions like `actions/cache`, `actions/upload-artifact`, `actions/download-artifact`.
 
 ## Copilot PR review loop
-- After addressing Copilot's review feedback on a PR: FIRST explicitly respond to the feedback (reply to each thread, or state the resolution), THEN re-request Copilot's review on that PR so the next round triggers automatically without me asking. Order matters: respond first, re-request second — never re-request before responding.
+- After addressing Copilot's review feedback on a PR: FIRST explicitly respond to the feedback (reply to each thread, or state the resolution), THEN re-request Copilot's review on that PR so the next round triggers automatically without me asking. Order matters: respond first, re-request second, never re-request before responding.
 - Re-request via `gh` (e.g. `gh api --method POST repos/{owner}/{repo}/pulls/{n}/requested_reviewers -f "reviewers[]=copilot-pull-request-reviewer[bot]"`); if that call doesn't work for the Copilot bot, say so and tell me to click "Re-request review".
 
 ## Work-specific preferences
