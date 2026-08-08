@@ -179,6 +179,23 @@ are stock widgets that only need binding.
 - [ ] **Context compression for CLAUDE.md.** repomix or similar, if any
       `CLAUDE.md` grows big enough to eat context budget. Not a problem yet.
       Revisit when one stops fitting comfortably.
+- [ ] **One view of every Claude session, across directories.** Sessions are
+      scattered across `backend.*` and `web.*` checkouts by design, so there is
+      no single place to see what is running, waiting, or finished. Distinct
+      from the cmux items below, which surface state from panes that are already
+      open; this is about finding the sessions in the first place. Candidates,
+      roughly in order of fit:
+  - [claude-session-manager-tui](https://github.com/borball/claude-session-manager-tui):
+    browse, search, and resume sessions across projects. Closest to the actual
+    want, and the only one that is a viewer rather than a launcher.
+  - [Agent Deck](https://github.com/asheshgoplani/agent-deck): running / waiting
+    / done across agents, with search and cost tracking.
+  - [ccmanager](https://github.com/kbwo/ccmanager): session manager spanning
+    multiple repos and their worktrees.
+  - [forestui](https://github.com/flipbit03/forestui) and
+    [tazuna](https://github.com/oshiteku/tazuna): tmux worktree orchestrators.
+    Both overlap heavily with what `pairup` and cmux already do, so they are
+    probably the wrong shape here.
 - [ ] **cmux `set-status` / `set-progress` from hooks.** Cheap given the hooks
       already in place. Payoff is at-a-glance triage across many panes.
 - [ ] **uBlock to block cookie banners.** A browser extension, so nothing to
