@@ -179,23 +179,6 @@ are stock widgets that only need binding.
 - [ ] **Context compression for CLAUDE.md.** repomix or similar, if any
       `CLAUDE.md` grows big enough to eat context budget. Not a problem yet.
       Revisit when one stops fitting comfortably.
-- [ ] **One view of every Claude session, across directories.** Sessions are
-      scattered across `backend.*` and `web.*` checkouts by design, so there is
-      no single place to see what is running, waiting, or finished. Distinct
-      from the cmux items below, which surface state from panes that are already
-      open; this is about finding the sessions in the first place. Candidates,
-      roughly in order of fit:
-  - [claude-session-manager-tui](https://github.com/borball/claude-session-manager-tui):
-    browse, search, and resume sessions across projects. Closest to the actual
-    want, and the only one that is a viewer rather than a launcher.
-  - [Agent Deck](https://github.com/asheshgoplani/agent-deck): running / waiting
-    / done across agents, with search and cost tracking.
-  - [ccmanager](https://github.com/kbwo/ccmanager): session manager spanning
-    multiple repos and their worktrees.
-  - [forestui](https://github.com/flipbit03/forestui) and
-    [tazuna](https://github.com/oshiteku/tazuna): tmux worktree orchestrators.
-    Both overlap heavily with what `pairup` and cmux already do, so they are
-    probably the wrong shape here.
 - [ ] **cmux `set-status` / `set-progress` from hooks.** Cheap given the hooks
       already in place. Payoff is at-a-glance triage across many panes.
 - [ ] **uBlock to block cookie banners.** A browser extension, so nothing to
@@ -252,6 +235,20 @@ until confirmed either way.
       revert (an `ls` fallback is already in the same block for machines without
       eza) and it says nothing yet about whether `ll` should change. Verdict
       question: does eza's output get missed outside the picker?
+- [ ] **ccmanager, for seeing sessions across directories** — **trialing**,
+      installed 2026-08-07 (`npm "ccmanager"` in the Brewfile, v4.2.1).
+      `CCMANAGER_MULTI_PROJECT_ROOT` is set to `$CODE` in `zsh/_zshrc`, without
+      which it only sees the repo you are standing in, which defeats the point.
+      Discovers all 10 repos under `~/code`, paired worktrees included.
+      Verdict question: does it actually get opened, or is the problem better
+      solved by cmux surfacing status from panes that are already open?
+      If it does not stick, the runners-up were
+      [claude-code-viewer](https://github.com/d-kimuson/claude-code-viewer)
+      (web, purest viewer, read-only) and
+      [Agent Deck](https://github.com/asheshgoplani/agent-deck) (running /
+      waiting / done, with cost tracking).
+      [claude-squad](https://github.com/smtg-ai/claude-squad) is the most
+      popular by far but is a launcher, so it duplicates `pairup` and cmux.
 - [ ] **direnv** — **configured.** Hooked at `zsh/_zshrc-dirty:13`, so
       per-project venvs auto-activate on this host. Two open questions: is it
       actually relied on, and should it be promoted out of the per-host file so

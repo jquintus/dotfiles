@@ -37,6 +37,11 @@
 - `f <dir>` open a specific directory in Finder.
 - `clip` pipe into the macOS clipboard.
 
+## Claude sessions
+
+- `ccmanager --multi-project` browse, search, and resume Claude Code sessions across every repo and worktree under `~/code`.
+- `Ctrl-E` return to the ccmanager menu from inside a session.
+
 ## Git
 
 - `c` stage everything and commit.
