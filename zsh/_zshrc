@@ -83,6 +83,40 @@ setopt HIST_FIND_NO_DUPS       # skip dupes when cycling through searches
 [ -f /opt/homebrew/opt/fzf/shell/key-bindings.zsh ] && source /opt/homebrew/opt/fzf/shell/key-bindings.zsh
 [ -f /opt/homebrew/opt/fzf/shell/completion.zsh ]   && source /opt/homebrew/opt/fzf/shell/completion.zsh
 
+# Ctrl-T picks a file, but with no preview you are choosing off the filename
+# alone. bat fills the pane with syntax-highlighted, line-numbered content.
+#
+# Ctrl-T's list includes directories and bat only reads files, so directories
+# get their own branch: a two-level eza tree, because when the highlighted entry
+# is a directory the useful question is what's inside it, not its permission
+# bits. Icons come from the Meslo Nerd Font the Brewfile already installs.
+#
+# Both branches are capped (200 lines, 2 levels) because the preview re-renders
+# on every keystroke and one stray node_modules would otherwise stall it.
+#
+# Falls back to `ls` when eza is missing, and skips the whole block when bat is
+# missing, so a machine without either still gets a working Ctrl-T.
+#
+# Deliberately scoped to the picker: bat is NOT aliased over cat, which was
+# tried and disliked. eza is on trial here for the same reason, as a
+# low-commitment place to find out whether its output is actually preferred.
+# See TODO.md.
+#
+# Ctrl-/ toggles the preview pane off when the file list itself is what matters.
+# Some terminals don't deliver that chord; it is a convenience, not load-bearing.
+if command -v bat >/dev/null 2>&1; then
+  if command -v eza >/dev/null 2>&1; then
+    _fzf_dir_preview='eza --tree --level=2 --color=always --icons=always {} | head -200'
+  else
+    _fzf_dir_preview='ls -FGlAhp {}'
+  fi
+  export FZF_CTRL_T_OPTS="
+    --preview 'if [ -d {} ]; then $_fzf_dir_preview; else bat --color=always --style=numbers --line-range=:200 {}; fi'
+    --preview-window=right,60%,border-left
+    --bind=ctrl-/:toggle-preview"
+  unset _fzf_dir_preview
+fi
+
 ########################################
 # history-substring-search: type a prefix, then ↑/↓ to cycle matching commands.
 ########################################

@@ -102,16 +102,11 @@ are stock widgets that only need binding.
 - [ ] **zoxide.** Frecency-based directory jumping. Would retire the `pushd`
       aliases at `zsh/_zshrc-aliases:47`. Question: `z` as a new verb, or shadow
       `cd` outright.
-- [ ] **eza** — **installed, unused.** In the Brewfile, but nothing references
-      it: `ll` is still `ls -FGlAhp` at `zsh/_zshrc-aliases:32`. So the real
-      question is not whether to install it but whether its output is actually
-      preferred day to day. Aliases, colors, icons (Meslo Nerd Font is already
-      installed), and `compdef` all follow from a yes.
-- [ ] **bat as the fzf `^T` previewer** — **installed.** fzf's key bindings are
-      already sourced at `zsh/_zshrc:83`, so this is one `FZF_CTRL_T_OPTS`
-      export with `--style` and a line range. Entirely separate from bat as a
-      `cat` replacement, which is already dropped: this only shows up inside the
-      file picker, where syntax highlighting is doing real work.
+- [ ] **eza for `ll` and friends.** Partially answered: eza is now **trialing**
+      inside the fzf picker (see below), but `ll` is still `ls -FGlAhp` at
+      `zsh/_zshrc-aliases:32`. The open question is whether its output is wanted
+      outside the picker too. `compdef eza ls` and the `LS_COLORS` item above
+      both follow from a yes.
 - [ ] **ripgrep** — **installed.** Unclear how much it is reached for versus
       grep out of habit. Cheap thing to notice over a week.
 - [ ] **git-delta.** Not installed. Side-by-side syntax-highlighted diffs,
@@ -215,6 +210,18 @@ trying standalone before any config lands in this repo.
 Wired up and working, but that is not the same as being used. These stay here
 until confirmed either way.
 
+- [ ] **bat as the fzf `^T` previewer** — **trialing**, wired 2026-08-07.
+      `FZF_CTRL_T_OPTS` in `zsh/_zshrc`, right after the fzf source lines.
+      Confirmed working and liked on sight; the open question is whether it
+      still earns the pane after a few weeks, or becomes noise that gets toggled
+      off with Ctrl-/. Separate from bat as a `cat` replacement, which is
+      dropped.
+- [ ] **eza in the fzf `^T` preview** — **trialing**, wired 2026-08-07.
+      Directories in the picker render as a two-level eza tree with icons. This
+      is deliberately the smallest possible trial of eza: it costs nothing to
+      revert (an `ls` fallback is already in the same block for machines without
+      eza) and it says nothing yet about whether `ll` should change. Verdict
+      question: does eza's output get missed outside the picker?
 - [ ] **direnv** — **configured.** Hooked at `zsh/_zshrc-dirty:13`, so
       per-project venvs auto-activate on this host. Two open questions: is it
       actually relied on, and should it be promoted out of the per-host file so
