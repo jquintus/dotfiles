@@ -204,26 +204,32 @@ Still open in this section:
       stale. Re-evaluate on its own merits if it comes back.
 
 - [ ] **logdy** — **trialing**, wired into pairdev 2026-08-08. Alongside the
-      terminal, not replacing it: a `mirror` helper tees each service into logdy
-      mid-pipeline, so the `[be]` / `[wrk]` / `[web]` output is byte-identical to
-      before and the web UI is purely additive. Verified with logdy hidden from
-      PATH, which is the "not installed" case.
+      terminal, not replacing it: `mirror` tees each service mid-pipeline, so the
+      `[be]` / `[wrk]` / `[web]` output is byte-identical and the web UI is
+      purely additive. Verified with logdy hidden from PATH, the not-installed
+      case.
 
-      One `logdy socket` over three ports, each service piping through
-      `logdy forward`; logdy tags lines by origin port, which is what separates
-      the three in the browser. Four ports picked at run time by `pick_ports`,
-      since engine-allocated worktree ports are scattered with no block to carve
-      offsets from. Several pairs can run at once. URL prints in the banner
-      beside app/admin/temporal.
+      **Uses `logdy follow` on files, not socket mode.** Sockets were tried first
+      and under-delivered: the UI showed 11 lines from a single origin while the
+      terminal streamed hundreds, with all three `logdy forward` processes alive.
+      Never fully diagnosed, because logdy has no read API to measure delivery
+      with. Files win on four counts anyway: lines are labelled by origin
+      filename (`be.log`) rather than "Port: 35983", there is no socket handshake
+      to wedge, the logs persist for post-mortem, and it needs one port instead
+      of four. If someone is tempted back to sockets, that is why.
 
-      Bug worth remembering, hit while building it: a pick-one-port helper called
-      four times returns the SAME port every time, because each `$(...)` is a
-      subshell inheriting identical `$RANDOM` state. All four are allocated in
-      one call now.
+      Logs go to `$TMPDIR/pairdev-logs/<slug>/`, truncated per run so the UI
+      shows this run, and outside the worktree so they never hit `git status`.
 
-      Lives in eng-tools, not this repo. Verdict question: does the browser UI
-      actually get opened during a debugging session, or does the terminal keep
-      winning because it is already in front of you?
+      Bug worth remembering from the socket version: a pick-one-port helper
+      called four times returns the SAME port every time, since each `$(...)` is
+      a subshell inheriting identical `$RANDOM` state. `pick_ports <n>` allocates
+      in one call.
+
+      Lives in eng-tools, not this repo, and is uncommitted pending a decision on
+      branch-and-PR versus straight to main. Verdict question: does the browser
+      UI actually get opened during a debugging session, or does the terminal
+      keep winning because it is already in front of you?
 
 - [ ] **Taproom.** A GUI over Homebrew. Weigh against the fact that the Brewfile
       here is the source of truth: anything installed by clicking still has to
