@@ -24,7 +24,8 @@
 
 - Type a prefix, then `Up` / `Down` to cycle only commands that start with it.
 - Start a command with a leading space to keep it out of history entirely.
-- History is shared live between open shells.
+- `Up` gives you this terminal's own history. Other open terminals no longer leak into it, so leaving a server running here and working elsewhere for an hour still leaves Ctrl-C, Up, Enter working.
+- A new terminal still starts with every command from everywhere.
 - `!!` the previous command.
 - `!$` the last argument of the previous command.
 - Press space after `!!` or `!$` to expand it in place, so it can be edited before it runs.

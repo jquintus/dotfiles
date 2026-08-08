@@ -98,12 +98,27 @@ fi
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
 ########################################
-# History: bigger, deduped, shared across sessions, timestamped.
+# History: bigger, deduped, saved immediately, timestamped.
 ########################################
 HISTSIZE=50000
 SAVEHIST=50000
 setopt EXTENDED_HISTORY        # record command timestamp + duration
-setopt SHARE_HISTORY           # share history live across all open sessions
+
+# Write each command to the history file as it runs, but do NOT pull other
+# sessions' commands into this one. Up gives you what YOU last ran in THIS
+# terminal.
+#
+# This replaced SHARE_HISTORY, which imports live from every open shell. That
+# breaks the long-running-process case badly: leave a webserver running here,
+# work in three other terminals for an hour, come back, Ctrl-C, press Up, and
+# you get whatever you last typed somewhere else instead of the command you are
+# standing in front of.
+#
+# Nothing is lost by the swap. Commands still land in the file immediately
+# rather than at exit, so a crashed shell keeps its history and any newly opened
+# shell still sees everything from everywhere. Only the live import into an
+# already-running shell goes away, which is the whole point.
+setopt INC_APPEND_HISTORY
 setopt HIST_IGNORE_ALL_DUPS    # drop older duplicates of a command
 setopt HIST_IGNORE_SPACE       # a leading space keeps a command out of history
 setopt HIST_REDUCE_BLANKS      # trim superfluous whitespace before saving

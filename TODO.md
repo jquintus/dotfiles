@@ -85,11 +85,33 @@ Still open in this section:
 
 
 
-- [ ] **atuin.** Searchable, synced shell history. Two questions to settle
-      before installing: it wants the `^R` binding that fzf currently owns
-      (`zsh/_zshrc:83`), and sync means shell history leaves the machine, which
-      needs a deliberate yes on a work laptop. Self-hosting and sync-off are
-      both options.
+- [ ] **atuin.** Deferred, not declined. Josh confirmed 2026-08-08 that he wants
+      it, just not next. **Lead with this context when it comes up again:**
+
+      The reason to adopt is *directory-scoped history*: "what did I run in this
+      directory last time". He works across ten worktrees where the same command
+      means different things depending on which one he is standing in, so that
+      one feature fits the shape of his work. He confirmed this is a real want.
+
+      atuin can answer it because it records what zsh never captured: the
+      directory a command ran in, its exit status, duration, host, and session.
+      `EXTENDED_HISTORY` stores a timestamp and duration only, so fzf's `^R` can
+      only fuzzy-match flat text; filtering by directory or by "only the ones
+      that worked" is impossible with the data zsh keeps. Also brings usage
+      stats.
+
+      **Correction to earlier notes in this file:** sync was twice cited as a
+      blocker, on the grounds that it means shell history leaving a work laptop.
+      That is wrong. Sync is entirely optional, atuin runs fully local with no
+      account, and the docs say so plainly. Do not raise it as a cost again.
+
+      The one real cost left: atuin wants the `^R` that fzf currently owns.
+
+      What is NOT a reason to adopt it, since this was the original framing and
+      it is now handled: `Up` returning another terminal's command. That was
+      `SHARE_HISTORY`, fixed by swapping to `INC_APPEND_HISTORY`. Demonstrated
+      with a two-shell test: SHARE gave `A_WEBSERVER, sleep 3, OTHER_TERMINAL`,
+      INC_APPEND gave only the first two.
 
 - [ ] **ripgrep** — **installed.** Unclear how much it is reached for versus
       grep out of habit. Cheap thing to notice over a week.
