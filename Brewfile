@@ -68,6 +68,8 @@ brew "jless"
 brew "k9s"
 # Lazier way to manage everything docker
 brew "lazydocker"
+# Lazier way to manage everything git
+brew "lazygit"
 # LLVM's OpenMP runtime library
 brew "libomp"
 # Postgres C API library

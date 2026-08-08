@@ -115,9 +115,7 @@ Still open in this section:
 
 - [ ] **ripgrep** — **installed.** Unclear how much it is reached for versus
       grep out of habit. Cheap thing to notice over a week.
-- [ ] **lazygit.** Not installed (lazydocker is, which is a useful comparison
-      point: is lazydocker actually used? If not, that predicts the answer
-      here).
+
 
 ### Prompt (`starship.toml`)
 
@@ -207,6 +205,12 @@ trying standalone before any config lands in this repo.
 ---
 
 ## Configured, adoption unconfirmed
+
+**Verdict pass deferred to on or after 2026-08-15.** Josh: "It's too soon for A.
+Ask again after a week." Everything below has a verdict question already
+written; the point of waiting is that a week of ordinary use answers them and an
+afternoon of enthusiasm does not.
+
 
 Wired up and working, but that is not the same as being used. These stay here
 until confirmed either way.
@@ -324,6 +328,10 @@ until confirmed either way.
 
 ## In use
 
+- [x] **lazygit** — **in use.** Installed by Josh 2026-08-08, with the Brewfile
+      and cheat sheet updated by him in the same pass. Notable because the
+      backlog predicted the opposite: lazydocker was already installed and the
+      entry argued that not reaching for it predicted the same here. Wrong.
 - [x] **jless** — **in use.** Installed by Josh himself 2026-08-08, tried, and
       kept: "I like it. Make it permanent." Added to the Brewfile so it survives
       a fresh machine. Sits alongside jq rather than replacing it: jq queries a
