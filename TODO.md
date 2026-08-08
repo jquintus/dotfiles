@@ -152,10 +152,20 @@ Still open in this section:
       also sets the `csv` extension, which is what LaunchServices honours.
       And nvim starts in 30ms, so a GUI wrapping it is not paying a startup tax.
 
-      Left to do, deliberately not yet: `macvim` and `macvim-app` stay in the
-      Brewfile until VimR has actually held the all-day-scratchpad job for a
-      while. Removing a daily app before its replacement is proven is how you
-      end up reinstalling it. README's app list goes at the same time.
+      Confirmed working: the 22 associations, and opening a file from Finder
+      when VimR has no window open, which was the one edge worth doubting.
+
+      **Open question, to raise on or after 2026-08-15, at Josh's request:** has
+      VimR actually taken over the all-day scratchpad job? Not "does it work",
+      which is settled, but does it occupy the separate mental slot MacVim did.
+      Ask directly rather than waiting for it to come up.
+
+      Not yet, deliberately: `macvim` and `macvim-app` stay in the Brewfile
+      until that question is answered yes. They may have to stay regardless,
+      since MacVim declares the org.vim.* UTIs behind `.tsx`, `.toml`, `.ini`,
+      `.conf` and `.sql`, and VimR exports none of them: uninstalling orphans
+      those five whatever the script sets. README's app list goes at the same
+      time, if it goes at all.
 
 - [ ] **cmux feature sweep.** Mostly answered 2026-08-08. What the six notes
       turned out to be, and what is left:
@@ -251,6 +261,11 @@ trying standalone before any config lands in this repo.
 Ask again after a week." Everything below has a verdict question already
 written; the point of waiting is that a week of ordinary use answers them and an
 afternoon of enthusiasm does not.
+
+**Ask about VimR in the same pass** (see the MacVim entry in Tier 2). The
+question is not whether it works, which it does, but whether it took over the
+all-day scratchpad job MacVim held. Josh asked to be asked again, so raise it
+rather than waiting for him to bring it up.
 
 
 Wired up and working, but that is not the same as being used. These stay here
