@@ -132,16 +132,32 @@ Still open in this section:
       anything. Blocking question: `vim/` and `neo-vim/` both exist in this
       repo, so the config merge is the actual work. The `.csv` handler in
       `scripts/macos-defaults.sh` hardcodes MacVim and would need repointing.
-- [ ] **cmux feature sweep.** One session to find out what is already there and
-      what earns its keep, then capture the result in `cmux/cmux.json`:
-  - Port links in the sidebar, opening a trunk's app in the embedded browser
-    instead of typing the port. Given per-trunk ports, this is the one most
-    likely to stick.
-  - Vault.
-  - cmux top.
-  - Markdown viewer with Claude, and skills in general.
-  - claude-teams.
-  - What `Cmd+Shift+U` does.
+- [ ] **cmux feature sweep.** Mostly answered 2026-08-08. What the six notes
+      turned out to be, and what is left:
+  - **Port links: done.** Josh wired browser routing himself. It composes with
+    the three tools he already had (site-hopper, the `url` command, the pairdev
+    banner) rather than replacing them; cmux's contribution is landing those
+    links in the embedded browser.
+  - **Workspace grouping by cwd: done.** Also his, via `workspaceGroups.byCwd`,
+    which takes globs matched longest-first and fits `~/code/backend.*` and
+    `~/code/web.*` directly. Aimed at the too-many-workspaces problem.
+  - **Vault** is agent session restore: `vault.agents` registers JSONL-backed
+    coding agents that Vault can detect, list, and resume. Not a secrets store.
+  - **claude-teams** is a CLI command, `cmux claude-teams [claude-args...]`,
+    with `codex-teams`, `omo`, `omx`, `omc` alongside it. Multi-agent, not org
+    teams. Unexplored.
+  - **cmux top**: no such command. Possibly `cmux feed tui`, possibly a Dock
+    widget (`cmux docs dock`). Unresolved.
+  - **Cmd+Shift+U**: does not appear in `cmux shortcuts` at all. Either an
+    app-level chord or something that moved since the note was written.
+    Unresolved.
+
+      Both remaining unknowns are cheap to check and neither is blocking.
+
+      **Caveat on the two that are done:** they went into the Settings UI, not
+      `cmux.json`, so they are not file-managed and will not travel to a new
+      machine. Pinning them is a five-minute job once Josh says what he set.
+
 - [ ] **A monitoring dock.** btop, vtop, or mactop, plus possibly lazygit and a
       log viewer, in a persistent cmux or tmux layout. Evaluate one system
       monitor rather than installing three. Prior question: is a monitor
