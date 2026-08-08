@@ -25,6 +25,12 @@ alias cp='cp -iv'                           # Preferred 'cp' implementation
 alias move='mv -iv'                         # Preferred 'mv' implementation
 alias mv='mv -iv'                           # Preferred 'mv' implementation
 alias mkdir='mkdir -pv'                     # Preferred 'mkdir' implementation
+# ls: eza too, not just ll. Grid layout like ls, directories first, icons.
+# -la, -lah, -1, -R, -d, -S all still work. `-t` and `-F` do not: eza reads them
+# as --time FIELD and --classify WHEN, so they swallow the path and error out.
+# Aliases are interactive-only, so scripts calling `ls` are untouched.
+alias ls='eza --icons --group-directories-first'
+
 # ll: eza rather than ls. Directories first, a git status column, and file-type
 # icons from the Nerd Font the Brewfile installs.
 #   --icons     without a WHEN it means "auto", so glyphs appear at a terminal

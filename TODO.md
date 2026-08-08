@@ -228,14 +228,23 @@ until confirmed either way.
       without running, which is the thing `c` cannot do since `c` always opens
       an editor. Verdict question: does typing a bare filename become reflex,
       and does the commit chord beat just typing `c`?
-- [ ] **eza for `ll` and `lr`** — **trialing**, wired 2026-08-08.
-      `ll` is now `eza -lah --git --icons --group-directories-first`, and `lr`
-      is `eza --tree --level=2`, replacing a `ls -R | grep | sed x4 | less`
-      pipeline that faked a tree. `ls` itself is deliberately untouched.
-      `compdef eza ls` turned out to be unnecessary: eza ships its own `_eza`
-      completion in Homebrew's site-functions, so that item is closed rather
-      than done. Verdict question: is the git column and icon noise worth it
-      every single listing, or does the denser `ls` output get missed?
+- [ ] **eza as `ls`, `ll`, and `lr`** — **trialing**, wired 2026-08-08.
+      `ls` is now `eza --icons --group-directories-first`, `ll` adds `-lah
+      --git`, and `lr` is `eza --tree --level=2`, which replaced a
+      `ls -R | grep | sed x4 | less` pipeline that faked a tree.
+
+      Aliasing `ls` itself was held back at first on the theory that something
+      might parse its output; Josh asked for it anyway and it is fine, since
+      aliases are interactive-only and scripts calling `ls` never see them.
+      `-t` and `-F` do break, because eza reads them as `--time FIELD` and
+      `--classify WHEN` and they swallow the path argument. Confirmed unused.
+
+      `compdef eza ls` is closed rather than done: eza ships its own `_eza`
+      completion into Homebrew's site-functions.
+
+      Verdict question: is the git column and icon noise worth it on every
+      listing, or does the denser plain `ls` output get missed?
+
 - [ ] **zsh-autosuggestions and zsh-syntax-highlighting** — **trialing**,
       installed 2026-08-08. Sourced at the very bottom of `zsh/_zshrc`;
       syntax-highlighting must be last because it wraps every zle widget that
