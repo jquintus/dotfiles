@@ -15,6 +15,22 @@ export EDITOR=nvim
 # Make # comments in the shell
 setopt interactive_comments
 
+# A bare directory name means cd into it. Saves the `cd` on the paths typed
+# most often, and is harmless otherwise: it only fires when the word is not a
+# command and does name a directory.
+setopt AUTO_CD
+
+# Sort globs numerically, so file2 comes before file10 rather than after it.
+setopt NUMERIC_GLOB_SORT
+
+# Every cd pushes onto the directory stack, so `back` (popd) works after any
+# move, not only after the aliases that called pushd explicitly. This is also
+# what makes AUTO_CD a full replacement for `alias ..='pushd ..'`: without it,
+# a bare `..` would change directory without leaving anything to pop back to.
+#   PUSHD_IGNORE_DUPS  don't stack the same directory twice
+#   PUSHD_SILENT       don't print the whole stack after every cd
+setopt AUTO_PUSHD PUSHD_IGNORE_DUPS PUSHD_SILENT
+
 GIT_PS1_SHOWDIRTYSTATE=true
 
 # Set CLICOLOR if you want Ansi Colors in iTerm2 
@@ -61,6 +77,23 @@ export LESS="-F -X $LESS"
 ########################################
 alias peon="bash /Users/jq/.claude/hooks/peon-ping/peon.sh"
 autoload -Uz compinit && compinit -C
+
+########################################
+# Completion behaviour.
+########################################
+# Match case-insensitively, so `cd dow<Tab>` finds Downloads. Lowercase input
+# matches either case; typing an explicit capital still requires one.
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+
+# Colour completion matches the way `ls` colours a listing. macOS ships BSD ls,
+# which reads LSCOLORS and leaves LS_COLORS empty, so the usual one-liner for
+# this silently does nothing here. gdircolors (GNU coreutils, already in the
+# Brewfile) generates a real LS_COLORS, which zsh's completion system and eza
+# both understand.
+if command -v gdircolors >/dev/null 2>&1; then
+  eval "$(gdircolors -b)"
+  zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+fi
 [ -f /Users/jq/.claude/hooks/peon-ping/completions.bash ] && source /Users/jq/.claude/hooks/peon-ping/completions.bash
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
@@ -104,6 +137,29 @@ setopt HIST_FIND_NO_DUPS       # skip dupes when cycling through searches
 #
 # Ctrl-/ toggles the preview pane off when the file list itself is what matters.
 # Some terminals don't deliver that chord; it is a convenience, not load-bearing.
+# What Ctrl-T lists: the current directory, one level deep, nothing else.
+#
+# This is a deliberate choice, so do not "fix" it back to a recursive walk.
+# fzf's default walks the entire tree below the cwd, which in ~/code is 142k
+# entries; scoping that to files git would track still left 6.7k. Both turn
+# Ctrl-T into a haystack. What is actually wanted is a listing of where you
+# already are, with previews, and a `cd` first when the target is elsewhere.
+#
+# Directories are included, which is what makes the eza branch below worth
+# having. Hidden files are in, .git and .DS_Store are out.
+#
+# `ls -p` appends a slash to directories and nothing else (unlike -F, which also
+# tags executables and symlinks and would corrupt the inserted path). The slash
+# distinguishes the two kinds at a glance and is what you want when the picked
+# path is the start of a longer one.
+export FZF_CTRL_T_COMMAND="ls -A -p | grep -v -e '^\.git/$' -e '^\.DS_Store$'"
+
+# Alt-C gets the same treatment for the same reason: fzf's default walks every
+# directory below the cwd, which is 16k entries in ~/code. Directories only, one
+# level deep. Jumping somewhere far away is a different problem, and the answer
+# to it is zoxide (see TODO.md), not a longer list here.
+export FZF_ALT_C_COMMAND="ls -A -p | grep '/$' | grep -v '^\.git/$'"
+
 if command -v bat >/dev/null 2>&1; then
   if command -v eza >/dev/null 2>&1; then
     _fzf_dir_preview='eza --tree --level=2 --color=always --icons=always {} | head -200'
@@ -115,6 +171,15 @@ if command -v bat >/dev/null 2>&1; then
     --preview-window=right,60%,border-left
     --bind=ctrl-/:toggle-preview"
   unset _fzf_dir_preview
+fi
+
+# Alt-C previews the directory it is about to cd into. Ctrl-T lists files only
+# now, so this is where the eza tree earns its keep, and seeing a directory's
+# contents before entering it is the whole question Alt-C is answering anyway.
+if command -v eza >/dev/null 2>&1; then
+  export FZF_ALT_C_OPTS="
+    --preview 'eza --tree --level=2 --color=always --icons=always {} | head -200'
+    --preview-window=right,60%,border-left"
 fi
 
 ########################################
@@ -134,6 +199,29 @@ fi
 # Repeat to walk back through earlier commands — the classic bash trick.
 ########################################
 bindkey '^[.' insert-last-word
+
+########################################
+# Line editing: escape hatches for commands that outgrow a single line.
+########################################
+# Ctrl-X Ctrl-E opens the current command in $EDITOR. Save and quit to run it.
+# The escape hatch for anything with quoting, loops, or a pipeline long enough
+# that editing it in place is worse than editing it in nvim.
+autoload -Uz edit-command-line
+zle -N edit-command-line
+bindkey '^X^E' edit-command-line
+
+# Ctrl-_ undoes the last edit to the line. Stock zsh widget, but not bound by
+# default in this setup, so a mangled line otherwise means retyping it.
+bindkey '^_' undo
+
+# Ctrl-W deletes back to the previous word. zsh's default WORDCHARS counts `/`
+# as part of a word, so one press eats a whole path; dropping it (and `=`) makes
+# Ctrl-W walk back a path one segment at a time, and a flag one at a time.
+WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
+
+# Space expands !! and !$ in place instead of at execution, so history
+# expansions can be seen and edited before running. Pairs with HIST_VERIFY.
+bindkey ' ' magic-space
 
 ########################################
 # Per-host config: source zsh/_zshrc-<hostname> if it exists.

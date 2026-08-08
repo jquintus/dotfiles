@@ -39,7 +39,6 @@ alias back='popd'
 alias lr='ls -R | grep ":$" | sed -e '\''s/:$//'\'' -e '\''s/[^-][^\/]*\//--/g'\'' -e '\''s/^/   /'\'' -e '\''s/-/|/'\'' | less'
 
 # up 'n' folders
-alias ..='pushd ..'
 alias ...='pushd ../..'
 alias ....='pushd ../../..'
 alias .....='pushd ../../../..'

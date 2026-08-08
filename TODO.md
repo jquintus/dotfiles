@@ -62,27 +62,26 @@ an afternoon and backed out in a minute.
 Low risk as a group, but each is a habit that has to actually form. Worth
 revisiting a week after binding to see which ones got used.
 
-- [ ] **Edit the command line in nvim.** `autoload -Uz edit-command-line; zle -N
-      edit-command-line; bindkey '^X^E' edit-command-line`. Verified unbound.
-      Probably the highest-value binding in this section for long commands.
-- [ ] **Undo on `^_`.** Verified unbound in the live shell, despite being a
-      stock emacs-keymap binding. Bind `undo` explicitly.
-- [ ] **Make `^W` stop at path separators.** Already bound to
-      `vi-backward-kill-word`, but `WORDCHARS` is still the default and contains
-      `/`, so it eats a whole path instead of one segment. Shrink `WORDCHARS`
-      rather than rebinding the key.
-- [ ] **Magic space.** `bindkey ' ' magic-space` expands `!!` and `!$` as you
-      type the space rather than at execution. Pairs with the existing
-      `HIST_VERIFY`.
-- [ ] **`setopt AUTO_CD`.** Bare directory name means cd. Open question: whether
-      this survives adopting zoxide, or whether the two fight for the same
-      muscle memory.
-- [ ] **`setopt NUMERIC_GLOB_SORT`.** Sorts `file2` before `file10`.
-- [ ] **Case-insensitive completion.** `zstyle ':completion:*' matcher-list
-      'm:{a-zA-Z}={A-Za-z}'`.
-- [ ] **`LS_COLORS` in completion menus.** `zstyle ':completion:*' list-colors
-      ${(s.:.)LS_COLORS}`. Worth doing with the eza question so colors come from
-      one source.
+Most of this batch is now **trialing**, wired 2026-08-07: `^X^E`
+(edit-command-line), `^_` (undo), the `WORDCHARS` shrink so `^W` stops at path
+segments, `magic-space`, `AUTO_CD`, `NUMERIC_GLOB_SORT`, case-insensitive
+completion, and colored completion matches. Verdict question for all of them:
+which ones actually got used a week later, and which were just interesting.
+
+Two notes from wiring it up worth keeping:
+
+- `LS_COLORS` is empty on macOS because BSD `ls` reads `LSCOLORS`, so the usual
+  `list-colors ${(s.:.)LS_COLORS}` one-liner is a silent no-op. It needs
+  `gdircolors` (GNU coreutils) to generate a real value first. eza reads the
+  same variable, so both got colors from one source after all.
+- `AUTO_CD` turned out to fully replace `alias ..='pushd ..'`, but only with
+  `AUTO_PUSHD` alongside it, since `cd` and `pushd` are not interchangeable and
+  `back` depends on the stack. Both are set; `..`, `home`, `tst`, and `bpr` are
+  deleted. `...` and `....` stay, since they are not real directories and
+  `AUTO_CD` cannot help.
+
+Still open in this section:
+
 - [ ] **`compdef eza ls`.** Trivial, but only meaningful if eza is actually
       adopted (below).
 - [ ] **Global and suffix aliases.** `alias -g` expands anywhere on the line
