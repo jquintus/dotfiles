@@ -221,7 +221,3 @@ vscode "usernamehw.errorlens"
 vscode "vitest.explorer"
 vscode "vscodevim.vim"
 npm "corepack"
-
-# TUI for Claude Code sessions across every repo and worktree under $CODE.
-# Needs CCMANAGER_MULTI_PROJECT_ROOT, which is set in zsh/_zshrc.
-npm "ccmanager"

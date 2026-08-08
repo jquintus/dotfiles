@@ -179,6 +179,26 @@ are stock widgets that only need binding.
 - [ ] **Context compression for CLAUDE.md.** repomix or similar, if any
       `CLAUDE.md` grows big enough to eat context budget. Not a problem yet.
       Revisit when one stops fitting comfortably.
+- [ ] **Find OLD Claude sessions across directories.** Sharpened after the
+      ccmanager attempt: the want is a *history browser*, not a session
+      manager. Searching and reopening past conversations, not spawning,
+      orchestrating, or monitoring live ones. Anything that "manages sessions"
+      is the wrong category, which rules out ccmanager, claude-squad, forestui,
+      tazuna, and Agent Deck in one stroke.
+
+      The corpus is already local: `~/.claude/projects/<escaped-path>/*.jsonl`,
+      currently 99 session files across 13 project directories, with the
+      working directory encoded in the folder name. `claude --resume` reads
+      only the current directory's slice of that, which is exactly the gap.
+
+      Two shapes to consider:
+  - [claude-code-viewer](https://github.com/d-kimuson/claude-code-viewer):
+    browses and searches session history across all projects. The closest fit
+    by description, but it is a web UI, and the ask was CLI or TUI.
+  - Build it. fzf over those JSONL files, previewing the first user message
+    with bat or jq, selecting one to `claude --resume`. All four tools are
+    already installed and already wired up, and it would answer the exact
+    question rather than a neighbouring one.
 - [ ] **cmux `set-status` / `set-progress` from hooks.** Cheap given the hooks
       already in place. Payoff is at-a-glance triage across many panes.
 - [ ] **uBlock to block cookie banners.** A browser extension, so nothing to
@@ -235,20 +255,6 @@ until confirmed either way.
       revert (an `ls` fallback is already in the same block for machines without
       eza) and it says nothing yet about whether `ll` should change. Verdict
       question: does eza's output get missed outside the picker?
-- [ ] **ccmanager, for seeing sessions across directories** — **trialing**,
-      installed 2026-08-07 (`npm "ccmanager"` in the Brewfile, v4.2.1).
-      `CCMANAGER_MULTI_PROJECT_ROOT` is set to `$CODE` in `zsh/_zshrc`, without
-      which it only sees the repo you are standing in, which defeats the point.
-      Discovers all 10 repos under `~/code`, paired worktrees included.
-      Verdict question: does it actually get opened, or is the problem better
-      solved by cmux surfacing status from panes that are already open?
-      If it does not stick, the runners-up were
-      [claude-code-viewer](https://github.com/d-kimuson/claude-code-viewer)
-      (web, purest viewer, read-only) and
-      [Agent Deck](https://github.com/asheshgoplani/agent-deck) (running /
-      waiting / done, with cost tracking).
-      [claude-squad](https://github.com/smtg-ai/claude-squad) is the most
-      popular by far but is a launcher, so it duplicates `pairup` and cmux.
 - [ ] **direnv** — **configured.** Hooked at `zsh/_zshrc-dirty:13`, so
       per-project venvs auto-activate on this host. Two open questions: is it
       actually relied on, and should it be promoted out of the per-host file so
@@ -280,6 +286,11 @@ until confirmed either way.
 When something is declined, move it here with the reason, so it does not come
 back around as a fresh idea later.
 
+- [x] **ccmanager.** Installed and uninstalled the same night, 2026-08-07.
+      Wrong category: it manages sessions (creating, switching, worktree
+      juggling), and the actual want is finding old ones. That distinction now
+      drives the sharpened Tier 2 entry, and it disqualifies most of the tools
+      in this space, which are all launchers wearing different hats.
 - [x] **bat as a `cat` replacement.** Tried and disliked, 2026-08-07. The alias
       stays commented out at `zsh/_zshrc-aliases:64`; leave it that way rather
       than deleting it, since the comment is the record of the decision. bat

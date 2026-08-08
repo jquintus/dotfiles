@@ -173,15 +173,6 @@ if command -v bat >/dev/null 2>&1; then
   unset _fzf_dir_preview
 fi
 
-########################################
-# ccmanager: TUI over Claude Code sessions across repos and worktrees.
-########################################
-# Without a root it only sees the repo you happen to be standing in, which is
-# the opposite of the point: sessions live scattered across backend.* and web.*
-# checkouts. Pointing it at $CODE makes it discover every repo underneath and
-# show session counts per project. Run it as `ccmanager --multi-project`.
-export CCMANAGER_MULTI_PROJECT_ROOT="${CODE:-$HOME/code}"
-
 # Alt-C previews the directory it is about to cd into. Ctrl-T lists files only
 # now, so this is where the eza tree earns its keep, and seeing a directory's
 # contents before entering it is the whole question Alt-C is answering anyway.
