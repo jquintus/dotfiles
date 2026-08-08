@@ -293,19 +293,21 @@ back around as a fresh idea later.
       `:terminal`, which is where psql actually runs, and three rounds of theme
       work did not fix it. `_psqlrc` is back to `\pset pager off`.
 
-      The finding is worth more than the tool, and applies to any TUI evaluated
-      from here (yazi, jless, btop): pspg is an ncurses program, and given a hex
-      colour it tries to *redefine a terminal palette entry*. nvim's `:terminal`
-      does not honour that, so the colours land on whatever occupied the slot,
-      producing green backgrounds and grey-on-grey text. `termguicolors` is
-      irrelevant; it governs how nvim draws its own buffers, not what an ncurses
-      child can do to the palette. Using only named colours plus `Default` got
-      the table body readable, but the bottom menu bar draws from
-      `template_menu` rather than any theme field and could not be fixed at all,
-      only hidden with `--no-commandbar`.
+      Why it failed: pspg is an ncurses program, and given a hex colour it tries
+      to *redefine a terminal palette entry*. nvim's `:terminal` does not honour
+      that, so colours land on whatever occupied the slot, producing green
+      backgrounds and grey-on-grey text. `termguicolors` is irrelevant; it
+      governs how nvim draws its own buffers, not what an ncurses child can do
+      to the palette. Named colours plus `Default` got the table body readable,
+      but the bottom menu bar draws from `template_menu` rather than any theme
+      field and could not be fixed at all, only hidden.
 
-      So: a TUI is worth trying only if it looks right in nvim's `:terminal`
-      with no theming at all. Reaching for a custom theme is the signal to stop.
+      **Scope: this is a psql constraint, not a general one.** psql runs inside
+      an nvim `:terminal` because `neo-vim/lua/sql.lua` deliberately builds that
+      layout, editor beside a terminal buffer marked `b:sql`. So any future
+      *psql* pager or viewer has to look right in there untouched. TUIs launched
+      from a normal shell (yazi, jless, btop) are unaffected and should be
+      judged on their own.
 - [x] **ccmanager.** Installed and uninstalled the same night, 2026-08-07.
       Wrong category: it manages sessions (creating, switching, worktree
       juggling), and the actual want is finding old ones. That distinction now
