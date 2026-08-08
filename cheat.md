@@ -3,6 +3,7 @@
 ## fzf
 
 - `Ctrl-T` insert a path from the current directory, previewed with bat for files and an eza tree for directories. Only one level deep, so `cd` first to reach anything else.
+- `Ctrl-Shift-T` the same picker, but searching the whole tree below here instead of one level. Skips anything `.gitignore` covers.
 - `Ctrl-/` toggle that preview pane off when the list itself is what matters.
 - `Ctrl-R` fuzzy search shell history.
 - `Alt-C` cd into a subdirectory, previewed as a two-level tree.
@@ -12,6 +13,8 @@
 - `Esc .` insert the last word of the previous command. Repeat to walk further back through history.
 - `Ctrl-X Ctrl-E` open the current command in nvim; save and quit to run it.
 - `Ctrl-_` undo the last edit to the line.
+- `Right arrow` accept the greyed-out suggestion from history. `Ctrl-E` does the same at the end of a line.
+- `Alt-F` accept just the next word of that suggestion.
 - `Ctrl-W` delete the word before the cursor, stopping at each path segment.
 - `Ctrl-U` clear the line.
 - `Ctrl-A` jump to the start of the line.

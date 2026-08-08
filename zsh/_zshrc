@@ -173,6 +173,37 @@ if command -v bat >/dev/null 2>&1; then
   unset _fzf_dir_preview
 fi
 
+# Ctrl-X Ctrl-T is Ctrl-T's recursive sibling: same picker and same previews,
+# but searching the whole tree below here instead of one level.
+#
+# Deliberately a separate key rather than a wider default. Ctrl-T is for "the
+# thing I can see", which wants a short list; this is for "I know it is in here
+# somewhere", which wants reach. Different questions, different keys.
+#
+# ripgrep supplies the list because it obeys each repo's .gitignore, which drops
+# ~/code from 142k entries to 6.7k without hiding anything that matters. Falls
+# back to fzf's own walker when rg is missing; that walker only skips .git and
+# node_modules, so expect it to be slower and noisier.
+_fzf_recursive_widget() {
+    local FZF_CTRL_T_COMMAND
+    if command -v rg >/dev/null 2>&1; then
+        FZF_CTRL_T_COMMAND="rg --files --hidden --glob '!.git' --glob '!.DS_Store'"
+    fi
+    fzf-file-widget
+}
+zle -N _fzf_recursive_widget
+
+# Ctrl-Shift-T is the intended chord and the one on the cheat sheet. It arrives
+# as the CSI-u sequence ESC [ 116 ; 6 u (116 is `t`, 6 is ctrl+shift), because
+# Ctrl+Shift+letter has no legacy encoding and Ghostty falls back to CSI-u for
+# it. Classic Ctrl+letter collapses to one control byte with Shift discarded,
+# which is why most terminals cannot tell Ctrl-T and Ctrl-Shift-T apart.
+bindkey '^[[116;6u' _fzf_recursive_widget
+
+# ^X^T does the same thing, kept as the portable fallback: the CSI-u binding is
+# silent in any terminal that does not emit it, over ssh included.
+bindkey '^X^T' _fzf_recursive_widget
+
 # Alt-C previews the directory it is about to cd into. Ctrl-T lists files only
 # now, so this is where the eza tree earns its keep, and seeing a directory's
 # contents before entering it is the whole question Alt-C is answering anyway.
@@ -316,4 +347,28 @@ alias rl='exec zsh -l'
 # Starship prompt (config: ~/.config/starship.toml -> dotfiles/starship.toml)
 ########################################
 command -v starship >/dev/null && eval "$(starship init zsh)"
+
+########################################
+# zsh-autosuggestions: greys in the rest of a command you have typed before.
+########################################
+# Right arrow or Ctrl-E accepts the whole suggestion, Alt-F accepts one word of
+# it. Worth knowing that Ctrl-E does double duty: at the end of a line it
+# accepts, elsewhere it still jumps to the end.
+#
+# The bracketed-paste workaround near the top of this file exists for this
+# plugin; it was left behind when the plugin went missing in a machine move,
+# and now has something to do again.
+[ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ] &&
+  source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+########################################
+# zsh-syntax-highlighting: colours the line as you type. Green means the
+# command exists, red means it does not, so a typo is visible before enter.
+########################################
+# MUST be sourced last. It wraps every zle widget that exists at load time, so
+# anything defined afterwards (a bindkey, a widget, starship's own hooks) is
+# invisible to it and stops being highlighted. Keep this at the bottom of the
+# file, below the per-host config and the prompt.
+[ -f /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] &&
+  source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 

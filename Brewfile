@@ -147,6 +147,15 @@ brew "xmlstarlet"
 brew "xq"
 # Process YAML, JSON, XML, CSV and properties documents from the CLI
 brew "yq"
+# Fish-like suggestions from history, greyed in ahead of the cursor
+brew "zsh-autosuggestions"
+# Type a prefix, then up/down cycles only commands starting with it.
+# Was already installed and sourced in zsh/_zshrc but never listed here, so a
+# fresh machine silently lost it: the source line is guarded by [ -f ], which
+# skips quietly rather than failing.
+brew "zsh-history-substring-search"
+# Colours the command line as you type; red means the command does not exist
+brew "zsh-syntax-highlighting"
 # Command-line interface for 1Password
 cask "1password-cli"
 # Enable Windows-like alt-tab

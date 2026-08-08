@@ -83,12 +83,8 @@ Two notes from wiring it up worth keeping:
 Still open in this section:
 
 
-- [ ] **zsh-autosuggestions.** Not installed. Note the repo already carries the
-      bracketed-paste workaround for it at `zsh/_zshrc:36` with no plugin
-      present, which suggests it was used before and lost in a machine move.
-      That is weak evidence it was liked.
-- [ ] **zsh-syntax-highlighting.** Not installed. Must be sourced last, after
-      all other zle setup, or it clobbers bindings.
+
+
 - [ ] **atuin.** Searchable, synced shell history. Two questions to settle
       before installing: it wants the `^R` binding that fzf currently owns
       (`zsh/_zshrc:83`), and sync means shell history leaves the machine, which
@@ -244,6 +240,28 @@ until confirmed either way.
       completion in Homebrew's site-functions, so that item is closed rather
       than done. Verdict question: is the git column and icon noise worth it
       every single listing, or does the denser `ls` output get missed?
+- [ ] **zsh-autosuggestions and zsh-syntax-highlighting** — **trialing**,
+      installed 2026-08-08. Sourced at the very bottom of `zsh/_zshrc`;
+      syntax-highlighting must be last because it wraps every zle widget that
+      exists when it loads, and anything defined afterwards stops being
+      highlighted. Verified `^X^E`, `^X^G`, `^_` and `magic-space` all survived
+      the wrap. The bracketed-paste workaround near the top of the file turned
+      out to be for autosuggestions, left behind when the plugin went missing in
+      a machine move; it has something to do again.
+      Suggestion colour is the default `fg=8`, which is dim on this background;
+      bump `ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE` if it is hard to read.
+      Verdict question: does the suggestion get accepted often enough to be
+      worth the noise, or does it just sit there being ignored?
+- [ ] **Ctrl-Shift-T, the recursive file picker** — **trialing**, wired
+      2026-08-08. Ctrl-T stays one level deep; this searches the whole tree via
+      ripgrep, so `.gitignore` still applies. Ctrl-Shift-T works because Ghostty
+      emits it as the CSI-u sequence `ESC [ 116 ; 6 u`, having no legacy
+      encoding to fall back on; classic Ctrl+letter collapses to one control
+      byte with Shift discarded, which is why the chord is usually impossible.
+      `^X^T` is bound to the same widget as a portable fallback, since the CSI-u
+      binding is silent in terminals that do not emit it, ssh included.
+      Verdict question: two keys for one idea, or does the shallow default just
+      want to be recursive after all?
 - [ ] **direnv** — **configured.** Hooked at `zsh/_zshrc-dirty:13`, so
       per-project venvs auto-activate on this host. Two open questions: is it
       actually relied on, and should it be promoted out of the per-host file so
