@@ -219,35 +219,77 @@ fi
 ########################################
 # Default apps
 ########################################
-# Open .csv files in VimR. The point is that double-clicking a CSV in Finder
-# must not summon Numbers; any editor beats a spreadsheet here.
+# Open text, code and data files in VimR from Finder, rather than TextEdit,
+# Console, or (for .csv) Numbers. Was MacVim, which had quietly become the
+# handler for a dozen-odd types.
 #
-# Was MacVim. VimR reads the same nvim config as the terminal, so classic vim
-# is no longer the thing that runs when a file is opened from Finder, while
-# `vim/` stays for Windows. VimR over Neovide because it is a native Mac app
-# with windows, tabs and a file drawer, which is the same shape as MacVim;
-# Neovide is closer to the terminal nvim floated into a window. It declares 77
-# document types including csv and a `*` wildcard.
+# VimR over Neovide because it is a native Mac app with windows, tabs and a
+# file drawer, the same shape as MacVim; Neovide is closer to the terminal nvim
+# floated into a window. Both read the same nvim config, so `vim/` is now
+# Windows-only.
+#
+# ASSOCIATE BY UTI, NOT BY EXTENSION. `duti -s <id> md all` exits 0 and changes
+# nothing; only `duti -s <id> net.daringfireball.markdown all` actually works.
+# The exception is csv, where the extension form is the one that takes, so it
+# gets both. Find a type's real UTI with:
+#     mdls -name kMDItemContentType somefile.ext
+#
+# Three oddities behind the list below:
+#   - `.ts` is public.mpeg-2-transport-stream. macOS classes it as video, so
+#     claiming TypeScript here also claims MPEG-2 streams. Fine in practice, but
+#     that is why a video UTI appears in an editor list.
+#   - `.jsx` has only a dynamic UTI (dyn.ah62d4rv4ge80y652), which means macOS
+#     has no idea what it is. Not claimable, so it is absent.
+#   - The org.vim.* UTIs (.tsx, .toml, .ini, .conf, .sql) are DEFINED BY MACVIM.
+#     VimR exports none of them. Uninstalling MacVim removes those declarations
+#     and orphans those five types no matter what is set here, which is a real
+#     constraint on retiring it.
+#
+# Note .md goes to VimR, including notes in the Obsidian vault. LaunchServices
+# cannot route by path, so opening vault files from Finder lands here.
 #
 # `duti` is brew-installed and not guaranteed present, so skip with a warning
-# rather than fail. The bundle id is looked up at runtime rather than hardcoded,
-# so this works however Neovide was installed, and skips if it is absent.
+# rather than fail. The bundle id is looked up at runtime, so this works however
+# VimR was installed, and skips if it is absent.
+vimr_utis=(
+    public.plain-text                    # .txt .text
+    net.daringfireball.markdown          # .md .markdown
+    com.netscape.javascript-source       # .js
+    public.python-script                 # .py
+    public.ruby-script                   # .rb
+    org.golang.go-script                 # .go
+    org.rust-lang.rust-script            # .rs
+    org.lua.lua-source                   # .lua
+    public.shell-script                  # .sh
+    public.zsh-script                    # .zsh
+    public.bash-script                   # .bash
+    public.json                          # .json
+    public.yaml                          # .yaml .yml
+    public.tab-separated-values-text     # .tsv
+    com.apple.log                        # .log
+    public.mpeg-2-transport-stream       # .ts, see note above
+    org.vim.typescript-source            # .tsx   ) these five are MacVim's
+    org.vim.toml-file                    # .toml  ) declarations and die
+    org.vim.ini-file                     # .ini   ) with it
+    org.vim.cfg-file                     # .conf  )
+    org.vim.sql-file                     # .sql   )
+    public.comma-separated-values-text   # .csv
+)
 if command -v duti >/dev/null 2>&1; then
     vimr_id=$(osascript -e 'id of app "VimR"' 2>/dev/null || true)
     if [[ -n "$vimr_id" ]]; then
-        print_status "Setting VimR ($vimr_id) as default handler for .csv files"
-        # Both forms, deliberately. Setting only the UTI reports success and
-        # changes nothing: after `duti -s <id> public.comma-separated-values-text
-        # all`, `duti -x csv` still named the old app. The extension form is what
-        # LaunchServices actually honours here. The UTI line stays because it is
-        # the correct thing to claim; the extension line is the one that works.
-        duti -s "$vimr_id" public.comma-separated-values-text all
-        duti -s "$vimr_id" csv all
+        print_status "Setting VimR ($vimr_id) as handler for ${#vimr_utis[@]} file types"
+        for uti in "${vimr_utis[@]}"; do
+            duti -s "$vimr_id" "$uti" all 2>/dev/null || true
+        done
+        # csv is the one type where the extension form is what LaunchServices
+        # honours; the UTI above is claimed too, for correctness.
+        duti -s "$vimr_id" csv all 2>/dev/null || true
     else
-        print_warning "VimR not found; skipping .csv association"
+        print_warning "VimR not found; skipping file type associations"
     fi
 else
-    print_warning "duti not found; skipping .csv -> VimR association (brew install duti)"
+    print_warning "duti not found; skipping VimR file type associations (brew install duti)"
 fi
 
 print_status "Done. Some changes require a logout/restart to take effect."
