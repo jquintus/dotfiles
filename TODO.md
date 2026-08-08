@@ -384,9 +384,18 @@ until confirmed either way.
       cmux surface (dead over plain ssh) and git sources need a repo, though a
       piped patch works anywhere.
 
+      **Silent no-op when the agent's cwd is not a git repo.** Confirmed
+      2026-08-08: a session running from `~/code` (a directory of repos, not a
+      repo) gets `Error: cmux diff git sources require a git repository`, which
+      `|| true` swallows, so the pane stays empty and nothing indicates why.
+      Normal work runs inside `backend.jq-*` and `web.*` worktrees, where it
+      fires correctly, so this is an artifact of dotfiles sessions rather than a
+      bug to fix. Worth knowing before concluding the hook is broken.
+
       Verdict question: does the pane actually get looked at, or does it become
       furniture? And does firing on conversational turns with no file changes
       become annoying?
+
 - [ ] **direnv** — **configured.** Hooked at `zsh/_zshrc-dirty:13`, so
       per-project venvs auto-activate on this host. Two open questions: is it
       actually relied on, and should it be promoted out of the per-host file so
