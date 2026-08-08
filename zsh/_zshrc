@@ -223,6 +223,24 @@ WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
 # expansions can be seen and edited before running. Pairs with HIST_VERIFY.
 bindkey ' ' magic-space
 
+# Ctrl-X Ctrl-G writes `git commit -am ''` onto the line and parks the cursor
+# between the quotes. It does not run: type the message, press enter. That is
+# the whole point, since committing without opening an editor is the part `c`
+# (git add -A && git commit) cannot do.
+#
+# Note the two are not interchangeable. `-a` stages tracked files that changed;
+# `c` uses `add -A` and picks up new files too.
+#
+# Single quotes, deliberately: a message like `fix `foo` handling` would be
+# command-substituted inside double quotes and silently mangled, while an
+# apostrophe under single quotes fails loudly at the prompt where it can be seen.
+_git_commit_am() {
+    BUFFER="git commit -am ''"
+    CURSOR=$(( ${#BUFFER} - 1 ))
+}
+zle -N _git_commit_am
+bindkey '^X^G' _git_commit_am
+
 ########################################
 # Per-host config: source zsh/_zshrc-<hostname> if it exists.
 # Use scutil LocalHostName on macOS — `hostname` reflects the transient DHCP
@@ -282,16 +300,17 @@ _config() {
 compdef _config config
 
 ########################################
-# Fast reload: `rl`, Ctrl-X Ctrl-R, and `config -reload` are all identical.
-# `exec zsh -l` replaces this shell with a fresh login shell, exactly like
-# opening a new tab: re-runs /etc/zprofile (path_helper) so the system PATH is
-# restored, and typeset -U keeps it deduped. Trade-off: background jobs and any
-# interactively-defined vars/functions in this shell are discarded.
+# Fast reload: `rl` and `config -reload` are identical. `exec zsh -l` replaces
+# this shell with a fresh login shell, exactly like opening a new tab: re-runs
+# /etc/zprofile (path_helper) so the system PATH is restored, and typeset -U
+# keeps it deduped. Trade-off: background jobs and any interactively-defined
+# vars/functions in this shell are discarded.
+#
+# There was a Ctrl-X Ctrl-R binding for this too. Removed: opening a new tab is
+# the reflex anyway, so it was a second thing to remember for no gain, and it
+# was squatting on the ^X^ prefix that ^X^E and ^X^G now use.
 ########################################
 alias rl='exec zsh -l'
-_reload_shell() { BUFFER='exec zsh -l'; zle accept-line }
-zle -N _reload_shell
-bindkey '^X^R' _reload_shell
 
 ########################################
 # Starship prompt (config: ~/.config/starship.toml -> dotfiles/starship.toml)

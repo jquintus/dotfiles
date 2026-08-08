@@ -44,8 +44,15 @@
 - `--project <name>` narrow to one repo, `--since "3 days ago"` narrow by date.
 - `--obsidian ~/notes` search the vault with the same command.
 
+## Opening files by name
+
+- Type a `.md` filename with no command in front of it to page it through glow.
+- Type a `.json` filename to pretty-print it with jq.
+- Type a `.png`, `.jpg`, or `.gif` filename to view the image in the terminal.
+
 ## Git
 
-- `c` stage everything and commit.
+- `c` stage everything and commit, including new files.
+- `Ctrl-X Ctrl-G` write `git commit -am ''` on the line with the cursor between the quotes; type the message and press enter. Only stages files git already tracks.
 - `n` / `N` jump to the next or previous file while paging a diff.
 

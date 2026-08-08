@@ -84,20 +84,15 @@ Still open in this section:
 
 - [ ] **`compdef eza ls`.** Trivial, but only meaningful if eza is actually
       adopted (below).
-- [ ] **Global and suffix aliases.** `alias -g` expands anywhere on the line
-      (`alias -g G='| grep'`), `alias -s` binds a file extension to a program
-      (`alias -s md=nvim`). Zero of either in `zsh/_zshrc-aliases` today. The
-      research question is which handful would actually get used, since a large
-      set of invisible expansions is its own problem.
-- [ ] **Bind a key to `git commit -am`.** Needs a decision on whether it fires
-      immediately or fills the buffer for editing. `_reload_shell` at
-      `zsh/_zshrc:170` is the pattern to copy.
+
+
 
 **"What are widgets?"**: a zle widget is a shell function registered with
 `zle -N` so it can be bound to a key and manipulate the command line buffer
 (`$BUFFER`, `$CURSOR`) rather than just run a command. There is already one in
-the repo: `_reload_shell` at `zsh/_zshrc:170`, bound to `^X^R`. Most items above
-are stock widgets that only need binding.
+the repo: `_git_commit_am`, bound to `^X^G`, which writes a command onto the
+line and moves the cursor without running anything. Most items above are stock
+widgets that only need binding.
 
 ### Shell tooling
 
@@ -250,6 +245,14 @@ until confirmed either way.
       and returns nothing useful; `--deep` searches content and is the real
       mode. Verdict question: does searching past sessions actually become a
       habit, or is it a thing wanted once and then forgotten?
+- [ ] **Suffix aliases and a commit binding** — **trialing**, wired 2026-08-08.
+      `alias -s md='glow -p'`, `json='jq .'`, `{png,jpg,gif}='viu'` in
+      `zsh/_zshrc-aliases`, so typing a filename opens it in the right reader.
+      This replaced the `readme()` function, which only ever handled README.md.
+      `^X^G` writes `git commit -am ''` and parks the cursor inside the quotes
+      without running, which is the thing `c` cannot do since `c` always opens
+      an editor. Verdict question: does typing a bare filename become reflex,
+      and does the commit chord beat just typing `c`?
 - [ ] **direnv** — **configured.** Hooked at `zsh/_zshrc-dirty:13`, so
       per-project venvs auto-activate on this host. Two open questions: is it
       actually relied on, and should it be promoted out of the per-host file so
@@ -281,6 +284,12 @@ until confirmed either way.
 When something is declined, move it here with the reason, so it does not come
 back around as a fresh idea later.
 
+- [x] **Global aliases (`alias -g`).** Declined 2026-08-08, without trying
+      them. The downsides landed harder than the upside: single capitals collide
+      with real arguments, the expansion is invisible to anyone reading the
+      command later, and anything using one breaks the moment it is pasted into
+      a script. Suffix aliases from the same item were taken and are trialing.
+      Not a permanent no; worth raising again if a repeated pipeline shows up.
 - [x] **pspg.** Installed and removed 2026-08-07. Unreadable inside nvim's
       `:terminal`, which is where psql actually runs, and three rounds of theme
       work did not fix it. `_psqlrc` is back to `\pset pager off`.

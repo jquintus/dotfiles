@@ -56,7 +56,18 @@ alias greb='grep'
 ########################################
 # alias cat='ccat'         # ccat adds syntax highlighting to the output
 # alias cat='bat'            # bat adds syntax highlighting and formatting to the output
-readme() { glow -p "${1:-README.md}"; }
+########################################
+# Suffix aliases: type a filename as if it were a command, and the file opens
+# in whatever reads that format. `notes.md` pages it through glow, no verb
+# needed. Fires on both `foo.md` and `./foo.md`, and only when the filename is
+# the first word on the line, so it never interferes with arguments.
+#
+# Replaced a `readme()` function that only ever handled README.md; this covers
+# every markdown file instead. To read this repo's, type `README.md`.
+########################################
+alias -s md='glow -p'
+alias -s json='jq .'
+alias -s {png,jpg,gif}='viu'
 
 ########################################
 # Make my mac more windowsy
