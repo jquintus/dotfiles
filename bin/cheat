@@ -59,6 +59,26 @@ else
     content=$(collect)
 fi
 
+# Name the files this came from, so a wrong or missing entry can be fixed
+# without hunting for where it lives. Same idea as the hyper-key launcher
+# printing its own path on its cheat sheet.
+sources() {
+    echo
+    echo "---"
+    echo
+    echo "Rendered from:"
+    echo
+    echo "- \`$SHEET\`"
+    # An `if` rather than `[[ ... ]] && echo`: the latter returns 1 when the
+    # work file is absent, and under `set -e` that non-zero return from the last
+    # line of the function kills the script mid-render with no message.
+    if [[ -f "$WORK" ]]; then
+        echo "- \`$WORK\`"
+    fi
+}
+
+content="$content$(sources)"
+
 if command -v glow >/dev/null 2>&1; then
     printf '%s\n' "$content" | glow -p -
 else

@@ -61,6 +61,9 @@ brew "iproute2mac"
 brew "jd"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
+# Pager for browsing JSON and YAML, vim-style keys. Complements jq, which
+# queries; this one is for looking around a document you do not know yet.
+brew "jless"
 # Kubernetes CLI To Manage Your Clusters In Style!
 brew "k9s"
 # Lazier way to manage everything docker

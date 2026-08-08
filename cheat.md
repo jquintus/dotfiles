@@ -2,8 +2,7 @@
 
 ## fzf
 
-- `Ctrl-T` insert a path from the current directory, previewed with bat for files and an eza tree for directories. Only one level deep, so `cd` first to reach anything else.
-- `Ctrl-Shift-T` the same picker, but searching the whole tree below here instead of one level. Skips anything `.gitignore` covers.
+- `Ctrl-T` insert a path from the current directory. `Ctrl-Shift-T` for a recursive list
 - `Ctrl-/` toggle that preview pane off when the list itself is what matters.
 - `Ctrl-R` fuzzy search shell history.
 - `Alt-C` cd into a subdirectory, previewed as a two-level tree.
@@ -12,9 +11,9 @@
 
 - `Esc .` insert the last word of the previous command. Repeat to walk further back through history.
 - `Ctrl-X Ctrl-E` open the current command in nvim; save and quit to run it.
-- `Ctrl-_` undo the last edit to the line.
 - `Right arrow` accept the greyed-out suggestion from history. `Ctrl-E` does the same at the end of a line.
 - `Alt-F` accept just the next word of that suggestion.
+- `Ctrl-_` undo the last edit to the line.
 - `Ctrl-W` delete the word before the cursor, stopping at each path segment.
 - `Ctrl-U` clear the line.
 - `Ctrl-A` jump to the start of the line.
@@ -24,8 +23,6 @@
 
 - Type a prefix, then `Up` / `Down` to cycle only commands that start with it.
 - Start a command with a leading space to keep it out of history entirely.
-- `Up` gives you this terminal's own history. Other open terminals no longer leak into it, so leaving a server running here and working elsewhere for an hour still leaves Ctrl-C, Up, Enter working.
-- A new terminal still starts with every command from everywhere.
 - `!!` the previous command.
 - `!$` the last argument of the previous command.
 - Press space after `!!` or `!$` to expand it in place, so it can be edited before it runs.
@@ -41,18 +38,21 @@
 - `f <dir>` open a specific directory in Finder.
 - `clip` pipe into the macOS clipboard.
 
-## Claude sessions
-
-- `search-sessions --deep <words>` find an old conversation by what was said in it, across every project directory. Without `--deep` it only searches session metadata and usually finds nothing.
-- Each hit prints a `cd ... && claude -r <uuid>` line; run it to reopen that conversation.
-- `--project <name>` narrow to one repo, `--since "3 days ago"` narrow by date.
-- `--obsidian ~/notes` search the vault with the same command.
-
 ## Opening files by name
 
 - Type a `.md` filename with no command in front of it to page it through glow.
 - Type a `.json` filename to pretty-print it with jq.
 - Type a `.png`, `.jpg`, or `.gif` filename to view the image in the terminal.
+
+## jless
+
+- `jless <file>` browse a JSON or YAML document. Reads stdin too, so anything can be piped in.
+- `Space` fold or unfold the node under the cursor.
+- `c` collapse everything at this level, `e` expand it again.
+- `/` search forward, `n` for the next hit.
+- `yy` copy the focused value, `yp` copy the path to it.
+- `m` switch between data mode and raw line mode.
+- `q` quit.
 
 ## Git
 

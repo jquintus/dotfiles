@@ -150,9 +150,7 @@ Still open in this section:
       actually looked at, or is it decoration?
 - [ ] **yazi.** Terminal file manager. Overlaps Commander One, which is already
       installed, so the question is whether either gets used.
-- [ ] **jless.** Interactive JSON viewer. `jq`, `jd`, `yq`, and `xq` are already
-      installed, so this is browsing rather than querying. Worth it only if
-      there is real time spent squinting at `jq` output.
+
 
 - [ ] **Log viewers.** logdy (streams logs to a browser UI) and nless
       (<https://github.com/mpryor/nothing-less>). Evaluate against the current
@@ -325,6 +323,11 @@ until confirmed either way.
 ---
 
 ## In use
+
+- [x] **jless** — **in use.** Installed by Josh himself 2026-08-08, tried, and
+      kept: "I like it. Make it permanent." Added to the Brewfile so it survives
+      a fresh machine. Sits alongside jq rather than replacing it: jq queries a
+      document you already understand, jless browses one you do not.
 
 - [x] **AltTab on Cmd+Tab.** Confirmed working and in use, 2026-08-07, commit
       `e727aee`. Scripted in `scripts/macos-defaults.sh` along with opting out
