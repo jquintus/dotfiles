@@ -327,6 +327,26 @@ until confirmed either way.
       on failure. Re-deriving exit status here would duplicate starship's logic
       for a glyph already seen. Verdict question: is the denser scrollback worth
       losing the directory context of past commands?
+- [ ] **`cmux diff --last-turn` on a Stop hook** — **trialing**, wired
+      2026-08-08. Added alongside peon-ping in `claude/settings.json`, so the
+      diff pane refreshes itself every time an agent finishes a turn. The point
+      is ambient review: glance at a pane instead of scrolling back through tool
+      output. It reuses the same pane rather than stacking splits, and
+      `--no-focus` keeps it from stealing focus.
+
+      Uses `$CMUX_CLAUDE_HOOK_CMUX_BIN`, which cmux sets for exactly this, with
+      a `cmux` fallback and `|| true` so sessions outside cmux fail silently
+      instead of erroring on every turn. Both paths verified to exit 0.
+
+      Verified behaviour worth knowing: `--last-turn` works even with a clean
+      tree, so the baseline is a snapshot from turn start rather than the
+      working tree, and committing mid-turn does not hide the diff. It needs a
+      cmux surface (dead over plain ssh) and git sources need a repo, though a
+      piped patch works anywhere.
+
+      Verdict question: does the pane actually get looked at, or does it become
+      furniture? And does firing on conversational turns with no file changes
+      become annoying?
 - [ ] **direnv** — **configured.** Hooked at `zsh/_zshrc-dirty:13`, so
       per-project venvs auto-activate on this host. Two open questions: is it
       actually relied on, and should it be promoted out of the per-host file so

@@ -61,3 +61,7 @@
 - `Ctrl-X Ctrl-G` write `git commit -am ''` on the line with the cursor between the quotes; type the message and press enter. Only stages files git already tracks.
 - `n` / `N` jump to the next or previous file while paging a diff.
 
+## cmux
+
+- `cmd-opt-b` Open up the sidebar and checkout vault
+- `cmux diff --last-turn` render what an agent changed since its turn started, in a split. Runs automatically after every turn, so it is usually already there.

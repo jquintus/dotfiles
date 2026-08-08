@@ -78,6 +78,12 @@
             "command": "/Users/jq/.claude/hooks/peon-ping/peon.sh",
             "timeout": 10,
             "async": true
+          },
+          {
+            "type": "command",
+            "command": "\"${CMUX_CLAUDE_HOOK_CMUX_BIN:-cmux}\" diff --last-turn --no-focus >/dev/null 2>&1 || true",
+            "timeout": 10,
+            "async": true
           }
         ]
       }
