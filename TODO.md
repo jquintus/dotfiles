@@ -146,13 +146,13 @@ Still open in this section:
   - **claude-teams** is a CLI command, `cmux claude-teams [claude-args...]`,
     with `codex-teams`, `omo`, `omx`, `omc` alongside it. Multi-agent, not org
     teams. Unexplored.
-  - **cmux top**: no such command. Possibly `cmux feed tui`, possibly a Dock
-    widget (`cmux docs dock`). Unresolved.
+  - **cmux top: done.** Josh poked at it; it was a command he wanted to try and
+    he has now tried it. Closed.
   - **Cmd+Shift+U**: does not appear in `cmux shortcuts` at all. Either an
     app-level chord or something that moved since the note was written.
     Unresolved.
 
-      Both remaining unknowns are cheap to check and neither is blocking.
+      Only Cmd+Shift+U is left unresolved, and it is not blocking anything.
 
       **Caveat on the two that are done:** they went into the Settings UI, not
       `cmux.json`, so they are not file-managed and will not travel to a new
