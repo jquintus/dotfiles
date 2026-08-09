@@ -234,18 +234,30 @@ Still open in this section:
       Lives in eng-tools. Verdict question unchanged: does the browser UI get
       opened during a real debugging session?
 
-- [ ] **Taproom.** A GUI over Homebrew. Weigh against the fact that the Brewfile
-      here is the source of truth: anything installed by clicking still has to
-      be written back by hand.
+
 - [ ] **Context compression for CLAUDE.md.** repomix or similar, if any
       `CLAUDE.md` grows big enough to eat context budget. Not a problem yet.
       Revisit when one stops fitting comfortably.
 
 - [ ] **cmux `set-status` / `set-progress` from hooks.** Cheap given the hooks
       already in place. Payoff is at-a-glance triage across many panes.
-- [ ] **uBlock to block cookie banners.** A browser extension, so nothing to
-      script here, but still a real workflow change to evaluate. If adopted it
-      belongs in the manual steps in `README.md` under "Fresh machine setup".
+- [ ] **uBlock for cookie banners.** Not done, but the how-to is settled so it
+      does not need re-deriving:
+
+      On Chrome you can only have uBlock Origin **Lite**. Full uBO is Manifest
+      V2, which Chrome disabled in v138 (July 2025). Then: extension icon >
+      Dashboard/Settings > **Filter lists > Annoyances > EasyList Cookie**.
+
+      The step that makes or breaks it: uBOL has **no generic cosmetic filtering
+      by default**, and its FAQ says you must raise the blocking mode to
+      **Complete** to get it. Enabling the cookie list alone hides nothing, which
+      is exactly how this ends up filed as "tried it, did not work".
+
+      Worth knowing it *hides* banners rather than answering them, so a site that
+      blocks scrolling until you consent will still block scrolling. If that
+      turns up, Consent-O-Matic actually clicks reject, and is the better tool
+      for that case.
+
 
 ---
 
@@ -279,17 +291,7 @@ trying standalone before any config lands in this repo.
       free, so the first question is what hiddenbar cannot do. Note that
       "hiddenbar is installed" says nothing about whether the menu bar is
       actually under control today.
-- [ ] **hyperkey.app.** Finding, not a verdict: Caps Lock is already remapped to
-      Hyper by Karabiner ("Caps Lock -> Hyper (cmd+ctrl+opt+shift); Escape when
-      tapped alone") and `hammerspoon/launcher.lua` already consumes it for app
-      launching. So adopting it means replacing two working pieces with one app.
-      That could still be worth it if the current setup is fiddly to maintain;
-      that is the question to answer.
-- [ ] **zoxide.** Bottom of the list on purpose, moved here 2026-08-07: Josh
-      does not have the problem it solves. Frecency-based jumping is only worth
-      something if you regularly need to reach a directory far from where you
-      are, and that is not how he moves around. Not dropped, since the shallow
-      fzf pickers could change that, but do not resurface it without a reason.
+
 
 ---
 
@@ -435,6 +437,13 @@ until confirmed either way.
       become annoying?
 
 
+- [ ] **Taproom** — **trialing**, installed by Josh 2026-08-08 (v0.6.2), now in
+      the Brewfile. Correction to this file's earlier description: it is a TUI,
+      not "a GUI over Homebrew", and it is a brew formula rather than a cask.
+      The original caveat still holds though: the Brewfile here is the source of
+      truth, so anything installed through Taproom still has to be written back.
+      Verdict question: does it beat `brew search` / `brew info`, or is it a nicer
+      way to do something that was never hard?
 - [ ] **direnv** — **configured.** Hooked at `zsh/_zshrc-dirty:13`, so
       per-project venvs auto-activate on this host. Two open questions: is it
       actually relied on, and should it be promoted out of the per-host file so
@@ -481,6 +490,10 @@ that the conversation restarts from what was already learned rather than from
 zero. Bring it back with the history attached, instead of either pretending it
 never came up or treating it as settled forever.
 
+- [x] **hyperkey.app.** Declined 2026-08-08: "karabiner does it." Karabiner
+      already maps Caps Lock to Hyper (with Escape on tap) and
+      `hammerspoon/launcher.lua` consumes it, so this would have replaced two
+      working pieces with one app.
 - [x] **SwipeAeroSpace.** Installed and removed the same evening, 2026-08-08:
       "It didn't work well." Was meant to put the three-finger swipe back for
       AeroSpace workspaces, which the native gesture cannot do since those are

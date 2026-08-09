@@ -131,6 +131,8 @@ brew "starship"
 brew "stylua"
 # Define your dev environment as code. For microservice apps on Kubernetes
 brew "tilt"
+# Interactive TUI for Homebrew
+brew "taproom"
 # Terminal multiplexer
 brew "tmux"
 # Display directories as trees (with optional color/HTML output)
