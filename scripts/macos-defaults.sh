@@ -252,6 +252,18 @@ if [[ -f "$vimr_plist" ]]; then
         /usr/libexec/PlistBuddy \
             -c "Set :${vimr_state_key}:open-files-from-applications-action inCurrentWindow" \
             "$vimr_plist" 2>/dev/null || true
+
+        # VimR ships with Menlo, which has none of the Nerd Font glyphs the nvim
+        # config draws with, so anything using them renders as garbage boxes.
+        # This is the PostScript name (what the plist wants), not the family
+        # name Ghostty takes. The Mono variant is deliberate: VimR renders on a
+        # character grid, and the non-Mono glyphs are double-width and overlap.
+        #   MesloLGSNFM-Regular  Nerd Font Mono   <- this
+        #   MesloLGSNF-Regular   Nerd Font        (what ghostty/config names)
+        print_status "Setting VimR's font to MesloLGS Nerd Font Mono"
+        /usr/libexec/PlistBuddy \
+            -c "Set :${vimr_state_key}:main-window:appearance:editor-font-name MesloLGSNFM-Regular" \
+            "$vimr_plist" 2>/dev/null || true
         killall cfprefsd 2>/dev/null || true
     else
         print_warning "Could not find VimR's state key; skipping open-in-current-window"
