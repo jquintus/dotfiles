@@ -107,6 +107,10 @@ There is no way to automate them, so run through the checklist by hand:
   ```
   The `search-sessions` binary itself comes from the Brewfile. The plugin is the
   separate piece that lets Claude search session history on your behalf.
+- **Grant SwipeAeroSpace Accessibility permission:** System Settings > Privacy &
+  Security > Accessibility > enable SwipeAeroSpace. It reads global trackpad
+  events to turn a three-finger swipe into an AeroSpace workspace change, and
+  does nothing at all without this.
 - **Grant Hammerspoon Accessibility permission:** System Settings > Privacy &
   Security > Accessibility > enable Hammerspoon. Required for the global hotkeys
   in `hammerspoon/`.

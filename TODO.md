@@ -254,10 +254,16 @@ Still open in this section:
 These replace working parts of the setup rather than adding to them. Worth
 trying standalone before any config lands in this repo.
 
-- [ ] **AeroSpace.** Tiling window manager. Supersedes Rectangle (installed) and
-      overlaps `hammerspoon/layout.lua`. The largest behavior change in this
-      file and the one most likely to be abandoned after a week, which is
-      exactly why it should be trialed before anything is written down.
+- [ ] **AeroSpace** — **trialing**, installed by Josh 2026-08-08 (v0.21.3-Beta,
+      config at `~/.aerospace.toml`). Deliberately NOT in the Brewfile yet: the
+      entry below still stands, that this supersedes Rectangle and overlaps
+      `hammerspoon/layout.lua`, and it is the change most likely to be abandoned
+      after a week. It goes in the Brewfile when it survives, not before.
+
+      First friction found: three-finger swipe stopped changing workspaces,
+      because AeroSpace's workspaces are not macOS Spaces so the native gesture
+      has nothing to act on. Fixed with SwipeAeroSpace (see below).
+
   - [ ] **JankyBorders** for an active-window border, which only matters once
         tiling is in place.
 - [ ] **SketchyBar.** Custom menu bar. Overlaps itsycal and the Hammerspoon
@@ -426,6 +432,15 @@ until confirmed either way.
       furniture? And does firing on conversational turns with no file changes
       become annoying?
 
+- [ ] **SwipeAeroSpace** — **trialing**, installed 2026-08-08 (v0.3.3). Puts the
+      three-finger swipe back for AeroSpace workspaces. Chosen over
+      [aerospace-swipe](https://github.com/acsandmann/aerospace-swipe), which has
+      more stars, for one reason that matters here: it installs from a Homebrew
+      tap, so it lives in the Brewfile and travels; the other is `curl | bash`
+      into a launchd service that would have to be remembered by hand. It is
+      also a visible menu bar app rather than a daemon, so it is easy to quit if
+      AeroSpace does not stick. Needs Accessibility, noted in README step 7.
+      Verdict question: tied to AeroSpace's, since it is useless without it.
 - [ ] **direnv** — **configured.** Hooked at `zsh/_zshrc-dirty:13`, so
       per-project venvs auto-activate on this host. Two open questions: is it
       actually relied on, and should it be promoted out of the per-host file so

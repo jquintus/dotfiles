@@ -4,6 +4,7 @@ tap "datadog-labs/pack"
 tap "hashicorp/tap"
 tap "hightouchio/hightouch"
 tap "peonping/tap", "https://github.com/PeonPing/homebrew-tap"
+tap "mediosz/tap"
 tap "sinzin91/tap"
 # Official Amazon AWS command-line interface
 brew "awscli"
@@ -208,6 +209,11 @@ cask "orbstack"
 cask "pgadmin4"
 # Move and resize windows using keyboard shortcuts or snap areas
 cask "rectangle"
+# Three-finger trackpad swipe to change AeroSpace workspaces. AeroSpace's
+# workspaces are not macOS Spaces, so the native gesture does nothing; this
+# puts it back. Needs Accessibility (see README step 7). AeroSpace itself is
+# deliberately not listed here yet: still being trialled.
+cask "swipeaerospace"
 cask "slack"
 # Music streaming
 cask "spotify"
