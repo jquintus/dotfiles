@@ -254,15 +254,17 @@ Still open in this section:
 These replace working parts of the setup rather than adding to them. Worth
 trying standalone before any config lands in this repo.
 
-- [ ] **AeroSpace** — **trialing**, installed by Josh 2026-08-08 (v0.21.3-Beta,
-      config at `~/.aerospace.toml`). Deliberately NOT in the Brewfile yet: the
-      entry below still stands, that this supersedes Rectangle and overlaps
-      `hammerspoon/layout.lua`, and it is the change most likely to be abandoned
-      after a week. It goes in the Brewfile when it survives, not before.
+- [ ] **AeroSpace** — **trialing, paused** 2026-08-08. Josh installed it
+      (v0.21.3-Beta, `~/.aerospace.toml`) and stopped for now: "done with my
+      aerospace fiddling". Still installed, still not in the Brewfile, which is
+      the right state for something undecided.
 
-      First friction found: three-finger swipe stopped changing workspaces,
-      because AeroSpace's workspaces are not macOS Spaces so the native gesture
-      has nothing to act on. Fixed with SwipeAeroSpace (see below).
+      What the fiddling turned up: the three-finger swipe stops changing
+      workspaces, because AeroSpace's workspaces are not macOS Spaces, and the
+      tool tried for that (SwipeAeroSpace) did not work well. Worth knowing that
+      Rectangle and `hammerspoon/layout.lua` are both still active and overlap
+      it, so any future trial should quiet those first rather than judging
+      AeroSpace through their interference.
 
   - [ ] **JankyBorders** for an active-window border, which only matters once
         tiling is in place.
@@ -432,15 +434,7 @@ until confirmed either way.
       furniture? And does firing on conversational turns with no file changes
       become annoying?
 
-- [ ] **SwipeAeroSpace** — **trialing**, installed 2026-08-08 (v0.3.3). Puts the
-      three-finger swipe back for AeroSpace workspaces. Chosen over
-      [aerospace-swipe](https://github.com/acsandmann/aerospace-swipe), which has
-      more stars, for one reason that matters here: it installs from a Homebrew
-      tap, so it lives in the Brewfile and travels; the other is `curl | bash`
-      into a launchd service that would have to be remembered by hand. It is
-      also a visible menu bar app rather than a daemon, so it is easy to quit if
-      AeroSpace does not stick. Needs Accessibility, noted in README step 7.
-      Verdict question: tied to AeroSpace's, since it is useless without it.
+
 - [ ] **direnv** — **configured.** Hooked at `zsh/_zshrc-dirty:13`, so
       per-project venvs auto-activate on this host. Two open questions: is it
       actually relied on, and should it be promoted out of the per-host file so
@@ -487,6 +481,14 @@ that the conversation restarts from what was already learned rather than from
 zero. Bring it back with the history attached, instead of either pretending it
 never came up or treating it as settled forever.
 
+- [x] **SwipeAeroSpace.** Installed and removed the same evening, 2026-08-08:
+      "It didn't work well." Was meant to put the three-finger swipe back for
+      AeroSpace workspaces, which the native gesture cannot do since those are
+      not macOS Spaces. Untapped too. If the gesture comes up again, the other
+      candidate was [aerospace-swipe](https://github.com/acsandmann/aerospace-swipe)
+      (C, more stars, but `curl | bash` into a launchd service), and Hammerspoon
+      can read raw multitouch via `hs.eventtap` + `event:getTouches()` with no
+      new dependency at all.
 - [x] **Global aliases (`alias -g`).** Declined 2026-08-08, without trying
       them. The downsides landed harder than the upside: single capitals collide
       with real arguments, the expansion is invisible to anyone reading the
