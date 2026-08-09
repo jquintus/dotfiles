@@ -40,14 +40,14 @@ end)()
 -- Ordered: position in this table is the Hyper+<number> binding.
 M.APPS = {
   { key = "t", name = "cmux" },
-  { key = "c", name = "Google Chrome" },
+  { key = "w", name = "Google Chrome" },
+  { key = "v", name = "vimR" },
   { key = "s", name = "Slack" },
-  { key = "v", name = "Visual Studio Code", bundle = "com.microsoft.VSCode" },
+  { key = "c", name = "Visual Studio Code", bundle = "com.microsoft.VSCode" },
   { key = "o", name = "Obsidian" },
-  { key = "m", name = "MacVim" },
   { key = "g", name = "Google Chat" },
-  { key = "p", name = "Spotify" },
   { key = "l", name = "Linear" },
+  { key = "m", name = "Spotify" },
 }
 
 -- Launch, focus, or hide, depending on where the app currently stands.
