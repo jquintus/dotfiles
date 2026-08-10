@@ -64,4 +64,4 @@
 ## cmux
 
 - `cmd-opt-b` Open up the sidebar and checkout vault
-- `cmux diff --last-turn` render what an agent changed since its turn started, in a split. Runs automatically after every turn, so it is usually already there.
+- `cmux diff --last-turn` render what an agent changed since its turn started, in a split.

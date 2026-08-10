@@ -402,12 +402,12 @@ until confirmed either way.
       on failure. Re-deriving exit status here would duplicate starship's logic
       for a glyph already seen. Verdict question: is the denser scrollback worth
       losing the directory context of past commands?
-- [ ] **`cmux diff --last-turn` on a Stop hook** — **trialing**, wired
-      2026-08-08. Added alongside peon-ping in `claude/settings.json`, so the
-      diff pane refreshes itself every time an agent finishes a turn. The point
-      is ambient review: glance at a pane instead of scrolling back through tool
-      output. It reuses the same pane rather than stacking splits, and
-      `--no-focus` keeps it from stealing focus.
+- [x] **`cmux diff --last-turn` on a Stop hook** — **tried and reverted**
+      2026-08-10. Wired 2026-08-08 alongside peon-ping in
+      `claude/settings.json`; removed because most turns change no files, so it
+      kept opening an empty pane. Ambient review only earns a pane when there is
+      something in it — run it by hand instead. The notes below stay because the
+      behaviour of the command itself is still worth knowing.
 
       Uses `$CMUX_CLAUDE_HOOK_CMUX_BIN`, which cmux sets for exactly this, with
       a `cmux` fallback and `|| true` so sessions outside cmux fail silently
