@@ -241,22 +241,17 @@ Still open in this section:
 
 - [ ] **cmux `set-status` / `set-progress` from hooks.** Cheap given the hooks
       already in place. Payoff is at-a-glance triage across many panes.
-- [ ] **uBlock for cookie banners.** Not done, but the how-to is settled so it
-      does not need re-deriving:
+- [ ] **uBlock.** The reason it was on this list is gone: the note said "Ublock to
+      block cookie pop ups", and Consent-O-Matic now covers that better, by
+      answering dialogs rather than hiding them. So the only question left is
+      whether ad blocking is wanted for its own sake, which was never stated.
 
-      On Chrome you can only have uBlock Origin **Lite**. Full uBO is Manifest
-      V2, which Chrome disabled in v138 (July 2025). Then: extension icon >
-      Dashboard/Settings > **Filter lists > Annoyances > EasyList Cookie**.
-
-      The step that makes or breaks it: uBOL has **no generic cosmetic filtering
-      by default**, and its FAQ says you must raise the blocking mode to
-      **Complete** to get it. Enabling the cookie list alone hides nothing, which
-      is exactly how this ends up filed as "tried it, did not work".
-
-      Worth knowing it *hides* banners rather than answering them, so a site that
-      blocks scrolling until you consent will still block scrolling. If that
-      turns up, Consent-O-Matic actually clicks reject, and is the better tool
-      for that case.
+      If it comes back, the research is done. On Chrome only uBlock Origin
+      **Lite** exists, since full uBO is Manifest V2 and Chrome disabled it in
+      v138 (July 2025). Enable **Filter lists > Annoyances > EasyList Cookie**,
+      and crucially raise the blocking mode to **Complete**: uBOL ships with no
+      generic cosmetic filtering, so the list alone hides nothing, which is how
+      this gets written off as broken.
 
 
 ---
@@ -444,6 +439,16 @@ until confirmed either way.
       truth, so anything installed through Taproom still has to be written back.
       Verdict question: does it beat `brew search` / `brew info`, or is it a nicer
       way to do something that was never hard?
+- [ ] **Consent-O-Matic** — **trialing**, installed by Josh 2026-08-10. This is
+      what the "uBlock for cookie popups" note actually wanted: it answers consent
+      dialogs by clicking reject rather than hiding them, so a site that blocks
+      scrolling until you consent stops blocking, which is the case pure hiding
+      cannot fix.
+
+      Browser extension, so nothing here can install it and it does not travel
+      with the Brewfile. Verdict question: do the popups actually stop, and does
+      it ever click the wrong thing on a form that only looks like a consent
+      dialog?
 - [ ] **direnv** — **configured.** Hooked at `zsh/_zshrc-dirty:13`, so
       per-project venvs auto-activate on this host. Two open questions: is it
       actually relied on, and should it be promoted out of the per-host file so
