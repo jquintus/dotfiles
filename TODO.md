@@ -253,6 +253,29 @@ Still open in this section:
       generic cosmetic filtering, so the list alone hides nothing, which is how
       this gets written off as broken.
 
+- [ ] **Give the travel mouse mouse-button navigation in VS Code.** Ordered
+      2026-08-11: Keychron M3, PixArt 3311 / 1K polling, ~$33, as a travel mouse
+      rather than a replacement for the MX Anywhere 3. The 1K/3311 SKU was chosen
+      deliberately: 4K and 8K polling need the 2.4 GHz dongle and are
+      unreachable over Bluetooth, and the sensor difference does not show up in
+      desk use. It is a notched wheel with no free spin, which is why it is a
+      travel mouse and not a daily driver.
+
+      The point of interest is that it is a plain HID mouse with no vendor
+      daemon, so its thumb buttons arrive as real `button4`/`button5` and
+      Karabiner can own them — unlike the MX Anywhere 3, where the buttons never
+      reach the host at all (`karabiner/README.md` explains that at length).
+      When it arrives: add a `devices` entry for it in `karabiner/karabiner.json`
+      (pointing devices are ignored by default; ids from `karabiner_cli
+      --list-connected-devices`), then a rule mapping `button4`/`button5` to
+      `ctrl+-` and `ctrl+shift+-` behind a `frontmost_application_if` condition
+      on `com.microsoft.VSCode`.
+
+      Do *not* burn the keystroke into the mouse with Keychron Launcher instead.
+      Firmware keystrokes fire in every app, so `ctrl+-` would also land in
+      Slack, Chrome and the terminal. Firmware for global behaviour, Karabiner
+      for anything that should be per-app.
+
 
 ---
 

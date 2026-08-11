@@ -121,6 +121,20 @@ There is no way to automate them, so run through the checklist by hand:
   enable both `karabiner_grabber` and `Karabiner-Elements`. Without these, Caps
   Lock silently stays Caps Lock and every Hyper binding in
   `hammerspoon/launcher.lua` is dead. See `karabiner/README.md`.
+- **Install and configure Logi Options+** (`brew install --cask logi-options+`,
+  deliberately not in the Brewfile — it was installed by hand, so a
+  `brew bundle dump --force` would drop the line again). The MX Anywhere 3 needs
+  it for two things, both of which must be clicked in by hand because Options+
+  keeps its settings in its own sqlite database:
+  - Swap the **middle button** and **wheel-mode-shift** button, so pressing the
+    wheel toggles ratchet/free-spin and the button behind the wheel is a plain
+    middle click.
+  - Add **Visual Studio Code** as a per-application profile and assign the thumb
+    buttons the keystrokes `Ctrl+-` and `Ctrl+Shift+-`, so they navigate back and
+    forward there. VS Code ignores mouse thumb buttons natively.
+
+  Both of these have to live in Options+ rather than Karabiner, and the agent has
+  to keep running for them to work. `karabiner/README.md` explains why.
 - **Install App-Store-only apps** by signing into the App Store and downloading
   them (the Brewfile does not cover these).
 - **Install editor plugins** (see "Vim & Neovim plugins" below).
