@@ -234,6 +234,31 @@ Still open in this section:
       Lives in eng-tools. Verdict question unchanged: does the browser UI get
       opened during a real debugging session?
 
+      **Logs vanishing after ~a minute is not a bug and not the time range.**
+      The buffer is a fixed FIFO, default 1000 messages, so a busy stream evicts
+      the oldest long before a 30-minute lookback can show them — the sidebar
+      admits it, "9 out of 1000 logs" against a much larger origin file. Raise it
+      with `--max-message-count 100000` or `LOGDY_MAX_MESSAGE`. Try this before
+      judging the tool, since it accounted for the loudest complaint.
+
+- [ ] **A log viewer that is nicer to drive than logdy.** Verdict 2026-08-11
+      after real use: fast, facets work, filtering works, but the UX is clunky
+      next to a hosted product. Only worth moving if the buffer fix above does
+      not settle it.
+
+      - **lnav** — terminal, SQL over logs, auto-detects formats. Cheapest
+        upgrade, no infra, already the kind of tool that fits the rest of this
+        setup.
+      - **Seq** — one container, free for a single user, built for structured
+        logs. The closest thing to the hosted-product feel, and the first to try
+        if the complaint is UX rather than features.
+      - **OpenObserve** — AGPL, single ~30MB Rust binary, SQLite and local disk
+        by default. Markets itself as SaaS, which is misleading; self-hosting is
+        a first-class path.
+      - **HyperDX / SigNoz** — full OTel stacks on ClickHouse. Only justified if
+        traces are wanted too, otherwise far too much machinery for logs.
+      - **tspin** — pretty-prints a tail. Not a replacement, just pleasant.
+
 
 - [ ] **Context compression for CLAUDE.md.** repomix or similar, if any
       `CLAUDE.md` grows big enough to eat context budget. Not a problem yet.
