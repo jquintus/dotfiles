@@ -98,6 +98,14 @@ tell Josh exactly what to test, and wait for his confirmation. This rule exists
 because premature commits previously left `main` full of unverified changes with
 no clean revert point.
 
+**If `git status` shows pending `vscode/settings.json` changes that are only
+additions to `cSpell.words`, always commit them, even when they are unrelated to
+what you were asked to do.** They arrive by clicking "Add to workspace
+dictionary" in VS Code, which writes straight through the symlink, so they pile
+up uncommitted and unnoticed. They are append-only word lists and carry no risk.
+Do not sweep in *other* `vscode/settings.json` edits this way — only the
+dictionary.
+
 Commit identity: `Josh Quintus <josh@dirtlabs.ai>`.
 
 ## Things no script can do
