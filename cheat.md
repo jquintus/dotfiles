@@ -65,3 +65,8 @@
 
 - `cmd-opt-b` Open up the sidebar and checkout vault
 - `cmux diff --last-turn` render what an agent changed since its turn started, in a split.
+
+## macOS is stuck
+
+- `opt-ctrl-shift-F5` cursor stuck holding a drag, clicks going nowhere, Finder window that won't close. Releases the drag macOS lost the mouse-up for.
+- `hs -c 'require("unstick").release()'` same rescue from a terminal, for when the drag eats the hotkey.

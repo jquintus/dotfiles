@@ -15,6 +15,7 @@
 local meet    = require("meet")
 local meeting = require("meeting")
 local layout  = require("layout")
+local unstick = require("unstick")
 
 local M = {}
 
@@ -43,6 +44,9 @@ local function buildMenu()
     { title = "-" },
     { title = "📅 Join next meeting", fn = meeting.joinNext },
     { title = "🪟 Arrange layout", fn = layout.apply },
+    -- Mostly here to be testable: during a real stuck drag the mouse is
+    -- captured, so the hotkey is the binding that will actually reach it.
+    { title = "🖱 Release stuck drag", fn = unstick.release },
     { title = "-" },
     -- The actions the default Hammerspoon menu used to give us.
     { title = "Console…", fn = function() hs.openConsole() end },

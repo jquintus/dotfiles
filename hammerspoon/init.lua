@@ -14,5 +14,6 @@ require("layout").start()   -- Desktop layout chord (see layout.lua)
 require("meeting").bind()    -- Join-next-meeting hotkey (see meeting.lua)
 require("controls").start()  -- Menu-bar controls dropdown (see controls.lua)
 require("launcher").start()  -- Hyper-key app launcher (see launcher.lua)
+require("unstick").bind()    -- Release a stuck drag (see unstick.lua)
 
 hs.alert.show("Hammerspoon config loaded")

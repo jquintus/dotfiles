@@ -50,3 +50,4 @@ hammerspoon/layout.lua  | ~/.hammerspoon/layout.lua  | Hammerspoon desktop layou
 hammerspoon/meeting.lua  | ~/.hammerspoon/meeting.lua  | Hammerspoon join-next-meeting module
 hammerspoon/controls.lua | ~/.hammerspoon/controls.lua | Hammerspoon menu-bar controls module
 hammerspoon/launcher.lua | ~/.hammerspoon/launcher.lua | Hammerspoon hyper-key app launcher
+hammerspoon/unstick.lua | ~/.hammerspoon/unstick.lua | Hammerspoon stuck-drag release module
