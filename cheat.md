@@ -38,6 +38,11 @@
 - `f <dir>` open a specific directory in Finder.
 - `clip` pipe into the macOS clipboard.
 
+## Finder
+
+- `cmd-down` open the selected folder or file. `Enter` renames it instead, which is the thing that keeps catching you out.
+- `cmd-O` the same open, when your hand is already off the arrow keys.
+
 ## Opening files by name
 
 - Type a `.md` filename with no command in front of it to page it through glow.
