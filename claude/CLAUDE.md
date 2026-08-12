@@ -18,6 +18,8 @@ injected into Claude's context, so maintainer notes cost no tokens.
 
 Be as brief as possible. 
 
+Write American English, always: `color`, `gray`, `initialize`, `behavior`, `canceled`. Never British spellings (`colour`, `grey`, `initialise`, `behaviour`). Applies to code, identifiers, comments, commit messages, docs, and chat.
+
 ## Dotfiles and machine setup
 - My dotfiles live at `~/dotfiles` (`github.com/jquintus/dotfiles`). **Whenever I mention dotfiles, my shell/editor/terminal config, Hammerspoon, keybindings, macOS `defaults`, or customizing my machine in any way, read `~/dotfiles/AGENTS.md` first.** It has the repo layout, the symlink-manifest workflow, the conventions that are easy to get wrong, and the commit rules. Don't re-derive any of that by exploring.
 - Short version so you know what you're looking for: config is symlink-based via `scripts/install-mac.sh` + `scripts/links.manifest`; system settings go in `scripts/macos-defaults.sh`; a new config file is not done until it has a manifest line.
