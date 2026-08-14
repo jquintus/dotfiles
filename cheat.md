@@ -34,6 +34,7 @@
 - `....` go up three directories.
 - `back` return to the directory you came from.
 - `dl` go to Downloads.
+- `dots` go to the dotfiles repo. `dotfiles` spelled out works too.
 - `f.` open the current directory in Finder.
 - `f <dir>` open a specific directory in Finder.
 - `clip` pipe into the macOS clipboard.

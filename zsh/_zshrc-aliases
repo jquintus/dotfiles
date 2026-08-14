@@ -57,6 +57,10 @@ alias ...='pushd ../..'
 alias ....='pushd ../../..'
 alias .....='pushd ../../../..'
 
+# goto common folders
+alias dotfiles="pushd ~/dotfiles/"
+alias dots="pushd ~/dotfiles/"
+
 # grep with color
 alias grep='grep --color=auto'
 
