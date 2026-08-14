@@ -12,6 +12,30 @@ The keymap itself lives in `hammerspoon/launcher.lua`: Hyper+letter and
 Hyper+number jump to apps, Hyper+/ shows the cheat sheet. Karabiner only
 produces the modifier; Hammerspoon decides what it does.
 
+## A new keyboard may need a `devices` entry before the rule fires
+
+The Hyper rule is profile-wide, but Karabiner only transforms devices it
+**grabs**, and it ignores anything reporting as a pointing device by default.
+Plenty of keyboards advertise keyboard *and* pointing in one HID device — the
+MX Keys over Bluetooth does, and so do DIY boards with mouse keys compiled in —
+so they get ignored and Caps Lock just keeps capsing. The log gives the tell:
+`caps lock is found on <name>` with no matching `... is started (grabbed)` line.
+
+The `devices` array in `karabiner.json` opts them back in with
+`"ignore": false`. Get identifiers from `karabiner_cli
+--list-connected-devices` and copy the `device_identifiers` object verbatim; for
+Bluetooth-only devices that is a `device_address` instead of
+`vendor_id`/`product_id`. A keyboard used both over Bluetooth and over its USB
+receiver is two different devices to Karabiner and needs an entry for each.
+
+Currently opted in: MX Keys over Bluetooth. The Logitech USB receiver was
+already grabbed by default, which is why the same keyboard worked on the dongle
+and not on Bluetooth.
+
+The Feather nRF52840 (CircuitPython/KMK) needs **no** entry — its firmware
+already emits the four-modifier Hyper chord itself, so Karabiner has nothing to
+add.
+
 ## Do not try to remap the MX Anywhere 3 thumb buttons here
 
 Tried and abandoned 2026-08-10. Karabiner **cannot** see those buttons, so no
