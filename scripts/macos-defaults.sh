@@ -348,6 +348,25 @@ if command -v duti >/dev/null 2>&1; then
     else
         print_warning "VimR not found; skipping file type associations"
     fi
+
+    # PDFs open in Chrome, not Preview. Role matters here: Chrome's Info.plist
+    # declares com.adobe.pdf as Viewer only, so `viewer` is the honest role.
+    # Finder's Get Info > "Change All..." does not reliably stick for pdf on
+    # macOS 26; duti does.
+    #
+    # Caveat this does not fix: files quarantined by an app that leaves them
+    # UNASSESSED (Slack writes flags 0002; Chrome writes 0081/0083, where 0x80
+    # means Gatekeeper already assessed it) throw "Apple could not verify ... is
+    # free of malware" on first open through any non-Apple handler. Preview is
+    # exempt because it is Apple-signed, which is why this only shows up once
+    # PDFs stop going to Preview. Right-click > Open With counts as consent and
+    # bypasses it; `xattr -d com.apple.quarantine <file>` clears it for good.
+    if [[ -d "/Applications/Google Chrome.app" ]]; then
+        print_status "Setting Google Chrome as the PDF handler"
+        duti -s com.google.Chrome com.adobe.pdf viewer 2>/dev/null || true
+    else
+        print_warning "Google Chrome not found; leaving the PDF handler alone"
+    fi
 else
     print_warning "duti not found; skipping VimR file type associations (brew install duti)"
 fi
