@@ -47,8 +47,9 @@ local halp_lines = {
     "   ?              (inside Neo-tree) full Neo-tree help",
     "",
     " Run SQL",
-    "   <leader>r      save file + run it in psql  (\\i file)",
-    "   <leader>r      (visual) send selection to psql",
+    "   <leader>r      save file + run it in the terminal's client",
+    "                  psql -> \\i file    duckdb (csvsql) -> .read file",
+    "   <leader>r      (visual) send selection as-is",
 }
 
 local function halp()

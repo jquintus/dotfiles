@@ -27,8 +27,9 @@ ghostty/config        | ~/.config/ghostty/config | Ghostty terminal configuratio
 git/_gitconfig        | ~/.gitconfig             | Git configuration
 gh/config.yml         | ~/.config/gh/config.yml  | GitHub CLI configuration
 
-# --- PostgreSQL ---
+# --- SQL shells ---
 _psqlrc               | ~/.psqlrc                | PostgreSQL configuration
+_duckdbrc             | ~/.duckdbrc              | DuckDB configuration (csvsql layers on top of it)
 
 # --- keyboard (Karabiner rewrites this file; see karabiner/README.md) ---
 karabiner/karabiner.json | ~/.config/karabiner/karabiner.json | Karabiner-Elements configuration

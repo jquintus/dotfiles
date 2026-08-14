@@ -1,0 +1,35 @@
+-- DuckDB CLI startup file. Sibling of _psqlrc; the same habits should hold in
+-- both shells.
+--
+-- Read on every `duckdb` start, including through `csvsql`, so anything added
+-- here applies to both. csvsql layers its own settings on top afterward.
+
+-- No `.timer on` here, even though _psqlrc has `\timing on`. DuckDB writes the
+-- "Run Time" line to STDOUT, not stderr, so it lands in the middle of the data
+-- whenever output is redirected: `duckdb -csv -c "..." > out.csv` ends up with
+-- a trailing junk row. csvsql turns the timer on only when stdout is a
+-- terminal; type `.timer on` by hand in a plain duckdb session.
+
+-- No pager, matching `\pset pager off` in _psqlrc. DuckDB's default pipes any
+-- result over 50 rows or wider than the terminal into a pager, which is
+-- actively wrong inside the nvim SQL workspace: the terminal pane is short, so
+-- almost every result opens a pager, and the next thing typed goes to the pager
+-- instead of to DuckDB. Results scroll in the pane's own scrollback instead.
+.pager off
+
+-- No .maxwidth here. DuckDB already renders at the terminal width, and it
+-- clamps the setting to a floor of 80 columns, so a table cannot be made to fit
+-- a pane narrower than that: rows just wrap. In a narrow pane either take the
+-- width back (<leader>n closes the file browser in the nvim SQL workspace) or
+-- switch to `.mode line`, which is DuckDB's answer to `\pset expanded`.
+
+-- 40 rows is a small preview and cutting it off mid-thought is worse than
+-- scrolling. Still bounded, so `select *` on a million rows cannot flood the
+-- terminal.
+.maxrows 100
+
+-- Point at the offending token when a query fails, but leave live input
+-- highlighting off: it recolors the line as you type and fights with pasted
+-- multi-line SQL.
+.highlight off
+.highlight_errors on

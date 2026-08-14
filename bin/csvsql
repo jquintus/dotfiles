@@ -1,0 +1,268 @@
+#!/usr/bin/env bash
+
+###############################################################################
+# Script Name: csvsql
+# Description: Opens a DuckDB shell where every data file in a directory is
+#              already a table, so a folder of CSVs can be queried with real
+#              SQL instead of being pasted into a spreadsheet.
+#
+#              Each file becomes a view named after it (sales.csv -> sales).
+#              Each immediate subdirectory becomes a schema, so a nested file
+#              is q4/sales.csv -> q4.sales. Nothing is imported or copied: the
+#              views read the files on disk, so editing a CSV and re-running a
+#              query picks up the change.
+#
+#              Handles .csv .tsv .txt .parquet .json .ndjson .jsonl .xlsx and
+#              the .gz/.zst/.bz2 variants of the text ones. A workbook maps to
+#              its first sheet only; for the others, query
+#              read_xlsx('book.xlsx', sheet = 'Q3') by hand (sheetnames.py
+#              lists the tabs).
+#
+#              CSV views are created with sample_size=-1 so the type sniffer
+#              reads the whole file. The default sample is 20k rows, and a
+#              column that looks numeric for the first 20k rows and then holds
+#              "N/A" fails the whole query rather than that one row. For files
+#              too dirty to type at all, pass --text to read every column as
+#              VARCHAR and cast in the query yourself.
+#
+# Author: Josh Quintus
+# Usage:
+#   csvsql                     tables from the current directory
+#   csvsql ~/data/exports      tables from that directory
+#   csvsql . -c "select * from sales limit 5"     one-shot, then exit
+#   csvsql --text ~/data       every column as VARCHAR (dirty files)
+#   csvsql --show ~/data       print the generated SQL and exit
+#
+#   Anything after the directory is passed through to duckdb, so -c, -s,
+#   -json, -csv, -markdown, -f and friends all work.
+#
+#   Inside the shell: .tables to list them, describe <table> for the sniffed
+#   types, .maxrows / .mode to change rendering, .quit to leave.
+# Date: August 2026
+###############################################################################
+
+set -euo pipefail
+
+# The header comment above IS the help text, so it cannot drift. Read from the
+# line after the opening banner to the closing one, minus the metadata lines.
+usage() {
+    awk 'NR > 3 {
+        if ($0 ~ /^####/) exit
+        sub(/^# ?/, "")
+        if ($0 ~ /^(Script Name|Author|Date):/) next
+        print
+    }' "$0"
+}
+
+all_varchar=0
+show_only=0
+dir=""
+
+# Own flags first, then the directory, then everything else goes to duckdb.
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --text|--all-varchar) all_varchar=1; shift ;;
+        --show)               show_only=1;   shift ;;
+        -h|--help)            usage; exit 0 ;;
+        --)                   shift; break ;;
+        -*)                   break ;;
+        *)
+            if [[ -z "$dir" ]]; then
+                dir="$1"; shift
+            else
+                break
+            fi
+            ;;
+    esac
+done
+
+dir="${dir:-.}"
+
+if [[ ! -d "$dir" ]]; then
+    echo "csvsql: not a directory: $dir" >&2
+    exit 1
+fi
+
+# Absolute, so the generated SQL can be copied elsewhere and still resolve.
+dir=$(cd "$dir" && pwd)
+
+if ! command -v duckdb >/dev/null 2>&1; then
+    echo "csvsql: duckdb not found. brew install duckdb" >&2
+    exit 1
+fi
+
+# Extensions we know how to read, longest suffix first so .csv.gz beats .gz.
+is_data_file() {
+    case "$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')" in
+        *.csv|*.tsv|*.txt|*.psv) return 0 ;;
+        *.csv.gz|*.tsv.gz|*.txt.gz|*.csv.zst|*.tsv.zst|*.csv.bz2) return 0 ;;
+        *.parquet|*.pq) return 0 ;;
+        *.json|*.ndjson|*.jsonl|*.json.gz|*.ndjson.gz) return 0 ;;
+        *.xlsx) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+# The table-function call that reads one file, chosen by extension.
+reader_for() {
+    local path="$1" quoted lower
+    # Single quotes are the SQL string delimiter, so double them up.
+    quoted=$(printf '%s' "$path" | sed "s/'/''/g")
+    lower=$(printf '%s' "$path" | tr '[:upper:]' '[:lower:]')
+    case "$lower" in
+        *.parquet|*.pq)
+            printf "read_parquet('%s')" "$quoted" ;;
+        *.json|*.ndjson|*.jsonl|*.json.gz|*.ndjson.gz)
+            printf "read_json_auto('%s')" "$quoted" ;;
+        *.xlsx)
+            printf "read_xlsx('%s')" "$quoted" ;;
+        *)
+            if [[ $all_varchar -eq 1 ]]; then
+                printf "read_csv('%s', sample_size=-1, all_varchar=true)" "$quoted"
+            else
+                printf "read_csv('%s', sample_size=-1)" "$quoted"
+            fi
+            ;;
+    esac
+}
+
+# filename or directory name -> a table name that needs no quoting
+sanitize() {
+    local n="$1"
+    # Strip every known extension, including the double ones.
+    n="${n%.gz}"; n="${n%.zst}"; n="${n%.bz2}"
+    n="${n%.csv}"; n="${n%.tsv}"; n="${n%.txt}"; n="${n%.psv}"
+    n="${n%.parquet}"; n="${n%.pq}"
+    n="${n%.json}"; n="${n%.ndjson}"; n="${n%.jsonl}"
+    n="${n%.xlsx}"
+    n=$(printf '%s' "$n" \
+        | tr '[:upper:]' '[:lower:]' \
+        | sed -e 's/[^a-z0-9_]/_/g' -e 's/__*/_/g' -e 's/^_//' -e 's/_$//')
+    # A name starting with a digit is not a bare identifier.
+    case "$n" in
+        [0-9]*) n="t_$n" ;;
+        "")     n="unnamed" ;;
+    esac
+    printf '%s' "$n"
+}
+
+# Two files can sanitize to the same name (sales.csv and sales.tsv, or
+# "Q1 totals.csv" and "q1-totals.csv"), and without a suffix the second one
+# would silently replace the first. Names are unique per schema, so the scope is
+# part of the key.
+#
+# Sets UNIQUE_NAME instead of printing: bash 3.2 ships with macOS and has no
+# associative arrays, so `seen` is a delimited string, and a $(subshell) result
+# would throw away every update to it.
+#   unique_name <scope> <candidate>
+seen=""
+UNIQUE_NAME=""
+unique_name() {
+    local scope="$1" base="$2" name="$2" i=2
+    while [[ "$seen" == *"|$scope/$name|"* ]]; do
+        name="${base}_${i}"
+        i=$((i + 1))
+    done
+    seen="${seen}|${scope}/${name}|"
+    UNIQUE_NAME="$name"
+}
+
+init_file=$(mktemp "${TMPDIR:-/tmp}/csvsql.XXXXXX")
+mapping_file=$(mktemp "${TMPDIR:-/tmp}/csvsql-map.XXXXXX")
+trap 'rm -f "$init_file" "$mapping_file"' EXIT
+
+count=0
+
+add_view() {
+    local path="$1" schema="$2" name
+    unique_name "${schema:-main}" "$(sanitize "$(basename "$path")")"
+    name="$UNIQUE_NAME"
+    if [[ -n "$schema" ]]; then
+        printf 'CREATE OR REPLACE VIEW %s.%s AS SELECT * FROM %s;\n' \
+            "$schema" "$name" "$(reader_for "$path")" >> "$init_file"
+        printf '%s\t%s.%s\n' "$path" "$schema" "$name" >> "$mapping_file"
+    else
+        printf 'CREATE OR REPLACE VIEW %s AS SELECT * FROM %s;\n' \
+            "$name" "$(reader_for "$path")" >> "$init_file"
+        printf '%s\t%s\n' "$path" "$name" >> "$mapping_file"
+    fi
+    count=$((count + 1))
+}
+
+# Files in the directory itself land in the default schema.
+for f in "$dir"/*; do
+    [[ -f "$f" ]] || continue
+    is_data_file "$f" || continue
+    add_view "$f" ""
+done
+
+# One level of subdirectories, each becoming a schema. Deeper nesting is left
+# alone: it would need dotted schema names DuckDB does not have.
+for d in "$dir"/*/; do
+    [[ -d "$d" ]] || continue
+    unique_name "#schemas" "$(sanitize "$(basename "$d")")"
+    schema="$UNIQUE_NAME"
+    schema_files=0
+    for f in "$d"*; do
+        [[ -f "$f" ]] || continue
+        is_data_file "$f" || continue
+        if [[ $schema_files -eq 0 ]]; then
+            printf 'CREATE SCHEMA IF NOT EXISTS %s;\n' "$schema" >> "$init_file"
+        fi
+        schema_files=$((schema_files + 1))
+        add_view "$f" "$schema"
+    done
+done
+
+if [[ $count -eq 0 ]]; then
+    echo "csvsql: no data files found in $dir" >&2
+    exit 1
+fi
+
+if [[ $show_only -eq 1 ]]; then
+    cat "$init_file"
+    exit 0
+fi
+
+# How wide the terminal really is, for the settings and the banner below.
+cols=$( { stty size </dev/tty 2>/dev/null || echo "24 80"; } | awk '{print $2}' )
+
+if [[ -t 1 ]]; then
+    # Timing only when a human is reading it: the "Run Time" line goes to
+    # stdout, so leaving it on would corrupt `csvsql . -c ... > out.csv`.
+    printf '.timer on\n' >> "$init_file"
+    # Green prompt naming the directory, so a shell left open in a split is
+    # still identifiable. Matches the color-coded psql prompts from pgalias.
+    printf ".prompt '\033[32m[csv:%s]\033[0m ' '     ...> '\n" "$(basename "$dir")" \
+        >> "$init_file"
+fi
+
+# The mapping is the only way to know what a file was named, so print it when
+# a human is watching. On stderr so `csvsql . -c ... > out.csv` stays clean.
+if [[ -t 2 ]]; then
+    # Pad the file column to the longest name rather than a fixed width, and
+    # drop the padding when the two columns cannot both fit: this often runs in
+    # a narrow split, where a fixed 40 columns wraps every line in half.
+    pathw=0
+    namew=0
+    while IFS=$'\t' read -r path name; do
+        # Relative to the directory, so two subdirectories each holding a
+        # sales.csv do not both print as "sales.csv".
+        rel="${path#$dir/}"
+        [[ ${#rel} -gt $pathw ]] && pathw=${#rel}
+        [[ ${#name} -gt $namew ]] && namew=${#name}
+    done < "$mapping_file"
+    [[ $((2 + pathw + 3 + namew)) -gt $cols ]] && pathw=0
+
+    printf '\033[32m%s\033[0m %s\n' "$count" "tables from $dir" >&2
+    while IFS=$'\t' read -r path name; do
+        printf "  %-${pathw}s → %s\n" "${path#$dir/}" "$name" >&2
+    done < "$mapping_file"
+fi
+
+# -cmd rather than -init for two reasons: -init would REPLACE ~/.duckdbrc
+# instead of adding to it, and it prints a "Loading resources from
+# /var/folders/..." banner naming the temp file. With -cmd, duckdb loads the rc
+# itself and these statements run afterward, so anything set here wins.
+# Not exec'd, so the EXIT trap still gets to delete the temp files.
+duckdb -cmd ".read '$init_file'" "$@"

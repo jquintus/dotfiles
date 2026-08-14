@@ -7,6 +7,49 @@ local function find_sql_term()
     end
 end
 
+-- Which client is running in the SQL terminal, or nil when it is sitting at a
+-- shell prompt. The terminal is a plain zsh, so either psql or duckdb (via
+-- csvsql) can be started in it, and they do not share a syntax for running a
+-- file: psql wants `\i`, duckdb wants `.read`. Detect it instead of making the
+-- keystroke depend on remembering which one is up.
+local function sql_client(buf)
+    local pid = vim.b[buf].terminal_job_pid
+    if not pid then
+        return nil
+    end
+    -- Breadth-first over the shell's descendants, because csvsql is a wrapper
+    -- script: duckdb is a grandchild of zsh, not a child.
+    local generation = { pid }
+    for _ = 1, 8 do
+        local next_generation = {}
+        for _, p in ipairs(generation) do
+            local comm = vim.fn.systemlist({ "ps", "-o", "comm=", "-p", tostring(p) })[1] or ""
+            if comm:match("duckdb") then
+                return "duckdb"
+            elseif comm:match("psql") then
+                return "psql"
+            end
+            vim.list_extend(next_generation, vim.fn.systemlist({ "pgrep", "-P", tostring(p) }))
+        end
+        if #next_generation == 0 then
+            break
+        end
+        generation = next_generation
+    end
+    return nil
+end
+
+-- The client's "run this whole file" command. psql is the fallback: it is what
+-- the terminal is for most of the time, and a stray `\i` in duckdb is a plain
+-- parse error rather than anything that runs.
+local function run_file_command(client, file)
+    if client == "duckdb" then
+        -- Quoted, because .read takes a single argument and paths can have spaces.
+        return ".read '" .. file .. "'"
+    end
+    return "\\i " .. file
+end
+
 -- A real, editable buffer: a normal file buffer, never neo-tree, netrw, the
 -- terminal, or any other special/scratch listing.
 local function is_editable(b)
@@ -149,7 +192,7 @@ local function open_sql_workspace()
         for _, buf in ipairs(vim.api.nvim_list_bufs()) do
             if vim.b[buf].sql and vim.bo[buf].buftype == "terminal" then
                 local chan = vim.bo[buf].channel
-                vim.fn.chansend(chan, "\\i " .. file .. "\n")
+                vim.fn.chansend(chan, run_file_command(sql_client(buf), file) .. "\n")
                 return
             end
         end

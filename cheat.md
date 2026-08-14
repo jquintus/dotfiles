@@ -59,6 +59,17 @@
 - `m` switch between data mode and raw line mode.
 - `q` quit.
 
+## SQL over a folder of CSVs
+
+- `csvsql` open a SQL shell on the current directory: every CSV becomes a table named after the file, every subdirectory a schema. Also reads tsv, json, parquet, and xlsx.
+- `.tables` list the tables and their columns once you are in there. `describe <table>` for the types it guessed.
+- `csvsql . -c "select ..."` run one query and exit. Add `-csv` and redirect to write a new file.
+- `csvsql --text .` reads every column as text, for a file too messy to type. Cast in the query yourself.
+- `csvsql --show .` print the SQL it generated, to paste into a plain `duckdb` session and edit.
+- `<leader>r` in the `sql` workspace still runs the open file, sending `.read` when the pane holds duckdb and `\i` when it holds psql.
+- `.mode line` one field per line, for rows too wide to read. This is duckdb's `\x`; `.mode duckbox` goes back.
+- `<leader>n` close the file browser to give duckdb the width back. It refuses to render a table under 80 columns, so a narrower pane wraps every row.
+
 ## Git
 
 - `lazygit` use it.
