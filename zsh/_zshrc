@@ -177,7 +177,7 @@ export FZF_ALT_C_COMMAND="ls -A -p | grep '/$' | grep -v '^\.git/$'"
 
 if command -v bat >/dev/null 2>&1; then
   if command -v eza >/dev/null 2>&1; then
-    _fzf_dir_preview='eza --tree --level=2 --color=always --icons=always {} | head -200'
+    _fzf_dir_preview='eza --tree --color=always --icons=always {} | head -200'
   else
     _fzf_dir_preview='ls -FGlAhp {}'
   fi
@@ -195,14 +195,29 @@ fi
 # thing I can see", which wants a short list; this is for "I know it is in here
 # somewhere", which wants reach. Different questions, different keys.
 #
-# ripgrep supplies the list because it obeys each repo's .gitignore, which drops
-# ~/code from 142k entries to 6.7k without hiding anything that matters. Falls
-# back to fzf's own walker when rg is missing; that walker only skips .git and
-# node_modules, so expect it to be slower and noisier.
+# ripgrep supplies the list. `--no-ignore` is the point: .gitignore hides exactly
+# the files you most often need to reach by path but never committed -- scratch
+# output, generated fixtures, local sandboxes -- and having the picker silently
+# omit them makes it untrustworthy. Depth is not limited either.
+#
+# What is skipped instead is an explicit list of vendored and cached trees, which
+# are volume without information. On a large repo this is the difference between
+# 64k entries and 5k, and the walk still finishes in well under a tenth of a
+# second. Add to the list when a new tree turns out to be noise; do not reach for
+# .gitignore to do it.
+#
+# Falls back to fzf's own walker when rg is missing; that one respects .gitignore
+# and only skips .git and node_modules, so expect it to be noisier and to hide
+# things.
 _fzf_recursive_widget() {
     local FZF_CTRL_T_COMMAND
     if command -v rg >/dev/null 2>&1; then
-        FZF_CTRL_T_COMMAND="rg --files --hidden --glob '!.git' --glob '!.DS_Store'"
+        FZF_CTRL_T_COMMAND="rg --files --hidden --no-ignore \
+            --glob '!.git' --glob '!.DS_Store' --glob '!node_modules' \
+            --glob '!__pycache__' --glob '!*.egg-info' \
+            --glob '!.venv' --glob '!venv' --glob '!.db' \
+            --glob '!.next' --glob '!.mypy_cache' --glob '!.pytest_cache' \
+            --glob '!.ruff_cache'"
     fi
     fzf-file-widget
 }

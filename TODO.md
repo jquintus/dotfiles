@@ -361,8 +361,9 @@ until confirmed either way.
       off with Ctrl-/. Separate from bat as a `cat` replacement, which is
       dropped.
 - [ ] **eza in the fzf `^T` preview** — **trialing**, wired 2026-08-07.
-      Directories in the picker render as a two-level eza tree with icons. This
-      is deliberately the smallest possible trial of eza: it costs nothing to
+      Directories in the picker render as a full-depth eza tree with icons,
+      capped at 200 lines. This is deliberately the smallest possible trial of
+      eza: it costs nothing to
       revert (an `ls` fallback is already in the same block for machines without
       eza) and it says nothing yet about whether `ll` should change. Verdict
       question: does eza's output get missed outside the picker?
@@ -422,9 +423,12 @@ until confirmed either way.
       worth the noise, or does it just sit there being ignored?
 - [ ] **Ctrl-Shift-T, the recursive file picker** — **trialing**, wired
       2026-08-08. Ctrl-T stays one level deep; this searches the whole tree via
-      ripgrep, so `.gitignore` still applies. Ctrl-Shift-T works because Ghostty
-      emits it as the CSI-u sequence `ESC [ 116 ; 6 u`, having no legacy
-      encoding to fall back on; classic Ctrl+letter collapses to one control
+      ripgrep with `--no-ignore`, so gitignored files show up too (2026-08-20:
+      they used to be hidden, which made the picker lie about scratch output and
+      local sandboxes; an explicit skip list handles vendor and cache trees
+      instead). Ctrl-Shift-T works because Ghostty emits it as the CSI-u
+      sequence `ESC [ 116 ; 6 u`, having no legacy encoding to fall back on;
+      classic Ctrl+letter collapses to one control
       byte with Shift discarded, which is why the chord is usually impossible.
       `^X^T` is bound to the same widget as a portable fallback, since the CSI-u
       binding is silent in terminals that do not emit it, ssh included.
