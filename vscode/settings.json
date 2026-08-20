@@ -9,7 +9,7 @@
     "https://json-schema.org/": true,
     "https://developer.microsoft.com/json-schemas/": true,
     "https://biomejs.dev": true,
-},
+  },
   "datadog.vscode.notification.suppressMcpMigrationMessage": true,
   "todo-tree.ripgrep.ripgrep": "/opt/homebrew/bin/rg",
   "cSpell.userWords": [
@@ -107,4 +107,5 @@
   "claudeCode.preferredLocation": "panel",
   "editor.formatOnSave": true,
   "datadog.connection.notification.suppressSignInNotification": true,
+  "update.showReleaseNotes": false,
 }
