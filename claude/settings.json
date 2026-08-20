@@ -164,7 +164,8 @@
   "enabledPlugins": {
     "eng-skills@dirtlabs": true,
     "marketplace-tools@dirtlabs": true,
-    "search-sessions@search-sessions": true
+    "search-sessions@search-sessions": true,
+    "masterdevs@masterclaude": true
   },
   "extraKnownMarketplaces": {
     "dirtlabs": {
@@ -180,8 +181,15 @@
         "source": "github",
         "repo": "sinzin91/search-sessions"
       }
+    },
+    "masterclaude": {
+      "source": {
+        "source": "github",
+        "repo": "MasterDevs/masterclaude"
+      }
     }
   },
   "theme": "dark",
-  "todoFeatureEnabled": true
+  "todoFeatureEnabled": true,
+  "agentPushNotifEnabled": true
 }

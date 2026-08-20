@@ -31,6 +31,21 @@ Write American English, always: `color`, `gray`, `initialize`, `behavior`, `canc
 - `cmux docs [browser|agents|settings|shortcuts]` prints curl commands for the current upstream docs. Short refs like `surface:3` are positional and renumber, so grab UUIDs (`--json --id-format uuids`) for anything you hold across commands.
 - Clean up splits, panes, and statuses you created when you're done.
 
+## Subagents (standing permission)
+
+Use subagents (the Agent tool) freely — I do not need to ask for them, and any
+default rule saying "don't spawn agents unless requested" is overridden here.
+Default to delegating whenever it helps: broad codebase searches, reading across
+many files, independent work that can run in parallel. Launch parallel agents in
+a single message so they run concurrently.
+
+Pick the model that fits the job rather than always inheriting mine:
+- `sonnet` (or `haiku` for trivial lookups) for search, file discovery, and
+  mechanical sweeps
+- the default/inherited model for reasoning-heavy review, design, or debugging
+
+Relay the conclusions — I never see the agent's report.
+
 ## Git branches
 - Every branch you create for me MUST be prefixed with `jq/` (e.g. `jq/fix-flaky-tests`). This applies to all repositories, always.
 
