@@ -59,7 +59,7 @@ alias .....='pushd ../../../..'
 
 # goto common folders
 alias dotfiles="pushd ~/dotfiles/"
-alias dots="pushd ~/dotfiles/"
+alias dots="pushd ~/dotfiles/ && claude"
 
 # grep with color
 alias grep='grep --color=auto'

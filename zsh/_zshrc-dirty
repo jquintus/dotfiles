@@ -26,14 +26,27 @@ alias tail_api_dev="aws logs tail /aws/ecs/dev/dirtlabs/api --follow --since 1m 
 
 # Repos
 alias backend="cd ~/code/backend/"
-alias dirtdocs="cd ~/code/dirtdocs/"
-alias eng-docs="cd ~/code/eng-docs/"
-alias eng-tools="cd ~/code/eng-tools/"
-alias infra="cd ~/code/infra/"
-alias product="cd ~/code/product/"
-alias web="cd ~/code/web/"
+alias backendc="cd ~/code/backend/ && claude"
 
-########################################
+alias dirtdocs="cd ~/code/dirtdocs/"
+alias dirtdocsc="cd ~/code/dirtdocs/ && claude"
+
+alias eng-docs="cd ~/code/eng-docs/"
+alias eng-docsc="cd ~/code/eng-docs/ && claude"
+
+alias eng-tools="cd ~/code/eng-tools/"
+alias eng-toolsc="cd ~/code/eng-tools/ && claude"
+
+alias infra="cd ~/code/infra/"
+alias infrac="cd ~/code/infra/ && claude"
+
+alias product="cd ~/code/product/"
+alias productc="cd ~/code/product/ && claude"
+
+alias web="cd ~/code/web/"
+alias webc="cd ~/code/web/ && claude"
+
+#######################################
 # Run tests
 ########################################
 # Usage: 
