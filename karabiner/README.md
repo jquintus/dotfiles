@@ -28,13 +28,33 @@ Bluetooth-only devices that is a `device_address` instead of
 `vendor_id`/`product_id`. A keyboard used both over Bluetooth and over its USB
 receiver is two different devices to Karabiner and needs an entry for each.
 
-Currently opted in: MX Keys over Bluetooth. The Logitech USB receiver was
+Currently opted in: MX Keys over Bluetooth, and the Keychron B6 Pro over
+Bluetooth. The Logitech USB receiver was
 already grabbed by default, which is why the same keyboard worked on the dongle
 and not on Bluetooth.
 
 The Feather nRF52840 (CircuitPython/KMK) needs **no** entry — its firmware
 already emits the four-modifier Hyper chord itself, so Karabiner has nothing to
 add.
+
+## The Keychron B6 Pro cannot do this in firmware
+
+Tried and abandoned 2026-08-20. Caps Lock has to be remapped here rather than
+burned into the board, because the B6 Pro has no mod-tap at all. It needs a
+`devices` entry (it reports keyboard *and* pointing device) plus plain `KC_CAPS`
+in Keychron Launcher, so that Karabiner still has a `caps_lock` to transform.
+
+The B-series runs a closed Keychron **ZMK** build, not QMK. Launcher's frontend
+descends from VIA's, so it ships VIA's keycode parser to every board and will
+cheerfully accept `MT(MOD_HYPR,KC_ESC)`, the OR'd `MOD_*` form, or even raw
+`0x2F29` — then store all three as `MT(,KC_ESC)`. The tap survives, the modifier
+mask is dropped. QMK can transmit a mod-tap because mod and keycode are packed
+into one 16-bit value the firmware decodes at runtime; a ZMK hold-tap is a
+devicetree behavior compiled in ahead of time, so there is no keycode for the
+protocol to carry. Escape works, hold does nothing, and no syntax fixes it.
+
+Keychron's Q, K Pro, K, V, C and Lemokey L lines are genuine QMK/VIA and do
+support `MT()`. The B-series does not, so do not spend the evening on it twice.
 
 ## Do not try to remap the MX Anywhere 3 thumb buttons here
 
