@@ -12,6 +12,7 @@ require('variables')
 require('settings')
 require('keymaps')
 require('autocmds')
+require('halp')     -- :Halp cheat sheet; other modules register their own sections
 require('commands')
 require('netrw')    -- Replaces NERDTree
 require('neo-tree') -- Neo-tree for file explorer

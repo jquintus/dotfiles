@@ -150,6 +150,17 @@ vim.keymap.set("n", "<leader>\\", "<cmd>SqlLayoutVertical<CR>",
 vim.keymap.set("n", "<leader>-", "<cmd>SqlLayoutHorizontal<CR>",
     { silent = true, desc = "SQL layout: stacked (editor / terminal)" })
 
+require("halp").add({
+    title = "SQL workspace",
+    entries = {
+        { "<leader>\\", "relayout: columns  (:SqlLayoutVertical)" },
+        { "<leader>-",  "relayout: stacked  (:SqlLayoutHorizontal)" },
+        { "<leader>r",  "save the file + run it in the terminal's client" },
+        { "",           "psql -> \\i file    duckdb (csvsql) -> .read file" },
+        { "<leader>r",  "(visual) send the selection as-is" },
+    },
+})
+
 local function open_sql_workspace()
     -- Avoid re-running if already set up
     if vim.g.sql_workspace_open then
