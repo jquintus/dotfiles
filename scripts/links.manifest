@@ -39,6 +39,10 @@ vscode/settings.json  | ~/Library/Application Support/Code/User/settings.json | 
 claude/settings.json  | ~/.claude/settings.json  | Claude Code user settings
 claude/CLAUDE.md      | ~/.claude/CLAUDE.md      | Claude Code global instructions
 
+# --- Claude Code subagents (per-file; ~/.claude/agents is shared) ---
+claude/agents/madame-curie.md  | ~/.claude/agents/madame-curie.md  | test-writing subagent
+claude/agents/douglas-adams.md | ~/.claude/agents/douglas-adams.md | doc-writing subagent
+
 # --- Claude Code skills (per-file; ~/.claude/skills is shared) ---
 .claude/skills/dictionary/SKILL.md | ~/.claude/skills/dictionary/SKILL.md | dictionary skill
 .claude/skills/define/SKILL.md     | ~/.claude/skills/define/SKILL.md     | define skill

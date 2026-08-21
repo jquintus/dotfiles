@@ -83,6 +83,11 @@
 - `cmd-opt-b` Open up the sidebar and checkout vault
 - `cmux diff --last-turn` render what an agent changed since its turn started, in a split.
 
+## Claude subagents
+
+- `madame-curie` write tests for code that already exists, AAA, through the public API, never touching the implementation.
+- `douglas-adams` write or rewrite a doc in my voice, brief and verified against the code.
+
 ## macOS is stuck
 
 - `opt-ctrl-shift-F5` cursor stuck holding a drag, clicks going nowhere, Finder window that won't close. Releases the drag macOS lost the mouse-up for, whichever button is stuck (middle-button drags hang the same way).
