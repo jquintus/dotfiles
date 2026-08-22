@@ -19,6 +19,8 @@ brew "biome"
 brew "caddy"
 # Cloudflare Tunnel client (formerly Argo Tunnel)
 brew "cloudflared"
+# CommonMark + GitHub Flavored Markdown renderer; backs bin/vimr-md
+brew "cmark-gfm"
 # GNU File, Shell, and Text utilities
 brew "coreutils"
 # Load/unload environment variables based on $PWD
