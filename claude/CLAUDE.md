@@ -51,6 +51,9 @@ Relay the conclusions — I never see the agent's report.
 
 ## GitHub Actions
 - When adding or editing any GitHub Action, use a current major that runs on **Node 24**, never Node 16/20 (they emit deprecation warnings the user actively dislikes). Before committing a new/changed `uses:`, verify the action.yml `runs.using` is `node24` (e.g. `gh api "repos/<owner>/<repo>/contents/action.yml?ref=<tag>"`). This includes helper actions like `actions/cache`, `actions/upload-artifact`, `actions/download-artifact`.
+- **Resolve the major from the repo, don't recall it.** Check `releases/latest` — pinning the newest major you happen to remember can still leave you on node20. Known-good as of 2026-08: `actions/checkout@v7`, `actions/setup-python@v7`, `hashicorp/setup-terraform@v4`, `terraform-linters/setup-tflint@v6`, `aws-actions/configure-aws-credentials@v6`, `aws-actions/amazon-ecr-login@v2`, `docker/login-action@v4`. Docker-based actions (e.g. `bridgecrewio/checkov-action`) have no Node runtime and are exempt.
+- **Don't match the file's existing version.** A workflow whose other jobs are on an old major is a reason to upgrade those jobs, not to join them — and expect a Copilot review comment claiming the new job is "inconsistent". That comment is wrong; reply citing this rule rather than downgrading.
+- When a PR touches a workflow, confirm the fix landed rather than assuming: `gh run view <id> --log | grep -icE "deprecat|Node\.js 16|Node\.js 20"` should be 0. Actions in `workflow_dispatch`-only workflows are never exercised by PR checks — say so instead of implying they passed.
 
 ## Copilot PR review loop
 - After addressing Copilot's review feedback on a PR: FIRST explicitly respond to the feedback (reply to each thread, or state the resolution), THEN re-request Copilot's review on that PR so the next round triggers automatically without me asking. Order matters: respond first, re-request second, never re-request before responding.
