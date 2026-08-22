@@ -172,8 +172,9 @@ cask "1password-cli"
 cask "alt-tab"
 # Anthropic's official Claude AI desktop app
 cask "claude"
-# Terminal-based AI coding assistant
-cask "claude-code"
+# Claude Code is NOT installed via brew: the cask lags upstream and does not
+# self-update. scripts/install-mac.sh runs the native installer instead, which
+# lands in ~/.local/bin/claude and auto-updates itself.
 # Meslo LG Nerd Font (patched with dev icons/glyphs)
 cask "font-meslo-lg-nerd-font"
 # Set of tools to manage resources and applications hosted on Google Cloud

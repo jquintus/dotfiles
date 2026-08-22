@@ -152,6 +152,36 @@ main() {
     fi
     
     ########################################
+    print_status "Installing Claude Code"
+    ########################################
+    # Deliberately not in the Brewfile: the cask lags upstream and never
+    # self-updates. The native installer drops a self-updating launcher in
+    # ~/.local/bin/claude. Only needs curl, so it does not depend on brew.
+    # Warns instead of failing, so a missing network never breaks linking.
+    if [[ -x "$HOME/.local/bin/claude" ]]; then
+        print_status "Claude Code already installed natively, skipping"
+    elif ! command -v curl >/dev/null 2>&1; then
+        print_warning "curl not found, skipping Claude Code install"
+    else
+        print_status "Running the native Claude Code installer"
+        # Downloaded to a file rather than piped into bash, so a truncated or
+        # failed fetch is caught here instead of silently running as a no-op.
+        local installer
+        installer="$(mktemp -t claude-install)"
+        if curl -fsSL https://claude.ai/install.sh -o "$installer" && bash "$installer"; then
+            print_status "Claude Code installed to ~/.local/bin/claude"
+        else
+            print_warning "Claude Code install failed; rerun by hand:"
+            print_warning "  curl -fsSL https://claude.ai/install.sh | bash"
+        fi
+        rm -f "$installer"
+        if command -v brew >/dev/null 2>&1 && brew list --cask claude-code >/dev/null 2>&1; then
+            print_warning "The claude-code brew cask is also installed and shadows"
+            print_warning "the native build. Remove it: brew uninstall --cask claude-code"
+        fi
+    fi
+
+    ########################################
     print_status "Installation completed successfully!"
     print_status "You may need to restart your terminal or run 'source ~/.zshrc' for changes to take effect."
 }

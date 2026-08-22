@@ -73,6 +73,13 @@ The one-to-one links are declared in `scripts/links.manifest` (a
 config later, add a line to the manifest rather than editing the script.
 `bin/*` is linked by a glob, so new scripts there are picked up automatically.
 
+The script also installs Claude Code, which is deliberately **not** in the
+Brewfile: the cask lags upstream and never self-updates. The native installer
+drops a self-updating launcher in `~/.local/bin/claude` (already on `PATH`), and
+the step is skipped when that launcher already exists. It only needs `curl`, and
+warns rather than fails if the download does not work. Confirm with
+`claude doctor`: it should report `native` and `Auto-updates: enabled`.
+
 Open a new terminal (or `source ~/.zshrc`) after this so the new shell config
 takes effect.
 

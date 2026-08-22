@@ -11,7 +11,7 @@ Config is **symlink-based**, not copied. `scripts/install-mac.sh` reads
 `scripts/links.manifest` and creates one symlink per line into `$HOME`.
 
 ```
-scripts/install-mac.sh    symlinks everything; the only install entry point
+scripts/install-mac.sh    symlinks everything + installs Claude Code natively
 scripts/links.manifest    pipe-delimited: source | target | description
 scripts/macos-defaults.sh every `defaults write` (plus a little nvram/duti)
 Brewfile                  packages and casks
