@@ -5,13 +5,11 @@
 format = """
 [](fg:color_dir)\
 $directory\
-[](fg:color_dir bg:color_git)\
+$aws\
 $git_branch\
 $git_status\
-[](fg:color_git bg:color_lang)\
 $nodejs\
 $python\
-[](fg:color_lang bg:color_time)\
 $time\
 [](fg:color_time)\
 $line_break\
@@ -24,11 +22,26 @@ add_newline = true
 palette = 'rainbow'
 
 [palettes.rainbow]
+# Hues ascend left to right in segment order: 343 deg, 1, 19, 95, 200. color_aws is the
+# only one that was added — it sits at hue 1 because that is the gap between the folder
+# and branch segments it was inserted between. A new segment takes the hue its position
+# leaves open; picking the color first is what makes a powerline read as arbitrary.
 color_dir = '#DA627D'
+color_aws = '#ED706E'
 color_git = '#FCA17D'
 color_lang = '#A3BE8C'
 color_time = '#86BBD8'
 color_fg = '#1C1C1C'
+
+# Every conditional segment carries its OWN leading separator, so an absent segment
+# takes its arrow with it. A static arrow wrapped around a conditional segment is what
+# leaves an empty colored sliver in the bar.
+#
+# One arrow can't follow that rule: the clock's, which has to render whether or not a
+# language was detected and can only name one fg. It names color_lang, so in a repo
+# with no language the arrow into the clock is green rather than yellow. Starship
+# separators are static, so the alternatives were a wrong color on one arrow, an empty
+# sliver, or giving branch and version the same color. This is the cheapest of the three.
 
 [directory]
 format = "[  $path ]($style)"
@@ -36,9 +49,17 @@ style = "fg:color_fg bg:color_dir"
 truncation_length = 3
 truncate_to_repo = true
 
+# Which AWS account this shell points at. An ambient shell is harmless; one holding
+# admin credentials for the account that hosts prod is not. Profile name rather than
+# account id, because the id is the part that is impossible to recall.
+[aws]
+disabled = false
+symbol = "aws:"
+format = "([](fg:color_dir bg:color_aws)[ $symbol$profile ](fg:color_fg bg:color_aws))"
+
 [git_branch]
 symbol = " "
-format = "[ $symbol$branch ]($style)"
+format = "([](fg:color_aws bg:color_git)[ $symbol$branch ]($style))"
 style = "fg:color_fg bg:color_git"
 
 [git_status]
@@ -55,18 +76,18 @@ stashed    = "⚑"          # stashed changes
 
 [nodejs]
 symbol = " "
-format = "[ $symbol$version ]($style)"
+format = "([](fg:color_git bg:color_lang)[ $symbol$version ]($style))"
 style = "fg:color_fg bg:color_lang"
 
 [python]
 symbol = " "
-format = "[ $symbol$version ]($style)"
+format = "([](fg:color_git bg:color_lang)[ $symbol$version ]($style))"
 style = "fg:color_fg bg:color_lang"
 
 [time]
 disabled = false
 time_format = "%H:%M:%S"
-format = "[  $time ]($style)"
+format = "[](fg:color_lang bg:color_time)[  $time ]($style)"
 style = "fg:color_fg bg:color_time"
 
 [cmd_duration]
@@ -83,9 +104,6 @@ error_symbol = "[❯](bold red)"
 disabled = true
 
 [package]
-disabled = true
-
-[aws]
 disabled = true
 
 [gcloud]

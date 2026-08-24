@@ -15,7 +15,7 @@ eval "$(direnv hook zsh)"
 ########################################
 # AWS CLI settings
 ########################################
-export AWS_PROFILE=admin
+export AWS_PROFILE=readonly
 export AWS_REGION=us-east-1
 
 alias tail_api_dev="aws logs tail /aws/ecs/dev/dirtlabs/api --follow --since 1m --region us-east-1"
