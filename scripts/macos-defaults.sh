@@ -267,6 +267,28 @@ if [[ -f "$vimr_plist" ]]; then
             /usr/libexec/PlistBuddy \
                 -c "Set :${vimr_state_key}:main-window:appearance:editor-font-name MesloLGSNFM-Regular" \
                 "$vimr_plist" 2>/dev/null || true
+
+            # Route the preview pane through bin/vimr-md, which renders GFM
+            # (tables, task lists, strikethrough) that VimR's plain cmark drops,
+            # and repaints Prism so code blocks match the page. See the header
+            # comment in bin/vimr-md for the full story. The path has to be
+            # absolute: VimR execs it directly and does not expand ~.
+            vimr_md="$HOME/bin/vimr-md"
+            if [[ -x "$vimr_md" ]]; then
+                print_status "Pointing VimR's markdown preview at bin/vimr-md"
+                # Set fails when the key is absent, which is the state of a
+                # profile where the preview pane has never been configured, so
+                # fall back to Add rather than silently doing nothing.
+                /usr/libexec/PlistBuddy \
+                    -c "Set :${vimr_state_key}:main-window:custom-markdown-processor $vimr_md" \
+                    "$vimr_plist" 2>/dev/null ||
+                /usr/libexec/PlistBuddy \
+                    -c "Add :${vimr_state_key}:main-window:custom-markdown-processor string $vimr_md" \
+                    "$vimr_plist" 2>/dev/null || true
+            else
+                print_warning "$vimr_md not found; run install-mac.sh, then re-run this"
+            fi
+
             killall cfprefsd 2>/dev/null || true
         else
             print_warning "Could not find VimR's state key; skipping its settings"
