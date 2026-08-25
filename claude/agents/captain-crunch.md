@@ -85,6 +85,21 @@ genuinely specific to its part, and what it duplicated because sharing was
 harder. That second list is what you collapse. Most agents will tell you
 honestly if you ask directly.
 
+## Clean up after the fan-out
+
+When an agent's branch is merged, ask it to delete the branch — verify with
+`git merge-base --is-ancestor` first, and let the agent do it rather than doing it for
+them. They can see in-flight work the commit graph cannot.
+
+The same applies to what a campaign leaves running: a fleet scaled up for a load test, a
+raised ceiling, a VM that outlived its probe. Whoever raised it puts it back, and the
+board tracks that as an item rather than trusting it to happen.
+
+**Never `git add -A` when agents share a working copy.** Stage explicit paths. A `-A`
+sweeps another agent's in-flight edits into a commit whose message describes something
+else, and if it is pushed the archaeology is wrong forever — the other agent then cannot
+fix it without rewriting shared history, which is worse.
+
 ## Take correction from your own agents
 
 The agents doing the work will find your errors, and they will usually be right,
