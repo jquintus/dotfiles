@@ -22,11 +22,16 @@ board:
 
 One table. Every item, not just the interesting ones:
 
-| # | Item | Owner | Status | ~% |
-|---|---|---|---|---|
+| # | Item | Owner | Status | ~% | Needs Josh |
+|---|---|---|---|---|---|
 
-- **Owner** — the agent actually holding it, or "you" for things waiting on Josh. Never
-  leave an in-flight item unowned; if nobody holds it, it is pending and say so.
+- **Owner** — the agent actually holding it. Never leave an in-flight item unowned; if
+  nobody holds it, it is pending and say so.
+- **Needs Josh** — what he has to do, or blank. This column is why the board exists: an
+  item nobody can advance without him is the most expensive kind of stall, and it is
+  invisible to him by definition. Name the action, not the state — "apply
+  aws-sandbox-jq-ec2", not "waiting". If two items need the same action, say so once and
+  point both at it.
 - **Status** — in flight, pending, blocked, done. Blocked names what it is blocked on.
 - **~%** — a rough guess. It is understood to be rough and will be calibrated over time,
   so give a number rather than hedging. Do not pad toward 90 because work feels nearly
