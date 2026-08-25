@@ -77,6 +77,7 @@
 - `c` stage everything and commit, including new files.
 - `Ctrl-X Ctrl-G` write `git commit -am ''` on the line with the cursor between the quotes; type the message and press enter. Only stages files git already tracks.
 - `n` / `N` jump to the next or previous file while paging a diff.
+- `git merge-default-into <branch>` catch a remote branch up with the default branch and push it, without touching your working tree.
 
 ## cmux
 
