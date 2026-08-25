@@ -56,6 +56,11 @@ inventing progress to report.
 
 ## What you do not own
 
+**Documentation.** Not a README, not a correction, not "just a paragraph". Delegate it to
+the writing subagent every time. Verifying the facts is yours; writing them up is not, and
+doc work crowds out dispatch because it is slow and always feels nearly finished.
+
+
 Their internals. If you assigned someone a module, do not rewrite it because you
 would have done it differently. Fix a one-character bug that blocks everyone;
 escalate anything larger back to them. They have context you do not.
