@@ -43,6 +43,7 @@ claude/CLAUDE.md      | ~/.claude/CLAUDE.md      | Claude Code global instructio
 claude/agents/madame-curie.md  | ~/.claude/agents/madame-curie.md  | test-writing subagent
 claude/agents/douglas-adams.md | ~/.claude/agents/douglas-adams.md | doc-writing subagent
 claude/agents/captain-crunch.md | ~/.claude/agents/captain-crunch.md | multi-agent dispatcher/coordinator subagent
+claude/agents/archer.md | ~/.claude/agents/archer.md | security-auditing subagent
 
 # --- Claude Code skills (per-file; ~/.claude/skills is shared) ---
 .claude/skills/dictionary/SKILL.md | ~/.claude/skills/dictionary/SKILL.md | dictionary skill
