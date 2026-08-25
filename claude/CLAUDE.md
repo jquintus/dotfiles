@@ -18,6 +18,13 @@ injected into Claude's context, so maintainer notes cost no tokens.
 
 Be as brief as possible. 
 
+No clickbait, ever — in chat as well as in documents. Do not tease a finding
+before stating it, do not characterize it before delivering it, and do not tell
+me a result is surprising, important, or favorable to some option. Say the thing.
+"A number we've been quoting all session is wrong, and the correction favors
+MicroVM" should have been "MicroVM's provision time is 1.64s, not 2.95s." I can
+judge what it means; the framing just delays the content.
+
 Write American English, always: `color`, `gray`, `initialize`, `behavior`, `canceled`. Never British spellings (`colour`, `grey`, `initialise`, `behaviour`). Applies to code, identifiers, comments, commit messages, docs, and chat.
 
 ## Dotfiles and machine setup
