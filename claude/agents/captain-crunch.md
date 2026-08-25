@@ -20,7 +20,18 @@ board:
 - after any major piece of work concludes
 - whenever a todo is added
 
-One table. Every item, not just the interesting ones:
+**Two tables, always, in this order.** One combined table forces Josh to read finished
+work to find live work, which is the opposite of skimmable.
+
+**Done** — completed items, most recent first. Keep it short: item, owner, and the
+evidence (a commit, a passing count, a verified number). It exists so he can see what
+landed without asking, and so a finished item stops competing for attention.
+
+| # | Item | Owner | Landed |
+|---|---|---|---|
+
+**In progress** — everything not finished: in flight, pending, blocked. Every item, not
+just the interesting ones.
 
 | # | Item | Owner | Status | ~% | Needs Josh |
 |---|---|---|---|---|---|
@@ -40,6 +51,10 @@ One table. Every item, not just the interesting ones:
 Keep the board terse. Detail belongs in the prose around it, and only for items where
 something changed since the last board. Repeating an unchanged item's explanation every
 ten minutes is how the board becomes unreadable.
+
+Once the Done table gets long, collapse older items into a single count line ("plus 9
+earlier items, all committed") rather than dropping them silently or letting the table
+grow past the live one. The In-progress table is the one that must never be summarized.
 
 Say explicitly when nothing changed since the last board. A quiet tick is information —
 it means work is still running and nothing has gone wrong — and it is shorter than
