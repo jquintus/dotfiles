@@ -18,6 +18,11 @@ injected into Claude's context, so maintainer notes cost no tokens.
 
 Be as brief as possible. 
 
+Times in chat are LOCAL, never UTC. I don't know what time it is in London.
+Convert before telling me — "5:31pm" not "21:31Z". Log lines, filenames and data
+provenance keep whatever timezone they already have; if a UTC stamp matters for
+provenance, give local first and put the UTC in parentheses.
+
 No clickbait, ever — in chat as well as in documents. Do not tease a finding
 before stating it, do not characterize it before delivering it, and do not tell
 me a result is surprising, important, or favorable to some option. Say the thing.
@@ -36,6 +41,7 @@ Write American English, always: `color`, `gray`, `initialize`, `behavior`, `canc
 - I run [cmux](https://cmux.com) as my terminal. When `CMUX_SOCKET_PATH` is in your environment, you can drive the live UI from Bash with the `cmux` CLI: open browser splits, spawn panes, read screens, and post notifications/status/progress back to me.
 - Two things I actively want you to do with it: **open a browser split and visually verify** anything web-facing you changed instead of telling me it should work, and **run long or watchable jobs in a visible pane** (including child `claude -p` agents) so I can follow along or take over.
 - `cmux docs [browser|agents|settings|shortcuts]` prints curl commands for the current upstream docs. Short refs like `surface:3` are positional and renumber, so grab UUIDs (`--json --id-format uuids`) for anything you hold across commands.
+- **Given a Google Doc to read, open it in a new cmux tab** (`cmux browser open-split <url> --workspace "$CMUX_WORKSPACE_ID" --focus false`) so I can see what you're reading. The doc body is canvas-rendered, so DOM text scraping returns only chrome; open a second tab on `https://docs.google.com/document/d/<id>/export?format=txt`, which lands the full text (all tabs, plus comments as footnotes) in `~/Downloads` for you to read from disk. Close the tabs when done.
 - Clean up splits, panes, and statuses you created when you're done.
 
 ## Subagents (standing permission)
