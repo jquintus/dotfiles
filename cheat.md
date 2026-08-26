@@ -95,6 +95,11 @@
 - `/agent` switch between the subagent threads running in parallel in a Codex session.
 - `codex doctor` find out why Codex is not working: auth, config, sandbox and network on one screen.
 
+## Other coding agents
+
+- `copilot` GitHub's coding agent in the terminal; `copilot update` pulls a new build, brew never does it for you.
+- `cursor-agent` Cursor's coding agent in the terminal. The installer also links it as `agent`, a name generic enough to collide, so prefer the long one.
+
 ## macOS is stuck
 
 - `opt-ctrl-shift-F5` cursor stuck holding a drag, clicks going nowhere, Finder window that won't close. Releases the drag macOS lost the mouse-up for, whichever button is stuck (middle-button drags hang the same way).

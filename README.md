@@ -87,6 +87,17 @@ official installer lands a self-updating build in `~/.codex/packages/standalone`
 and links it into `~/.local/bin/codex`. Confirm with `codex doctor`: the
 `runtime` line should say `standalone`, not `brew`.
 
+It installs the Cursor CLI the same way, for the first reason rather than the
+second: the `cursor-cli` cask pins a build inside the Caskroom, which fights the
+binary's own auto-update. The official installer lands a self-updating build in
+`~/.local/share/cursor-agent/versions` and links it into `~/.local/bin` twice,
+as `cursor-agent` and as the much more collidable `agent`. Confirm with
+`cursor-agent about`.
+
+Copilot's CLI is the exception that stays in the Brewfile. Its cask is marked
+`auto_updates`, so the binary updates itself with `copilot update` and brew
+never has to catch up.
+
 Last, it runs `bin/codex-sync`, which hands Codex the same subagents, skills and
 global instructions Claude Code runs under. See "Codex" below for what that
 generates and when to rerun it.
@@ -128,6 +139,11 @@ There is no way to automate them, so run through the checklist by hand:
 - **Sign into Codex:** `codex login`. `install-mac.sh` installs and configures
   the CLI, but the credentials land in `~/.codex/auth.json`, which is
   machine-local and never in this repo. Confirm with `codex doctor`.
+- **Sign into the Cursor CLI:** `cursor-agent login`, which opens a browser.
+  Check it took with `cursor-agent status`.
+- **Sign into the Copilot CLI:** `copilot login`. It can also read a
+  `GITHUB_TOKEN` from the environment instead, but the interactive login is the
+  simpler path.
 - **Grant Hammerspoon Accessibility permission:** System Settings > Privacy &
   Security > Accessibility > enable Hammerspoon. Required for the global hotkeys
   in `hammerspoon/`.

@@ -208,6 +208,30 @@ main() {
     fi
 
     ########################################
+    print_status "Installing the Cursor CLI"
+    ########################################
+    # Not in the Brewfile: the cask pins a build inside the Caskroom, which
+    # fights the binary's own auto-update. The official installer lands a
+    # self-updating build in ~/.local/share/cursor-agent/versions and links
+    # both `agent` and `cursor-agent` into ~/.local/bin. Only needs curl.
+    if [[ -x "$HOME/.local/bin/cursor-agent" ]]; then
+        print_status "Cursor CLI already installed, skipping"
+    elif ! command -v curl >/dev/null 2>&1; then
+        print_warning "curl not found, skipping Cursor CLI install"
+    else
+        print_status "Running the official Cursor CLI installer"
+        local cursor_installer
+        cursor_installer="$(mktemp -t cursor-install)"
+        if curl -fsSL https://cursor.com/install -o "$cursor_installer" && bash "$cursor_installer"; then
+            print_status "Cursor CLI installed to ~/.local/bin/cursor-agent"
+        else
+            print_warning "Cursor CLI install failed; rerun by hand:"
+            print_warning "  curl -fsSL https://cursor.com/install | bash"
+        fi
+        rm -f "$cursor_installer"
+    fi
+
+    ########################################
     print_status "Syncing the Claude setup into Codex"
     ########################################
     # Codex reads a different config shape, so its agents and global

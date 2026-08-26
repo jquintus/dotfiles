@@ -183,6 +183,15 @@ cask "claude"
 # it. scripts/install-mac.sh runs the official installer instead, which lands a
 # self-updating build in ~/.codex/packages/standalone and links it into
 # ~/.local/bin/codex.
+# GitHub Copilot CLI. The cask is fine here, unlike Claude Code and Codex: it
+# is marked auto_updates, so the binary updates itself (`copilot update`) and
+# brew never has to catch up.
+cask "copilot-cli"
+# The Cursor CLI is NOT installed via brew: the cask pins a build inside the
+# Caskroom, which fights the binary's own auto-update. scripts/install-mac.sh
+# runs the official installer instead, which lands a self-updating build in
+# ~/.local/share/cursor-agent/versions and links both `agent` and
+# `cursor-agent` into ~/.local/bin.
 # Meslo LG Nerd Font (patched with dev icons/glyphs)
 cask "font-meslo-lg-nerd-font"
 # Set of tools to manage resources and applications hosted on Google Cloud
