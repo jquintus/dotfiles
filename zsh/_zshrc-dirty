@@ -119,6 +119,14 @@ pairdown() {
   return $ret
 }
 
+pairclear() {
+  cmux clear-status pairdev
+  cmux clear-status pairdev_app
+  cmux clear-status pairdev_admin
+  cmux clear-status pairdev_tprl
+  cmux clear-status claude_code
+}
+
 ########################################
 # run — quick launcher for common dev commands
 ########################################
