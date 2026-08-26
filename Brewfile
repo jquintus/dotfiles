@@ -177,6 +177,12 @@ cask "claude"
 # Claude Code is NOT installed via brew: the cask lags upstream and does not
 # self-update. scripts/install-mac.sh runs the native installer instead, which
 # lands in ~/.local/bin/claude and auto-updates itself.
+# Codex is NOT installed via brew, for the same reason as Claude Code. The cask
+# is current with upstream, but it is not the "managed standalone install" the
+# background app-server daemon requires, so `codex agents` fails outright under
+# it. scripts/install-mac.sh runs the official installer instead, which lands a
+# self-updating build in ~/.codex/packages/standalone and links it into
+# ~/.local/bin/codex.
 # Meslo LG Nerd Font (patched with dev icons/glyphs)
 cask "font-meslo-lg-nerd-font"
 # Set of tools to manage resources and applications hosted on Google Cloud

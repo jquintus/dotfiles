@@ -11,7 +11,7 @@ Config is **symlink-based**, not copied. `scripts/install-mac.sh` reads
 `scripts/links.manifest` and creates one symlink per line into `$HOME`.
 
 ```
-scripts/install-mac.sh    symlinks everything + installs Claude Code natively
+scripts/install-mac.sh    symlinks everything + installs Claude Code and Codex natively
 scripts/links.manifest    pipe-delimited: source | target | description
 scripts/macos-defaults.sh every `defaults write` (plus a little nvram/duti)
 Brewfile                  packages and casks
@@ -81,6 +81,16 @@ Files that become real dotfiles are named with a leading underscore in the repo
   - **Nothing work-specific**, since this repo is public. Those go in
     `~/.cheat.work.md`, which is machine-local, untracked, and appended
     automatically by the `cheat` script when it exists.
+- **Codex config is generated, not linked.** `~/.codex` is the one place the
+  manifest does not reach. `bin/codex-sync` translates `claude/CLAUDE.md` into
+  `~/.codex/AGENTS.md` and each `claude/agents/*.md` into a
+  `~/.codex/agents/*.toml`, because Codex wants TOML with `name`,
+  `description` and `developer_instructions` where Claude wants frontmatter
+  plus markdown. Skills are the same `SKILL.md` format in both, so those stay
+  symlinks. Adding a subagent or editing `CLAUDE.md` means rerunning
+  `codex-sync`; `scripts/install-mac.sh` runs it at the end. Everything the
+  script writes carries a marker on its first line, and it deletes nothing that
+  lacks one. `README.md` has the full table under "Codex".
 - **Karabiner rewrites its own config and can eat the symlink.** It writes
   `karabiner.json` atomically on any UI change, which replaces the symlink with a
   regular file and silently decouples it from the repo. Prefer editing

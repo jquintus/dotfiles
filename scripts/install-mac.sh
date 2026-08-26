@@ -182,6 +182,45 @@ main() {
     fi
 
     ########################################
+    print_status "Installing Codex"
+    ########################################
+    # Not in the Brewfile, and not for the usual staleness reason: the cask is
+    # current, but it is not the standalone install the background app-server
+    # daemon starts from, so `codex agents` refuses to run under it. The
+    # official installer lands a self-updating build in
+    # ~/.codex/packages/standalone and links it into ~/.local/bin/codex. Only
+    # needs curl. It offers to remove a conflicting brew-managed Codex itself.
+    if [[ -x "$HOME/.local/bin/codex" ]]; then
+        print_status "Codex already installed, skipping"
+    elif ! command -v curl >/dev/null 2>&1; then
+        print_warning "curl not found, skipping Codex install"
+    else
+        print_status "Running the official Codex installer"
+        local codex_installer
+        codex_installer="$(mktemp -t codex-install)"
+        if curl -fsSL https://chatgpt.com/codex/install.sh -o "$codex_installer" && sh "$codex_installer"; then
+            print_status "Codex installed to ~/.local/bin/codex"
+        else
+            print_warning "Codex install failed; rerun by hand:"
+            print_warning "  curl -fsSL https://chatgpt.com/codex/install.sh | sh"
+        fi
+        rm -f "$codex_installer"
+    fi
+
+    ########################################
+    print_status "Syncing the Claude setup into Codex"
+    ########################################
+    # Codex reads a different config shape, so its agents and global
+    # instructions are generated rather than symlinked; skills are the same
+    # SKILL.md format and do get symlinked. Pure bash, no brew dependency, and
+    # it warns rather than fails if Claude's config is not there yet.
+    if [[ -x "$DOTFILES_ROOT/bin/codex-sync" ]]; then
+        "$DOTFILES_ROOT/bin/codex-sync" || print_warning "codex-sync failed; rerun it by hand"
+    else
+        print_warning "bin/codex-sync not found, skipping Codex sync"
+    fi
+
+    ########################################
     print_status "Installation completed successfully!"
     print_status "You may need to restart your terminal or run 'source ~/.zshrc' for changes to take effect."
 }

@@ -89,6 +89,12 @@
 - `madame-curie` write tests for code that already exists, AAA, through the public API, never touching the implementation.
 - `douglas-adams` write or rewrite a doc in my voice, brief and verified against the code.
 
+## Codex
+
+- `codex-sync` re-hand Codex the Claude subagents, skills and CLAUDE.md after changing any of them.
+- `/agent` switch between the subagent threads running in parallel in a Codex session.
+- `codex doctor` find out why Codex is not working: auth, config, sandbox and network on one screen.
+
 ## macOS is stuck
 
 - `opt-ctrl-shift-F5` cursor stuck holding a drag, clicks going nowhere, Finder window that won't close. Releases the drag macOS lost the mouse-up for, whichever button is stuck (middle-button drags hang the same way).

@@ -80,6 +80,17 @@ the step is skipped when that launcher already exists. It only needs `curl`, and
 warns rather than fails if the download does not work. Confirm with
 `claude doctor`: it should report `native` and `Auto-updates: enabled`.
 
+It installs Codex the same way and for a related reason: the `codex` cask is
+current with upstream, but it is not the *standalone* install the background
+app-server daemon starts from, so `codex agents` refuses to run under it. The
+official installer lands a self-updating build in `~/.codex/packages/standalone`
+and links it into `~/.local/bin/codex`. Confirm with `codex doctor`: the
+`runtime` line should say `standalone`, not `brew`.
+
+Last, it runs `bin/codex-sync`, which hands Codex the same subagents, skills and
+global instructions Claude Code runs under. See "Codex" below for what that
+generates and when to rerun it.
+
 Open a new terminal (or `source ~/.zshrc`) after this so the new shell config
 takes effect.
 
@@ -114,6 +125,9 @@ There is no way to automate them, so run through the checklist by hand:
   ```
   The `search-sessions` binary itself comes from the Brewfile. The plugin is the
   separate piece that lets Claude search session history on your behalf.
+- **Sign into Codex:** `codex login`. `install-mac.sh` installs and configures
+  the CLI, but the credentials land in `~/.codex/auth.json`, which is
+  machine-local and never in this repo. Confirm with `codex doctor`.
 - **Grant Hammerspoon Accessibility permission:** System Settings > Privacy &
   Security > Accessibility > enable Hammerspoon. Required for the global hotkeys
   in `hammerspoon/`.
@@ -198,6 +212,44 @@ writes **straight back to this repo**. So after changing a setting, remember to
 Note: the Claude source dir is `claude/`, **not** `.claude/`, on purpose. A
 `.claude/settings.json` would be read as *project* settings whenever Claude runs
 in this repo (double-registering hooks). Keep it as `claude/`.
+
+## Codex
+
+Codex reads the same ideas as Claude Code out of a different shape of config, so
+`bin/codex-sync` translates rather than symlinks. Rerun it after editing
+`claude/CLAUDE.md` or anything in `claude/agents/`:
+
+```bash
+codex-sync
+```
+
+| What                    | `~/.codex/...`  | How                                             |
+| ----------------------- | --------------- | ----------------------------------------------- |
+| Global instructions     | `AGENTS.md`     | generated from `claude/CLAUDE.md`               |
+| Subagents               | `agents/*.toml` | generated from `claude/agents/*.md`             |
+| Skills                  | `skills/<name>` | symlinked to `~/.claude/skills/<name>`          |
+| `CLAUDE.md` as fallback | `config.toml`   | one key, written once and never rewritten       |
+
+Only the skills are symlinks, because `SKILL.md` is the same format in both
+tools, so edits flow both ways. The other two have to be generated: a Claude
+subagent is YAML frontmatter plus markdown, and a Codex custom agent is a TOML
+file with `name`, `description` and `developer_instructions`. Anything the
+script generates carries a marker line in its first line, and it only ever
+deletes files carrying that marker or symlinks pointing into `~/.claude`.
+
+Two translations worth knowing about. Codex has no `@`-import, so the
+machine-local `~/.claude/CLAUDE.work.md` is inlined into the generated
+`AGENTS.md` (it stays out of this public repo either way).
+
+And Codex has no per-agent tool allowlist. `sandbox_mode = "read-only"` looks
+like the equivalent and is not: it also cuts network access and makes every
+command ask for approval, which breaks an agent like `archer` that is supposed
+to read code *and* run scanners. So the Claude `tools:` line is copied in as a
+comment and nothing enforces it but the agent's own instructions — the same
+thing holding the line in the Claude prompt already.
+
+Skills are read from `~/.claude/skills` rather than from this repo, so Codex
+also sees skills installed on this machine that the repo does not track.
 
 ## Vim & Neovim plugins
 
