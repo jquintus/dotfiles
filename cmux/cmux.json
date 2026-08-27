@@ -34,8 +34,12 @@
     "showNotificationMessage": true
   },
 
+  // Workspaces stay in the order they were put in. The default hoists one to
+  // the top the moment it wants attention, which moves every tab below it and
+  // makes a sidebar you navigate by position unnavigable. The notification is
+  // still delivered — the ring, the badge and cmd-shift-u all still find it.
   "app": {
-    "reorderOnNotification": true
+    "reorderOnNotification": false
   },
 
   "automation": {
