@@ -38,6 +38,7 @@ karabiner/karabiner.json | ~/.config/karabiner/karabiner.json | Karabiner-Elemen
 vscode/settings.json  | ~/Library/Application Support/Code/User/settings.json | VS Code user settings
 claude/settings.json  | ~/.claude/settings.json  | Claude Code user settings
 claude/CLAUDE.md      | ~/.claude/CLAUDE.md      | Claude Code global instructions
+claude/statusline.sh  | ~/.claude/statusline.sh  | Claude Code status line (context/rate-limit token usage)
 
 # --- Claude Code subagents (per-file; ~/.claude/agents is shared) ---
 claude/agents/madame-curie.md  | ~/.claude/agents/madame-curie.md  | test-writing subagent

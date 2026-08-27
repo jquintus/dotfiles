@@ -161,6 +161,10 @@
       }
     ]
   },
+  "statusLine": {
+    "type": "command",
+    "command": "\"$HOME/.claude/statusline.sh\""
+  },
   "enabledPlugins": {
     "eng-skills@dirtlabs": true,
     "marketplace-tools@dirtlabs": true,
@@ -189,8 +193,8 @@
       }
     }
   },
+  "skipWorkflowUsageWarning": true,
   "theme": "dark",
   "todoFeatureEnabled": true,
-  "agentPushNotifEnabled": true,
-  "skipWorkflowUsageWarning": true
+  "agentPushNotifEnabled": true
 }

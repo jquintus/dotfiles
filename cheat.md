@@ -68,7 +68,6 @@
 ## Git
 
 - `lazygit` use it.
-- `c` stage everything and commit, including new files.
 - `Ctrl-X Ctrl-G` write `git commit -am ''` on the line with the cursor between the quotes; type the message and press enter. Only stages files git already tracks.
 - `n` / `N` jump to the next or previous file while paging a diff.
 - `git merge-default-into <branch>` catch a remote branch up with the default branch and push it, without touching your working tree.
@@ -77,6 +76,11 @@
 
 - `cmd-opt-b` Open up the sidebar and checkout vault
 - `cmux diff --last-turn` render what an agent changed since its turn started, in a split.
+
+## Claude
+
+- `c` open Claude here, continuing this directory's last session if there is one.
+- `c new` open Claude here on a brand new session, ignoring the last one.
 
 ## Claude subagents
 

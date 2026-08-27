@@ -286,11 +286,10 @@ bindkey ' ' magic-space
 
 # Ctrl-X Ctrl-G writes `git commit -am ''` onto the line and parks the cursor
 # between the quotes. It does not run: type the message, press enter. That is
-# the whole point, since committing without opening an editor is the part `c`
-# (git add -A && git commit) cannot do.
+# the whole point: a one-line commit without an editor opening at all.
 #
-# Note the two are not interchangeable. `-a` stages tracked files that changed;
-# `c` uses `add -A` and picks up new files too.
+# Note `-a` only stages files git already tracks. A brand new file still needs
+# a `git add` of its own first.
 #
 # Single quotes, deliberately: a message like `fix `foo` handling` would be
 # command-substituted inside double quotes and silently mangled, while an

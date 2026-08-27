@@ -389,9 +389,9 @@ until confirmed either way.
       `zsh/_zshrc-aliases`, so typing a filename opens it in the right reader.
       This replaced the `readme()` function, which only ever handled README.md.
       `^X^G` writes `git commit -am ''` and parks the cursor inside the quotes
-      without running, which is the thing `c` cannot do since `c` always opens
-      an editor. Verdict question: does typing a bare filename become reflex,
-      and does the commit chord beat just typing `c`?
+      without running, so a one-line commit never opens an editor. Verdict
+      question: does typing a bare filename become reflex, and does the commit
+      chord get reached for at all?
 - [ ] **eza as `ls`, `ll`, and `lr`** — **trialing**, wired 2026-08-08.
       `ls` is now `eza --icons --group-directories-first`, `ll` adds `-lah
       --git`, and `lr` is `eza --tree --level=2`, which replaced a

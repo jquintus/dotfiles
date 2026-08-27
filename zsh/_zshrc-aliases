@@ -97,6 +97,30 @@ alias -s {png,jpg,gif}='viu'
 alias ex="open"
 
 ########################################
+# c — open Claude Code here, continuing this directory's last session.
+#
+# `claude -c` resumes the most recent conversation in the current directory,
+# and quietly starts a fresh one when there is nothing to resume, so the same
+# word works in a repo halfway through a task and in a directory Claude has
+# never seen. `c new` forces a new session even when history exists, for when
+# the old thread is finished and carrying it along is just context to fight.
+#
+# Arguments after the subcommand are passed through, so `c --model sonnet` and
+# `c new -p "..."` both work.
+#
+# This took over `c` from `git add -A && git commit`, which is gone. `^X^G` in
+# zsh/_zshrc covers the commit case.
+########################################
+c() {
+  if [[ $1 == new ]]; then
+    shift
+    claude "$@"
+  else
+    claude -c "$@"
+  fi
+}
+
+########################################
 # Git Stuffs
 ########################################
 alias tit="git"                               # typos
@@ -107,7 +131,6 @@ alias cob="git checkout -b"
 alias pull="git pull"
 alias push="git pushup"
 alias pushup="git pushup"
-alias c="git add -A && git commit"
 alias branches="git branches"
 
 alias s="git status"
