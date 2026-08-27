@@ -13,8 +13,16 @@
 #
 #              `--cloud` creates the session and exits rather than attaching,
 #              printing a "Resume with: claude --teleport <id>" line. That line
-#              scrolls away by morning, so this tees the output and keeps the id
-#              in ~/.claude/last-cloud-session.
+#              scrolls away by morning, so this captures it and keeps the id in
+#              ~/.claude/last-cloud-session.
+#
+#              Capturing has to go through `script`, not a pipe. `--cloud`
+#              refuses to run when stdout is not a terminal ("Non-interactive
+#              invocations ... run locally and would silently ignore --cloud"),
+#              so a plain `| tee` kills the very thing being run. `script` hands
+#              claude a pty, echoes to the terminal, and writes the same bytes
+#              to a file. It also gives stdin a pty, which is what lets a brief
+#              be piped in.
 #
 #              Josh is on a DirtLabs Team seat with no GitHub connection for
 #              Claude Code on the web, so sessions started from the browser have
@@ -68,13 +76,32 @@ fi
 log="$(mktemp -t claude-cloud)"
 trap 'rm -f "$log"' EXIT
 
-# tee rather than capture, so the session URL and any warnings still scroll past
-# live. Safe to pipe because --cloud prints and exits instead of attaching a TUI.
+# `script` needs a terminal on its own stdin before it can hand one to a child,
+# so probe with a throwaway run rather than discovering it on the real one.
+# Reading from /dev/tty keeps that true even when a brief was piped in.
+# /dev/tty can exist as a device node and still not be openable, so test by
+# opening it rather than by asking what kind of file it is.
+use_script=0
+if command -v script >/dev/null 2>&1 && { : < /dev/tty; } 2>/dev/null; then
+    if script -q /dev/null true < /dev/tty > /dev/null 2>&1; then
+        use_script=1
+    fi
+fi
+
 set +e
-claude --cloud "$prompt" \
-    --permission-mode acceptEdits \
-    ${passthrough[@]+"${passthrough[@]}"} 2>&1 | tee "$log"
-status=${PIPESTATUS[0]}
+if [[ $use_script -eq 1 ]]; then
+    script -q "$log" claude --cloud "$prompt" \
+        --permission-mode acceptEdits \
+        ${passthrough[@]+"${passthrough[@]}"} < /dev/tty
+    status=$?
+else
+    # No pty available: run it straight so the session still starts, and let
+    # Josh copy the teleport line off the screen himself.
+    claude --cloud "$prompt" \
+        --permission-mode acceptEdits \
+        ${passthrough[@]+"${passthrough[@]}"}
+    status=$?
+fi
 set -e
 
 id="$(grep -o 'session_[A-Za-z0-9]\{6,\}' "$log" | head -1 || true)"
@@ -88,8 +115,8 @@ if [[ -n "$id" ]]; then
     echo
     echo "(saved to $LAST_SESSION_FILE)"
 else
-    echo "claude-cloud: no session id in that output."
-    echo "The session may still have started -- check https://claude.ai/code"
+    echo "claude-cloud: no session id captured."
+    echo "Copy the teleport line above, or find the session at https://claude.ai/code"
 fi
 
 exit "$status"
