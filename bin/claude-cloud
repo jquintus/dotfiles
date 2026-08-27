@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+
+###############################################################################
+# Script Name: claude-cloud
+# Description: Hands a plain-English task to a Claude Code cloud session, which
+#              keeps working after the laptop is shut, and saves the teleport
+#              line for picking it up in the morning.
+#
+#              The prompt goes to `--cloud` rather than being positional.
+#              `--cloud` is documented as taking an optional value, but it
+#              refuses to run without one ("--cloud requires a description"),
+#              and that description is what the session works on.
+#
+#              `--cloud` creates the session and exits rather than attaching,
+#              printing a "Resume with: claude --teleport <id>" line. That line
+#              scrolls away by morning, so this tees the output and keeps the id
+#              in ~/.claude/last-cloud-session.
+#
+#              Josh is on a DirtLabs Team seat with no GitHub connection for
+#              Claude Code on the web, so sessions started from the browser have
+#              no repos to choose from. Started from here they upload the local
+#              checkout instead, which is why this is the working path.
+#
+# Author: Josh Quintus
+# Usage:
+#   claude-cloud figure out how to build a flux capacitor
+#   claude-cloud fix the flaky tests in src/api -- --model opus
+#   claude-cloud < overnight-brief.md
+# Date: August 2026
+###############################################################################
+
+set -euo pipefail
+
+LAST_SESSION_FILE="$HOME/.claude/last-cloud-session"
+
+# Everything up to a bare `--` is the prompt; anything after it is passed
+# through to claude untouched.
+prompt_words=()
+passthrough=()
+while [[ $# -gt 0 ]]; do
+    if [[ "$1" == "--" ]]; then
+        shift
+        passthrough=("$@")
+        break
+    fi
+    prompt_words+=("$1")
+    shift
+done
+
+prompt="${prompt_words[*]-}"
+
+# No prompt on the command line means it is being piped in, which is the
+# comfortable way to hand over a long overnight brief.
+if [[ -z "$prompt" ]]; then
+    if [[ -t 0 ]]; then
+        echo "claude-cloud: give me a prompt, or pipe one in" >&2
+        echo "usage: claude-cloud figure out how to build a flux capacitor" >&2
+        exit 1
+    fi
+    prompt="$(cat)"
+fi
+
+if [[ -z "${prompt//[[:space:]]/}" ]]; then
+    echo "claude-cloud: the prompt is empty" >&2
+    exit 1
+fi
+
+log="$(mktemp -t claude-cloud)"
+trap 'rm -f "$log"' EXIT
+
+# tee rather than capture, so the session URL and any warnings still scroll past
+# live. Safe to pipe because --cloud prints and exits instead of attaching a TUI.
+set +e
+claude --cloud "$prompt" \
+    --permission-mode acceptEdits \
+    ${passthrough[@]+"${passthrough[@]}"} 2>&1 | tee "$log"
+status=${PIPESTATUS[0]}
+set -e
+
+id="$(grep -o 'session_[A-Za-z0-9]\{6,\}' "$log" | head -1 || true)"
+
+echo
+if [[ -n "$id" ]]; then
+    printf '%s\n' "claude --teleport $id" > "$LAST_SESSION_FILE"
+    echo "In the morning:"
+    echo
+    echo "    claude --teleport $id"
+    echo
+    echo "(saved to $LAST_SESSION_FILE)"
+else
+    echo "claude-cloud: no session id in that output."
+    echo "The session may still have started -- check https://claude.ai/code"
+fi
+
+exit "$status"

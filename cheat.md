@@ -89,6 +89,13 @@
 - `madame-curie` write tests for code that already exists, AAA, through the public API, never touching the implementation.
 - `douglas-adams` write or rewrite a doc in my voice, brief and verified against the code.
 
+## Claude off this machine
+
+- `claude-cloud <what you want done>` hand a task to a cloud session that keeps working after the laptop is shut, and print the line for picking it up again.
+- `claude --teleport <session-id>` pull a cloud session back down and carry on locally.
+- `cat ~/.claude/last-cloud-session` get that teleport line back once the terminal has scrolled away.
+- `claude --remote-control` drive this session from a phone, which needs the Mac awake and is not the same thing as leaving.
+
 ## Codex
 
 - `codex-sync` re-hand Codex the Claude subagents, skills and CLAUDE.md after changing any of them.
