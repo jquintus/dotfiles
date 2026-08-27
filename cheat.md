@@ -44,12 +44,6 @@
 - `cmd-down` open the selected folder or file. `Enter` renames it instead, which is the thing that keeps catching you out.
 - `cmd-O` the same open, when your hand is already off the arrow keys.
 
-## Opening files by name
-
-- Type a `.md` filename with no command in front of it to page it through glow.
-- Type a `.json` filename to pretty-print it with jq.
-- Type a `.png`, `.jpg`, or `.gif` filename to view the image in the terminal.
-
 ## jless
 
 - `jless <file>` browse a JSON or YAML document. Reads stdin too, so anything can be piped in.
