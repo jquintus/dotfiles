@@ -88,12 +88,21 @@ if command -v script >/dev/null 2>&1 && { : < /dev/tty; } 2>/dev/null; then
     fi
 fi
 
+# Claude's own "Resume with:" line is the one this script reprints properly at
+# the end, and the git-config warning is a fact about this checkout rather than
+# about the session. Everything else passes through, errors included -- a
+# deny-list keeps a failed run visible in a way an allow-list would not.
+# Piping here is safe: the child's terminal comes from script's pty, not from
+# script's stdout.
+NOISE='^(Resume with:|This checkout reads git configuration)'
+
 set +e
 if [[ $use_script -eq 1 ]]; then
     script -q "$log" claude --cloud "$prompt" \
         --permission-mode acceptEdits \
-        ${passthrough[@]+"${passthrough[@]}"} < /dev/tty
-    status=$?
+        ${passthrough[@]+"${passthrough[@]}"} < /dev/tty \
+        | tr -d '\r' | grep -avE --line-buffered "$NOISE"
+    status=${PIPESTATUS[0]}
 else
     # No pty available: run it straight so the session still starts, and let
     # Josh copy the teleport line off the screen himself.
@@ -112,11 +121,9 @@ if [[ -n "$id" ]]; then
     echo "In the morning:"
     echo
     echo "    claude --teleport $id"
-    echo
-    echo "(saved to $LAST_SESSION_FILE)"
 else
-    echo "claude-cloud: no session id captured."
-    echo "Copy the teleport line above, or find the session at https://claude.ai/code"
+    echo "claude-cloud: no session id to save."
+    echo "If a session did start, it is at https://claude.ai/code"
 fi
 
 exit "$status"
