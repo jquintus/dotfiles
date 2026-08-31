@@ -18,6 +18,10 @@ injected into Claude's context, so maintainer notes cost no tokens.
 
 Be as brief as possible. 
 
+In lists, each numbered or bulleted item must express exactly one action or
+idea. When an item has multiple prerequisites, components, or follow-up actions,
+make them nested children instead of packing them into the parent item.
+
 Times in chat are LOCAL, never UTC. I don't know what time it is in London.
 Convert before telling me — "5:31pm" not "21:31Z". Log lines, filenames and data
 provenance keep whatever timezone they already have; if a UTC stamp matters for
