@@ -216,8 +216,8 @@ vim.b.syntax = 0
 -------------------------------------------------------------------------------
 -- Search for selected text with * and #
 local function v_set_search()
-    local temp = vim.fn.getreg('"')
-    vim.cmd('norm! gvy')
+    local temp = vim.fn.getreginfo('"')
+    vim.cmd('normal! y')
     local search_term = '\\V' .. vim.fn.substitute(vim.fn.escape(vim.fn.getreg('"'), '\\'), '\\n', '\\\\n', 'g')
     vim.fn.setreg('/', search_term)
     vim.fn.setreg('"', temp)
