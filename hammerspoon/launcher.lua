@@ -48,6 +48,14 @@ M.APPS = {
   { key = "g", name = "Google Chat" },
   { key = "l", name = "Linear" },
   { key = "m", name = "Spotify" },
+  {
+    key = "e",
+    name = "Finder",
+    bundle = "com.apple.finder",
+    -- Finder never quits, so focusing it with every window closed looks like
+    -- the binding did nothing. Hand back a window at home instead.
+    newWindow = function() hs.execute("open ~") end,
+  },
 }
 
 -- Launch, focus, or hide, depending on where the app currently stands.
@@ -60,6 +68,12 @@ local function jump(app)
       running:hide()
     else
       hs.application.launchOrFocus(app.name)
+      -- For an app that is always running, launchOrFocus only raises it, which
+      -- is invisible when it has no windows left. `newWindow` opts into a nudge.
+      if app.newWindow then
+        local focused = hs.application.find(app.bundle or app.name)
+        if focused and #focused:visibleWindows() == 0 then app.newWindow() end
+      end
     end
   end
 end
