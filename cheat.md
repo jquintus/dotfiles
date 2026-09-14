@@ -105,6 +105,12 @@
 - `copilot` GitHub's coding agent in the terminal; `copilot update` pulls a new build, brew never does it for you.
 - `cursor-agent` Cursor's coding agent in the terminal. The installer also links it as `agent`, a name generic enough to collide, so prefer the long one.
 
+## Chrome profiles
+
+- `hyper-P` jump to the personal profile. Press again to cycle its windows.
+- `hyper-D` jump to the dirtlabs profile, same cycling.
+- `hs -c 'require("chrome").labels()'` list the profile labels Chrome is stamping on window titles, for when a rename breaks the bindings.
+
 ## macOS is stuck
 
 - `opt-ctrl-shift-F5` cursor stuck holding a drag, clicks going nowhere, Finder window that won't close. Releases the drag macOS lost the mouse-up for, whichever button is stuck (middle-button drags hang the same way).

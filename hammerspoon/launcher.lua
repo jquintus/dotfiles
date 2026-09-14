@@ -78,22 +78,46 @@ local function jump(app)
   end
 end
 
--- Overlay listing every binding, for when the positional ones fall out of head.
--- Exposed on M so it can be invoked directly (`hs -c 'require("launcher").cheatSheet()'`)
--- without having to synthesize a Hyper keystroke, which is unreliable to fake.
-function M.cheatSheet()
+-- Bindings other modules own, so the overlay covers the whole Hyper keyboard
+-- and not just the app jumps. They register themselves at load time (see
+-- chrome.lua) rather than being listed here, which would go stale.
+M.EXTRAS = {}
+
+-- Add a line to the overlay. `key` is the Hyper chord's letter, `label` what
+-- it does. Re-registering the same key replaces its line, so a reload does not
+-- leave duplicates behind.
+function M.register(key, label)
+  for _, extra in ipairs(M.EXTRAS) do
+    if extra.key == key then
+      extra.label = label
+      return
+    end
+  end
+  M.EXTRAS[#M.EXTRAS + 1] = { key = key, label = label }
+end
+
+-- The overlay's text. Split out from the overlay itself so it can be checked
+-- from a terminal (`hs -c 'return require("launcher").cheatText()'`) without
+-- having to look at an alert that has already faded.
+function M.cheatText()
   local lines = {}
   for i, app in ipairs(M.APPS) do
     local keys = (i <= 9) and ("  " .. i) or "   "
     if app.key then keys = keys .. "  " .. app.key:upper() else keys = keys .. "   " end
     lines[#lines + 1] = keys .. "   " .. app.name
   end
+  for _, extra in ipairs(M.EXTRAS) do
+    lines[#lines + 1] = "     " .. extra.key:upper() .. "   " .. extra.label
+  end
+  return "HYPER +\n\n" .. table.concat(lines, "\n") .. "\n\nedit: " .. SOURCE
+end
+
+-- Overlay listing every binding, for when the positional ones fall out of head.
+-- Exposed on M so it can be invoked directly (`hs -c 'require("launcher").cheatSheet()'`)
+-- without having to synthesize a Hyper keystroke, which is unreliable to fake.
+function M.cheatSheet()
   hs.alert.closeAll()
-  hs.alert.show(
-    "HYPER +\n\n" .. table.concat(lines, "\n") ..
-    "\n\nedit: " .. SOURCE,
-    5
-  )
+  hs.alert.show(M.cheatText(), 5)
 end
 
 -- Bind everything. `mods` overrides the Hyper definition if you'd rather drive
