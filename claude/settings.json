@@ -169,14 +169,14 @@
     "eng-skills@dirtlabs": true,
     "marketplace-tools@dirtlabs": true,
     "search-sessions@search-sessions": true,
-    "masterdevs@masterclaude": true
+    "masterdevs@masterclaude": true,
+    "codex@openai-codex": true
   },
   "extraKnownMarketplaces": {
     "dirtlabs": {
       "source": {
         "source": "github",
-        "repo": "DirtLabsAI/claude-plugins",
-        "path": "/Users/jq/code/claude-plugins"
+        "repo": "DirtLabsAI/claude-plugins"
       },
       "autoUpdate": true
     },
@@ -191,6 +191,17 @@
         "source": "github",
         "repo": "MasterDevs/masterclaude"
       }
+    },
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
+      }
+    }
+  },
+  "modelSettings": {
+    "claude-opus-5": {
+      "effortLevel": "high"
     }
   },
   "skipWorkflowUsageWarning": true,
