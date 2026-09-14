@@ -43,11 +43,6 @@ M.APPS = {
   { key = "w", name = "Google Chrome" },
   { key = "v", name = "vimR" },
   { key = "s", name = "Slack" },
-  { key = "c", name = "Visual Studio Code", bundle = "com.microsoft.VSCode" },
-  { key = "o", name = "Obsidian" },
-  { key = "g", name = "Google Chat" },
-  { key = "l", name = "Linear" },
-  { key = "m", name = "Spotify" },
   {
     key = "e",
     name = "Finder",
@@ -56,6 +51,11 @@ M.APPS = {
     -- the binding did nothing. Hand back a window at home instead.
     newWindow = function() hs.execute("open ~") end,
   },
+  { key = "c", name = "Visual Studio Code", bundle = "com.microsoft.VSCode" },
+  { key = "o", name = "Obsidian" },
+  { key = "g", name = "Google Chat" },
+  { key = "l", name = "Linear" },
+  { key = "m", name = "Spotify" },
 }
 
 -- Launch, focus, or hide, depending on where the app currently stands.
