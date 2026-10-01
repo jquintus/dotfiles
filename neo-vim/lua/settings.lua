@@ -27,6 +27,7 @@ vim.opt.ignorecase = true -- Ignore case in searches
 vim.opt.incsearch = true  -- Highlight as you type search strings
 
 vim.opt.compatible = false
+vim.opt.startofline = true -- Match Vim: motions like gg move to the first non-blank character
 
 -- Wrap settings
 vim.opt.wrap = false       -- By default, don't do word wrap
