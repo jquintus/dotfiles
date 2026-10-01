@@ -148,6 +148,9 @@ _run_cmds=(
 
   migrate         'uv run python manage.py migrate'
   makemigrations  'uv run python manage.py makemigrations'
+
+  backup-db       'AWS_PROFILE=dirtlabs INCLUDE_VDR_DATA=0 INCLUDE_EXTRACTION_DATA=0 make db-backup-pull'
+
 )
 
 run() {

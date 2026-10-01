@@ -166,20 +166,12 @@
     "command": "\"$HOME/.claude/statusline.sh\""
   },
   "enabledPlugins": {
-    "eng-skills@dirtlabs": true,
-    "marketplace-tools@dirtlabs": true,
     "search-sessions@search-sessions": true,
     "masterdevs@masterclaude": true,
-    "codex@openai-codex": true
+    "codex@openai-codex": true,
+    "eng-skills@dirtlabs": true
   },
   "extraKnownMarketplaces": {
-    "dirtlabs": {
-      "source": {
-        "source": "github",
-        "repo": "DirtLabsAI/claude-plugins"
-      },
-      "autoUpdate": true
-    },
     "search-sessions": {
       "source": {
         "source": "github",
@@ -197,6 +189,12 @@
         "source": "github",
         "repo": "openai/codex-plugin-cc"
       }
+    },
+    "dirtlabs": {
+      "source": {
+        "source": "github",
+        "repo": "dirtlabsai/claude-plugins"
+      }
     }
   },
   "modelSettings": {
@@ -206,6 +204,19 @@
   },
   "skipWorkflowUsageWarning": true,
   "theme": "dark",
+  "switchModelsOnFlag": true,
   "todoFeatureEnabled": true,
-  "agentPushNotifEnabled": true
+  "agentPushNotifEnabled": true,
+  "skillOverrides": {
+    "define": "off",
+    "dictionary": "off",
+    "peon-ping-config": "off",
+    "peon-ping-log": "off",
+    "peon-ping-toggle": "off",
+    "peon-ping-use": "off",
+    "eng-skills:html-view": "off",
+    "eng-skills:html-view-guide": "off",
+    "eng-skills:html-view-report": "off",
+    "eng-skills:hello-world": "off"
+  }
 }
