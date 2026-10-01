@@ -169,6 +169,19 @@ vim.keymap.set('n', '<C-F2>', 'gq}', { noremap = true })
 -------------------------------------------------------------------------------
 -- Syntax Highlighting
 -------------------------------------------------------------------------------
+-- Format the entire buffer as JSON, preserving it if jq reports an error.
+vim.keymap.set('n', '<F12>', function()
+    local input = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), '\n')
+    local output = vim.fn.system({ 'jq', '.' }, input)
+    if vim.v.shell_error ~= 0 then
+        vim.notify(output, vim.log.levels.ERROR)
+        return
+    end
+    local lines = vim.split(output:gsub('\n$', ''), '\n', { plain = true })
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
+    vim.cmd('setlocal syntax=json')
+end, { desc = 'Format buffer as JSON' })
+
 vim.keymap.set('n', '<F11>', function()
     -- Toggle syntax highlighting
     if not vim.b.syntax then

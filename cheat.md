@@ -44,6 +44,10 @@
 - `cmd-down` open the selected folder or file. `Enter` renames it instead, which is the thing that keeps catching you out.
 - `cmd-O` the same open, when your hand is already off the arrow keys.
 
+## Vim / Neovim
+
+- `F12` format the entire buffer as JSON in normal mode.
+
 ## jless
 
 - `jless <file>` browse a JSON or YAML document. Reads stdin too, so anything can be piped in.
