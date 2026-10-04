@@ -16,7 +16,11 @@ injected into Claude's context, so maintainer notes cost no tokens.
 
 ## Most important
 
-Be as brief as possible. 
+Be as brief as possible.
+
+Checklists should be especially terse: group concrete next tasks under project
+names, omit completed work and optional projects, and skip explanatory planning
+steps. A short qualifier such as "and test the size" can stay with its task.
 
 In lists, each numbered or bulleted item must express exactly one action or
 idea. When an item has multiple prerequisites, components, or follow-up actions,
@@ -46,6 +50,9 @@ Write American English, always: `color`, `gray`, `initialize`, `behavior`, `canc
 - Two things I actively want you to do with it: **open a browser split and visually verify** anything web-facing you changed instead of telling me it should work, and **run long or watchable jobs in a visible pane** (including child `claude -p` agents) so I can follow along or take over.
 - `cmux docs [browser|agents|settings|shortcuts]` prints curl commands for the current upstream docs. Short refs like `surface:3` are positional and renumber, so grab UUIDs (`--json --id-format uuids`) for anything you hold across commands.
 - **Given a Google Doc to read, open it in a cmux browser split** (`cmux browser open-split <url> --workspace "$CMUX_WORKSPACE_ID" --focus false`) so I can see what you're reading. Never open new tabs in my pane; splits are less disruptive. The doc body is canvas-rendered, so DOM text scraping returns only chrome; open `https://docs.google.com/document/d/<id>/export?format=txt` in the same split (a repeat `open-split` reuses the pane), which lands the full text (all tabs, plus comments as footnotes) in `~/Downloads` for you to read from disk. Close the split when done.
+- After generating or editing an image, display it inline in an existing cmux terminal pane so I can scroll through the previews.
+- Reuse my chosen image preview pane for subsequent images.
+- Render an image by entering its full path at the cmux terminal prompt.
 - Clean up splits, panes, and statuses you created when you're done.
 
 ## Subagents (standing permission)

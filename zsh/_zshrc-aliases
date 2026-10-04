@@ -10,6 +10,10 @@ alias up="pushd .."
 # lock computer
 alias lock='/System/Library/CoreServices/"Menu Extras"/User.menu/Contents/Resources/CGSession -suspend'
 
+# Access my cheat sheet 
+alias halp='cheat'
+alias help='cheat'
+
 # alias code='pushd $CODE'
 alias dl='pushd ~/Downloads'
 alias profile='vim ~/.bash_profile'

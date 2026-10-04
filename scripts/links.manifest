@@ -50,6 +50,9 @@ claude/agents/archer.md | ~/.claude/agents/archer.md | security-auditing subagen
 .claude/skills/dictionary/SKILL.md | ~/.claude/skills/dictionary/SKILL.md | dictionary skill
 .claude/skills/define/SKILL.md     | ~/.claude/skills/define/SKILL.md     | define skill
 .claude/skills/unslop/SKILL.md     | ~/.claude/skills/unslop/SKILL.md     | unslop skill (strip AI tells from writing)
+.claude/skills/doc-review/SKILL.md | ~/.claude/skills/doc-review/SKILL.md | doc-review skill (iterative feedback on drafts)
+.claude/skills/doc-review/references/preferences.md | ~/.claude/skills/doc-review/references/preferences.md | doc-review learned preferences
+.claude/skills/doc-review/references/google-docs-mechanics.md | ~/.claude/skills/doc-review/references/google-docs-mechanics.md | doc-review Google Docs editing mechanics
 
 # --- Hammerspoon: main config + one module per feature ---
 hammerspoon/init.lua    | ~/.hammerspoon/init.lua    | Hammerspoon main config
