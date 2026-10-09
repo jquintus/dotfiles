@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dash</title>
+<style>
+  /* Light only, by request. Warm paper background, soft cards, one accent. */
+  :root {
+    --bg: #f7f5f0; --card: #ffffff; --fg: #2b2a27; --dim: #7a766d; --faint: #a8a398;
+    --line: #e7e2d8; --accent: #2f6fb3; --accent-bg: #eaf1f9; --bad: #b4372f; --bad-bg: #fbecea;
+    --row-hover: #faf8f3; --shadow: 0 1px 2px rgba(60, 50, 30, .06), 0 2px 8px rgba(60, 50, 30, .04);
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--fg); margin: 0;
+         font: 15px/1.5 ui-sans-serif, -apple-system, "SF Pro Text", system-ui, sans-serif;
+         -webkit-font-smoothing: antialiased; }
+  main { max-width: 1080px; margin: 0 auto; padding: 0 16px 48px; }
+  h1 { position: sticky; top: 0; z-index: 1; background: var(--bg); margin: 0 -16px; padding: 18px 16px 12px;
+       font-size: 20px; font-weight: 650; letter-spacing: -.01em; display: flex; gap: 12px; align-items: baseline;
+       border-bottom: 1px solid var(--line); }
+  h1 small { color: var(--faint); font-weight: 400; font-size: 13px; }
+  h2 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em;
+       color: var(--dim); margin: 0; }
+  section { margin-top: 36px; }
+  section > h2, section > details > summary { margin-bottom: 12px; display: block; }
+  details.card > summary { margin: 0; }
+  details.card[open] > summary { margin-bottom: 10px; }
+  details > summary { list-style: none; cursor: pointer; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary h2::before { content: "▸ "; color: var(--faint); }
+  details[open] > summary h2::before { content: "▾ "; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  td, th { text-align: left; padding: 7px 12px 7px 0; vertical-align: baseline;
+           white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  th { color: var(--faint); font-weight: 500; font-size: 12px; padding-bottom: 4px; }
+  tr + tr td { border-top: 1px solid var(--line); }
+  tbody tr:hover td, table tr:hover td { background: var(--row-hover); }
+  .dim { color: var(--dim); }
+  .bad { color: var(--bad); font-weight: 500; }
+  /* Status tones: green ready to go, blue your move, amber someone else's, red broken, gray done. */
+  .tone-good { color: #2f7a3e; font-weight: 500; }
+  .tone-you { color: var(--accent); font-weight: 500; }
+  .tone-wait { color: #9a6700; }
+  .tone-bad { color: var(--bad); font-weight: 500; }
+  .tone-done { color: var(--faint); }
+  a { color: var(--accent); text-decoration: none; font-weight: 500; }
+  a:hover { text-decoration: underline; }
+  button { white-space: nowrap; font: inherit; font-size: 13px; font-weight: 500; color: var(--accent); background: var(--accent-bg);
+           border: 1px solid transparent; border-radius: 999px; padding: 3px 12px; cursor: pointer; }
+  button:hover { border-color: var(--accent); }
+  button:disabled { opacity: .45; cursor: default; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+          padding: 14px 18px; margin: 10px 0; box-shadow: var(--shadow); }
+  .card > div:first-child { font-size: 16px; margin-bottom: 6px; }
+  .card table + table { margin-top: 10px; }
+  .q { margin: 10px 0; }
+  .q summary { padding: 2px 0; }
+  .q summary b { font-weight: 600; }
+  .gist { font-weight: 500; margin: 12px 0; font-size: 16px; line-height: 1.55; }
+  .replies { display: grid; grid-template-columns: max-content 1fr; gap: 8px 14px; align-items: baseline; margin: 8px 0 12px; }
+  .full { white-space: pre-wrap; font-size: 14px; line-height: 1.6; color: var(--fg);
+          background: var(--bg); border-radius: 8px; padding: 12px 14px; margin-top: 12px; max-height: 380px; overflow: auto; }
+  .banner { background: var(--bad-bg); color: var(--bad); border-radius: 12px; padding: 12px 16px; margin-top: 16px; }
+  .banner button { color: var(--bad); background: #fff; margin-left: 8px; }
+  #toast { position: fixed; right: 20px; bottom: 20px; background: var(--fg); color: var(--bg);
+           padding: 10px 14px; border-radius: 10px; opacity: 0; transition: opacity .2s; max-width: 80vw; box-shadow: var(--shadow); }
+  #toast.show { opacity: 1; }
+  .w-pr { width: 22%; } .w-tk { width: 104px; } .w-status { width: 20%; } .w-next { width: 168px; }
+  .t-id { width: 110px; } .t-status { width: 120px; }
+  /* Narrow (a cmux split): drop the PR title, never the ticket. */
+  @media (max-width: 760px) {
+    .w-title, td.title { display: none; }
+    .w-pr { width: 34%; } .w-tk { width: 96px; } .w-status { width: auto; } .w-next { width: 156px; }
+    td, th { padding-right: 8px; }
+    td.st { white-space: normal; }
+    body { font-size: 14px; } .card { padding: 12px 14px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Dash <small id="updated"></small></h1>
+  <div id="app" class="dim">Loading…</div>
+</main>
+<div id="toast"></div>
+<script>
+const TOKEN = '__DASH_TOKEN__'
+const inFlight = new Set()
+let data = null
+let openQ = null
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+const ago = iso => {
+  if (!iso) return ''
+  const m = Math.max(0, Math.round((Date.now() - Date.parse(iso)) / 60000))
+  if (m < 60) return `${m}m`
+  if (m < 1440) return `${Math.floor(m / 60)}h${String(m % 60).padStart(2, '0')}`
+  return `${Math.floor(m / 1440)}d${Math.floor((m % 1440) / 60)}h`
+}
+const shortTitle = t => t.replace(/^[A-Z]{2,6}-\d+\s+/, '').replace(/^\w+(\([^)]*\))?!?:\s*/, '')
+
+// Same wording as the /dash mod (hooks/prs.ts).
+const NEXT = { apply: 'Apply', 'mark ready': 'Ready for review', merge: 'Merge' }
+function describe(p) {
+  const next = NEXT[p.action] || ''
+  const row = (status, tone, n = next) => ({ status, tone, next: n })
+  if (p.state !== 'OPEN') return row(p.state === 'MERGED' ? 'Merged' : 'Closed', 'done', '')
+  if (p.action === 'conflicts') return row('Merge conflicts', 'bad', '')
+  if (p.ci === 'fail') return row(`CI failed (${p.failed})`, 'bad')
+  if (p.action === 'apply') return row('Plan ready', 'good')
+  if (p.ci === 'pending') return row('CI running', 'wait')
+  if (p.isDraft) {
+    if (p.copilot === 'requested') return row('Copilot reviewing', 'wait')
+    return p.action === 'mark ready' ? row('Your review', 'you') : row('In PR loop', 'wait')
+  }
+  if (p.action === 'merge') return row('Approved', 'good')
+  // Out of draft: Copilot's comments are the agent's; only reviewers' count.
+  const human = p.humanThreads ?? p.threads
+  if (human) return row(`${human} reviewer comment${human > 1 ? 's' : ''}`, 'wait')
+  return row('Awaiting review', 'wait')
+}
+
+function stackOrder(prs) {
+  const key = (r, b) => `${r}:${b ?? ''}`
+  const byHead = new Map(prs.map(p => [key(p.repo, p.head), p]))
+  const parent = p => byHead.get(key(p.repo, p.base))
+  const out = []
+  for (const root of prs.filter(p => !parent(p))) {
+    const chain = []
+    const walk = p => { if (chain.includes(p)) return; chain.push(p); prs.filter(c => c !== p && parent(c) === p).forEach(walk) }
+    walk(root)
+    chain.forEach((p, i) => out.push({ p, pos: chain.length > 1 ? `${i + 1}/${chain.length}` : '' }))
+  }
+  for (const p of prs) if (!out.some(o => o.p === p)) out.push({ p, pos: '' })
+  return out
+}
+
+const ticketIdOf = title => (title.match(/^([A-Z]{2,6}-\d+)\b/) || [])[1] || ''
+function ticketCell(id) {
+  if (!id) return ''
+  const t = (data.tickets || []).find(x => x.id === id)
+  return t ? `<a href="${esc(t.url)}" target="_blank" rel="noopener">${esc(id)}</a>` : esc(id)
+}
+
+function prTable(prs) {
+  if (!prs.length) return '<div class="dim">No PRs.</div>'
+  const rows = stackOrder(prs).map(({ p, pos }) => {
+    const d = describe(p)
+    const next = d.next === 'Ready for review'
+      ? `<button data-act="ready" data-url="${esc(p.url)}">Ready for review</button>`
+      : d.next ? `<a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(d.next)} ↗</a>` : ''
+    return `<tr><td><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.repo)}#${p.number}</a> <span class="dim">${pos}</span></td>
+      <td class="tk">${ticketCell(ticketIdOf(p.title))}</td>
+      <td class="st tone-${d.tone}">${esc(d.status)}</td><td>${next}</td><td class="title dim" title="${esc(p.title)}">${esc(shortTitle(p.title))}</td></tr>`
+  }).join('')
+  return `<table><tr><th class="w-pr">PR</th><th class="w-tk">Ticket</th><th class="w-status">Status</th><th class="w-next">Next for you</th><th class="w-title">Title</th></tr>${rows}</table>`
+}
+
+function questionBlock(q) {
+  const replies = (q.replies || []).map((r, i) =>
+    `<button data-act="reply" data-q="${esc(q.key)}" data-index="${i}">${esc(r.label)}</button><span class="dim">${esc(r.reply)}</span>`).join('')
+  return `<details class="q card" data-key="${esc(q.key)}" ${openQ === q.key ? 'open' : ''}>
+    <summary><b>${esc(q.name)}</b> <span class="dim">${ago(q.askedAt)}</span> · ${esc(q.summary)}</summary>
+    ${q.gist ? `<div class="gist">${esc(q.gist)}</div>` : ''}
+    ${q.kind === 'ask' ? '<div class="dim">Answer this one in the session.</div>' : ''}
+    ${replies ? `<div class="replies">${replies}</div>` : ''}
+    <p>${q.kind === 'text' ? `<button data-act="more" data-q="${esc(q.key)}">More context</button> ` : ''}
+       <button data-act="focus" data-q="${esc(q.key)}">Go to session</button> <span class="dim">${esc(q.cwd)}</span></p>
+    ${q.prompt ? `<div class="dim">You asked: ${esc(q.prompt.split('\n')[0])}</div>` : ''}
+    <div class="full">${esc(q.text.split('\n').slice(-40).join('\n'))}</div>
+  </details>`
+}
+
+function render() {
+  if (!data) return
+  const gh = data.github || {}
+  const sessionUrls = new Set()
+  const sessions = data.sessions.map(s => {
+    const linked = s.prs || []
+    const byTicket = s.ticket ? (gh.mine || []).filter(p => !linked.some(l => l.url === p.url) && p.title.includes(s.ticket)) : []
+    const prs = [...linked, ...byTicket]
+    prs.forEach(p => sessionUrls.add(p.url))
+    return { ...s, prs }
+  })
+  const others = (gh.mine || []).filter(p => !sessionUrls.has(p.url))
+  // A PR already in a session card (with its action) isn't repeated here.
+  const todo = [...(gh.merges || []), ...(gh.applies || [])].filter(p => !sessionUrls.has(p.url))
+  const tickets = data.tickets || []
+  const ticketOf = id => tickets.find(t => t.id === id)
+
+  let html = ''
+  if (data.tripped) html += `<div class="banner"><b>Breaker tripped:</b> ${esc(data.tripped.reason)}. Sends and model calls are off in every session.
+    <button data-act="reset">Reset breaker</button></div>`
+
+  html += `<section><h2>You need to (${data.questions.length + todo.length})</h2>`
+  html += data.questions.length || todo.length ? '' : '<div class="dim">Nothing.</div>'
+  html += data.questions.map(questionBlock).join('')
+  if (todo.length) html += `<div class="card">${prTable(todo)}</div>`
+  html += '</section><section><h2>Sessions</h2>'
+  const idle = sessions.filter(s => !s.prs.length && !(s.tasks || []).length)
+  html += sessions.filter(s => !idle.includes(s)).map(s => {
+    const t = s.ticket && ticketOf(s.ticket)
+    const tasks = (s.tasks || []).map(k => `<tr><td>${esc(k.kind)}</td><td>${ago(k.startedAt)}</td><td colspan="2" class="dim">${esc(k.label)}</td></tr>`).join('')
+    return `<div class="card">
+      <div><b>${esc(s.name)}</b> ${t ? `· <a href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.id)}</a> <span class="dim">${esc(t.status)} · ${esc(t.title)}</span>` : s.ticket ? `· ${esc(s.ticket)}` : ''}</div>
+      ${s.prs.length ? prTable(s.prs) : ''}
+      ${tasks ? `<table><tr><th class="w-pr">Running</th><th class="w-status">For</th><th colspan="2"></th></tr>${tasks}</table>` : ''}
+    </div>`
+  }).join('')
+  html += idle.length ? `<details class="card"><summary><h2>Idle sessions (${idle.length})</h2></summary>
+    <table>${idle.map(s => `<tr><td>${esc(s.name)}</td><td class="dim">${esc(s.cwd)}</td></tr>`).join('')}</table></details>` : ''
+  html += sessions.length ? '' : '<div class="dim">No live sessions.</div>'
+  html += '</section>'
+
+  html += `<section><details class="card" ${others.length ? 'open' : ''}><summary><h2>My other PRs (${others.length})</h2></summary>${prTable(others)}</details></section>`
+  html += `<section><details class="card" open><summary><h2>My tickets (${tickets.length})</h2></summary>
+    <table>${tickets.map(t => `<tr><td class="t-id"><a href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.id)}</a></td><td class="t-status">${esc(t.status)}</td><td class="dim">${esc(t.title)}</td></tr>`).join('')}</table></details></section>`
+  const later = gh.reviews || []
+  html += `<section><details class="card"><summary><h2>Later (${later.length})</h2></summary>
+    <table>${later.map(p => `<tr><td class="w-pr"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.repo.split('/').pop())}#${p.number}</a></td><td class="w-status dim">${esc(p.author || '')}</td><td class="w-next"><a href="${esc(p.url)}" target="_blank" rel="noopener">Review ↗</a></td><td class="dim">${esc(shortTitle(p.title))}</td></tr>`).join('')}</table></details></section>`
+
+  document.getElementById('app').className = ''
+  document.getElementById('app').innerHTML = html
+  document.getElementById('updated').textContent = data.updatedAt ? `updated ${new Date(data.updatedAt * 1000).toLocaleTimeString()}` : ''
+}
+
+async function load() {
+  try {
+    const res = await fetch('/api/state', { headers: { 'X-Dash-Token': TOKEN } })
+    if (res.ok) { data = await res.json(); render() }
+  } catch {}
+}
+
+function toast(text) {
+  const el = document.getElementById('toast')
+  el.textContent = text
+  el.classList.add('show')
+  clearTimeout(toast.t)
+  toast.t = setTimeout(() => el.classList.remove('show'), 3500)
+}
+
+document.addEventListener('toggle', e => {
+  if (e.target.matches('details.q')) openQ = e.target.open ? e.target.dataset.key : (openQ === e.target.dataset.key ? null : openQ)
+}, true)
+
+// One request per click: the button disables at once and the action id is
+// unique, so a double click can't send twice even if the page lags.
+document.addEventListener('click', async e => {
+  const b = e.target.closest('button[data-act]')
+  if (!b || b.disabled) return
+  const key = `${b.dataset.act}:${b.dataset.q || b.dataset.url || ''}`
+  if (inFlight.has(key)) return
+  inFlight.add(key)
+  b.disabled = true
+  const body = { actionId: crypto.randomUUID(), kind: b.dataset.act, q: b.dataset.q, url: b.dataset.url,
+                 index: b.dataset.index === undefined ? undefined : Number(b.dataset.index) }
+  try {
+    const res = await fetch('/api/action', { method: 'POST', headers: { 'X-Dash-Token': TOKEN, 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+    toast((await res.json()).message)
+  } catch {
+    toast('Dash server unreachable; nothing was sent.')
+  } finally {
+    inFlight.delete(key)
+    await load()
+  }
+})
+
+load()
+setInterval(load, 5000)
+</script>
+</body>
+</html>

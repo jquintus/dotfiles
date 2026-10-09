@@ -85,6 +85,10 @@
 
 - `c` open Claude here, continuing this directory's last session if there is one.
 - `c new` open Claude here on a brand new session, ignoring the last one.
+- `/dash` see what needs you across every session: questions waiting, PRs to merge or mark ready, your tickets.
+- Click `[ Dash ]` above the prompt to toggle the same pane while Claude is busy.
+- `/catchup` get a summary of what's been done on this branch's ticket when coming back to it.
+- `python3 -I ~/dotfiles/claude/mods/dash/bin/server.py` serve the dash as a web page at http://127.0.0.1:7419.
 
 ## Claude subagents
 

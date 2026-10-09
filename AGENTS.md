@@ -91,6 +91,12 @@ Files that become real dotfiles are named with a leading underscore in the repo
   `codex-sync`; `scripts/install-mac.sh` runs it at the end. Everything the
   script writes carries a marker on its first line, and it deletes nothing that
   lacks one. `README.md` has the full table under "Codex".
+- **Claude Code mods live in `claude/mods/`, one folder each, and are not in
+  the manifest.** `claude/settings.json` loads the whole folder through
+  `env.CLAUDE_CODE_PLUGIN_DIRS`, so every session picks up a new mod and
+  hot-reloads edits. Generated `.claude-plugin/types/` and `tsconfig.json` are
+  gitignored there. Keep org, team and ticket names out of them; machine-local
+  values go in `~/.claude/dash/config.json`.
 - **Karabiner rewrites its own config and can eat the symlink.** It writes
   `karabiner.json` atomically on any UI change, which replaces the symlink with a
   regular file and silently decouples it from the repo. Prefer editing

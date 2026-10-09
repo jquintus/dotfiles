@@ -1,0 +1,1 @@
+{ "name": "pr-band", "version": "0.1.0", "description": "Band above the prompt showing the current branch's PR: CI, Copilot review, open threads", "types": "./types/index.d.ts" }

@@ -2,6 +2,9 @@
   "permissions": {
     "defaultMode": "auto"
   },
+  "env": {
+    "CLAUDE_CODE_PLUGIN_DIRS": "~/dotfiles/claude/mods"
+  },
   "hooks": {
     "SessionStart": [
       {

@@ -1,0 +1,1 @@
+{ "name": "dash", "version": "0.1.0", "description": "Everything waiting on you (questions in any session, PRs to review, merge or apply) and everything you're waiting on", "types": "./types/index.d.ts" }

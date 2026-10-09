@@ -1,0 +1,1 @@
+{ "name": "local-clock", "version": "0.1.0", "description": "Gives the model the user's local date and time so it never runs `date`, and shows the local time in the status line" }
