@@ -94,6 +94,14 @@ if command -v gdircolors >/dev/null 2>&1; then
   eval "$(gdircolors -b)"
   zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 fi
+
+# Tab shows every match as a grid and arrow keys move through it, instead of
+# blindly cycling. Inside the menu, `/` accepts the highlighted directory and
+# opens a fresh menu of its children, so `cd <Tab>` can walk down a tree you
+# don't know yet. Enter accepts and stops.
+zstyle ':completion:*' menu select
+zmodload zsh/complist
+bindkey -M menuselect '/' accept-and-infer-next-history
 [ -f /Users/jq/.claude/hooks/peon-ping/completions.bash ] && source /Users/jq/.claude/hooks/peon-ping/completions.bash
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 

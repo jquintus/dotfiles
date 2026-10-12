@@ -30,6 +30,8 @@
 ## Navigation
 
 - Type a directory name on its own, with no `cd`, to change into it.
+- `cd <Tab>` browse subdirectories with the arrow keys.
+- `/` in the Tab menu descend into the highlighted directory.
 - `...` go up two directories.
 - `....` go up three directories.
 - `back` return to the directory you came from.
