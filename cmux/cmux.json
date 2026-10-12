@@ -28,10 +28,12 @@
     "showInMenuBar": true
   },
 
+  // The last-message preview is off: the dash mod puts a short "what this
+  // session is doing" status on each card instead (cmux set-status dash).
   "sidebar": {
     "showAgentActivity": true,
     "showProgress": true,
-    "showNotificationMessage": true
+    "showNotificationMessage": false
   },
 
   // Workspaces stay in the order they were put in. The default hoists one to
