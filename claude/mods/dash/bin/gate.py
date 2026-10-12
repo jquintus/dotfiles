@@ -5,6 +5,12 @@ separate processes, reloads and restarts all see the same counters.
   gate.py take <model|send> <key>   exit 0 allowed, 1 refused, 2 tripped
   gate.py status                    prints the state as JSON
   gate.py reset                     clears a trip (by hand only)
+  gate.py lead <session> <seconds>  exit 0 this session leads, 1 it doesn't
+
+One session leads: it alone scans, triages with the model, and queries
+GitHub and Linear, and writes the results to shared.json for the others. The
+leader renews its lease on every call; when it stops (closed, crashed), the
+lease runs out and the next session to ask takes over.
 
 A trip is sticky: nothing clears it but `reset`. Refused attempts count toward
 tripping, so a loop that keeps retrying a refused call still trips it.
@@ -73,6 +79,15 @@ def take(state, kind, key, now):
     return 0, "ok"
 
 
+def lead(state, sid, lease, now):
+    """True if `sid` leads (and renews its lease). Mutates state."""
+    cur = state.get("leader")
+    if cur and cur["sid"] != sid and cur["until"] > now:
+        return False
+    state["leader"] = {"sid": sid, "until": now + lease}
+    return True
+
+
 def take_locked(kind, key):
     """take() under the shared lock, for callers in this process."""
     os.makedirs(DIR, exist_ok=True)
@@ -100,6 +115,10 @@ def main(argv):
             save(state)
             print(reason)
             return code
+        if argv[:1] == ["lead"] and len(argv) == 3:
+            is_leader = lead(state, argv[1], float(argv[2]), time.time())
+            save(state)
+            return 0 if is_leader else 1
         if argv == ["reset"]:
             state["tripped"] = None
             state["attempts"] = []

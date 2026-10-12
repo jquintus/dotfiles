@@ -1,6 +1,6 @@
 import unittest
 
-from gate import take
+from gate import lead, take
 
 
 def fresh():
@@ -38,6 +38,20 @@ class Gate(unittest.TestCase):
         for i in range(19):
             self.assertEqual(take(s, "model", str(i), 100.0 + i * 3)[0], 0)
         self.assertIsNone(s["tripped"])
+
+
+class Lead(unittest.TestCase):
+    def test_one_leader_at_a_time(self):
+        s = fresh()
+        self.assertTrue(lead(s, "a", 150, 100.0))
+        self.assertFalse(lead(s, "b", 150, 101.0))
+        self.assertTrue(lead(s, "a", 150, 200.0))
+
+    def test_lapsed_lease_passes_on(self):
+        s = fresh()
+        lead(s, "a", 150, 100.0)
+        self.assertTrue(lead(s, "b", 150, 251.0))
+        self.assertFalse(lead(s, "a", 150, 252.0))
 
 
 if __name__ == "__main__":

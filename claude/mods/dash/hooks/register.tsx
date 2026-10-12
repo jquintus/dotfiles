@@ -23,9 +23,10 @@ const isOthersOpen = atom({ plugin: 'dash', key: 'isOthersOpen' } as const, fals
 const tripped = atom({ plugin: 'dash', key: 'tripped' } as const, null)
 const now = atom({ plugin: 'dash', key: 'now' } as const, 0)
 
-const LOCAL_MS = 15_000
-const GITHUB_MS = 90_000
-const TICKET_MS = 5 * 60_000
+const LOCAL_MS = 60_000
+const GITHUB_MS = 5 * 60_000
+const TICKET_MS = 15 * 60_000
+const LEASE_S = (LOCAL_MS * 2.5) / 1000
 const GET_ISSUE = 'mcp__claude_ai_Linear__get_issue'
 const LIST_ISSUES = 'mcp__claude_ai_Linear__list_issues'
 const qKey = (q: Question) => `${q.id}@${q.askedAt}`
@@ -136,7 +137,7 @@ async function sendOnce($: EngineInterface, q: Question, text: string) {
 
 // AskUserQuestion always waits; a finished turn waits if the model says so.
 // At most one uncached message is triaged per refresh, so a burst of new
-// sessions is paced by the 15s timer, never by a loop.
+// sessions is paced by the local timer, never by a loop.
 async function waiting($: EngineInterface, candidates: Question[]): Promise<Question[]> {
   const disk = await loadVerdicts($)
   let hasSpent = false
@@ -188,6 +189,53 @@ async function resetBreaker($: EngineInterface) {
   await update($, tripped, () => null)
 }
 
+// One session leads (bin/gate.py lead): only it scans sessions, calls the
+// model, and queries GitHub and Linear. The rest read what it writes.
+async function isLeader($: EngineInterface): Promise<boolean> {
+  const sid = await $.session.id()
+  const res = await $.process.run(['python3', '-I', `${$.plugin.root}/bin/gate.py`, 'lead', sid, String(LEASE_S)])
+  return res.exitCode === 0
+}
+
+async function dashDir($: EngineInterface): Promise<string> {
+  return `${(await $.env.get('HOME')) ?? ''}/.claude/dash`
+}
+
+async function readShared($: EngineInterface): Promise<Record<string, any>> {
+  try {
+    return JSON.parse(await $.fs.read(`${await dashDir($)}/shared.json`))
+  } catch {
+    return {}
+  }
+}
+
+// Written to a temp file and moved into place, so a reader never sees half.
+async function writeShared($: EngineInterface, patch: Record<string, unknown>) {
+  const path = `${await dashDir($)}/shared.json`
+  const tmp = `${path}.${await $.session.id()}.tmp`
+  await $.fs.write(tmp, JSON.stringify({ ...(await readShared($)), ...patch }))
+  await $.process.run(['mv', tmp, path])
+}
+
+async function showQuestions($: EngineInterface, next: Question[]) {
+  const before = (await read($, questions)).map(qKey)
+  announce($, before, next.map(q => ({ key: qKey(q), text: `${q.name} is asking: ${q.summary.slice(0, 80)}` })), !hasSessions)
+  hasSessions = true
+  await update($, questions, () => next)
+}
+
+async function showGithub($: EngineInterface, data: any) {
+  const toast = (label: string, before: PrItem[], next: PrItem[]) =>
+    announce($, before.map(p => p.key), next.map(p => ({ key: p.key, text: `${label}: ${p.repo}#${p.number}` })), !hasGithub)
+  toast('Ready to merge', await read($, merges), data.merges)
+  toast('Ready to apply', await read($, applies), data.applies)
+  await update($, reviews, () => data.reviews as PrItem[])
+  await update($, merges, () => data.merges as PrItem[])
+  await update($, applies, () => data.applies as PrItem[])
+  await update($, allMine, () => data.mine as SessionPr[])
+  hasGithub = true
+}
+
 async function refreshLocal($: EngineInterface) {
   try {
     const st = await $.process.run(['python3', '-I', `${$.plugin.root}/bin/gate.py`, 'status'])
@@ -197,29 +245,32 @@ async function refreshLocal($: EngineInterface) {
     fail($, 'gate status', err)
   }
   try {
-    const data = await scan($, 'sessions')
-    const before = (await read($, questions)).map(qKey)
-    const next = await waiting($, data.questions as Question[])
-    announce($, before, next.map(q => ({ key: qKey(q), text: `${q.name} is asking: ${q.summary.slice(0, 80)}` })), !hasSessions)
-    hasSessions = true
-    await update($, questions, () => next)
+    if (await isLeader($)) {
+      const data = await scan($, 'sessions')
+      const next = await waiting($, data.questions as Question[])
+      await writeShared($, { questions: next })
+      await showQuestions($, next)
+      return
+    }
+    // Followers pick up everything the leader wrote on this one fast tick.
+    const shared = await readShared($)
+    if (shared.questions) await showQuestions($, shared.questions)
+    if (shared.github) await showGithub($, shared.github)
+    const list = JSON.parse(await $.fs.read(`${await dashDir($)}/tickets.json`))
+    if (Array.isArray(list) && list.length) await update($, myTickets, () => list)
   } catch (err) {
     fail($, 'sessions', err)
   }
 }
 
-async function refreshGithub($: EngineInterface) {
+// `isForced` lets a follower rescan right after it pushed or opened a PR.
+async function refreshGithub($: EngineInterface, isForced = false) {
   try {
-    const data = await scan($, 'github')
-    const toast = (label: string, before: PrItem[], next: PrItem[]) =>
-      announce($, before.map(p => p.key), next.map(p => ({ key: p.key, text: `${label}: ${p.repo}#${p.number}` })), !hasGithub)
-    toast('Ready to merge', await read($, merges), data.merges)
-    toast('Ready to apply', await read($, applies), data.applies)
-    await update($, reviews, () => data.reviews as PrItem[])
-    await update($, merges, () => data.merges as PrItem[])
-    await update($, applies, () => data.applies as PrItem[])
-    await update($, allMine, () => data.mine as SessionPr[])
-    hasGithub = true
+    if (isForced || (await isLeader($))) {
+      const data = await scan($, 'github')
+      await writeShared($, { github: data })
+      await showGithub($, data)
+    }
   } catch (err) {
     fail($, 'github', err)
   }
@@ -279,8 +330,9 @@ async function openUrl($: EngineInterface, url: string) {
   await $.process.run(['open', url])
 }
 
-async function refreshMyTickets($: EngineInterface, attempt = 0) {
+async function refreshMyTickets($: EngineInterface, attempt = 0, isForced = false) {
   try {
+    if (!isForced && !(await isLeader($))) return
     const ran = await $.tool.call({
       tool: LIST_ISSUES,
       assignee: 'me',
@@ -293,10 +345,10 @@ async function refreshMyTickets($: EngineInterface, attempt = 0) {
       // The browser dash can't reach Linear; it reads this copy.
       await $.fs.write(`${(await $.env.get('HOME')) ?? ''}/.claude/dash/tickets.json`, JSON.stringify(list))
     }
-    else if (attempt < 15) $.clock.after(20_000, () => void refreshMyTickets($, attempt + 1))
+    else if (attempt < 15) $.clock.after(20_000, () => void refreshMyTickets($, attempt + 1, isForced))
   } catch (err) {
     fail($, 'my tickets', err)
-    if (attempt < 15) $.clock.after(20_000, () => void refreshMyTickets($, attempt + 1))
+    if (attempt < 15) $.clock.after(20_000, () => void refreshMyTickets($, attempt + 1, isForced))
   }
 }
 
@@ -322,7 +374,7 @@ async function act($: EngineInterface, next: string, url: string) {
   }
   const res = await $.process.run(['python3', '-I', `${$.plugin.root}/bin/actions.py`, 'ready', url], { timeoutMs: 90_000 })
   $.ui.toast(`${url.split('/').slice(-3).join('/')}: ${res.stdout.trim() || res.stderr.trim().slice(0, 120)}`)
-  void refreshGithub($)
+  void refreshGithub($, true)
 }
 
 async function goTo($: EngineInterface, q: Question) {
@@ -371,10 +423,10 @@ export const register: Register = on => {
     const ran = await next(e)
     if (e.tool.startsWith('mcp__claude_ai_Linear__save')) {
       void refreshTicket($)
-      void refreshMyTickets($)
+      void refreshMyTickets($, 0, true)
     }
     if (e.tool === 'Bash' && /\b(git push|gh (pr|api))\b/.test((e as { command?: string }).command ?? '')) {
-      void refreshGithub($)
+      void refreshGithub($, true)
     }
 
     return ran
