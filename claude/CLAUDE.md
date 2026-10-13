@@ -20,6 +20,11 @@ Be as brief as possible.
 
 Do not use the question board or agent-board hooks. Keep questions in chat.
 
+Assume I read only your final message of each turn. It must stand alone: state
+the conclusion and the facts it rests on. Never rebut or correct a claim that
+appeared only in your in-between text, since I never saw it. Don't narrate
+between tool calls.
+
 Checklists should be especially terse: group concrete next tasks under project
 names, omit completed work and optional projects, and skip explanatory planning
 steps. A short qualifier such as "and test the size" can stay with its task.

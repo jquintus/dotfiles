@@ -253,5 +253,6 @@
       "Routine under jq/ prefix: git branches for this repo must be prefixed `jq/` per this repo's own CLAUDE.md convention"
     ]
   },
-  "tui": "fullscreen"
+  "tui": "fullscreen",
+  "viewMode": "focus"
 }
