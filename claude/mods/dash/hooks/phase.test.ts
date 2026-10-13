@@ -31,8 +31,9 @@ test('tests run in or out of a loop', () => {
   expect(isSubagentTest('mcp__claude-in-chrome__navigate', {})).toBe(true)
   expect(isSubagentTest('Bash', { command: 'cmux browser open-split http://localhost:3000' })).toBe(true)
   expect(isSubagentTest('Read', {})).toBe(false)
-  // A subagent testing while the main turn waits shows as testing, unless it asks.
-  expect(idlePhase({ ...idle, isTesting: true, stage: 'build' })).toBe('Testing')
+  // A subagent testing while the main turn waits shows as testing, unless it asks or a build owns the stage.
+  expect(idlePhase({ ...idle, isTesting: true })).toBe('Testing')
+  expect(idlePhase({ ...idle, isTesting: true, stage: 'build', hasTimer: true })).toBe('Building')
   expect(idlePhase({ ...idle, isTesting: true, isAsking: true })).toBe('Waiting for your answer')
 })
 

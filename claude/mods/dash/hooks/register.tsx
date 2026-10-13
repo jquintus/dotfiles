@@ -262,7 +262,7 @@ async function publish($: EngineInterface) {
   try {
     let text: string
     const isTesting = (await $.clock.now()) - subagentTestAt < TESTING_MS
-    if (isTurnRunning) text = activity ?? (isTesting ? 'Testing' : stage ? STAGE_LABEL[stage] : 'Working')
+    if (isTurnRunning) text = activity ?? (isTesting && stage !== 'build' ? 'Testing' : stage ? STAGE_LABEL[stage] : 'Working')
     else {
       const sid = await $.session.id()
       const q = (await read($, questions)).find(x => x.id === sid)

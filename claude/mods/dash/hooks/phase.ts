@@ -101,7 +101,8 @@ export function idlePhase(o: {
     if ((o.stage === 'refine' || o.stage === 'plan') && /\bplan\b/i.test(o.askSummary)) return 'Waiting for plan approval'
     return 'Waiting for your answer'
   }
-  if (o.isTesting) return 'Testing'
+  // engineers test constantly inside a build, so their test runs never mask Building.
+  if (o.isTesting && o.stage !== 'build') return 'Testing'
   if (o.hasTimer && o.stage) return STAGE_LABEL[o.stage]
   const open = o.prs.find(p => p.state === 'OPEN')
   if (open) {
