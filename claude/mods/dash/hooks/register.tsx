@@ -2,6 +2,7 @@ import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register } from 'claude-code'
 
 import type { PrItem, Question, Reply, SessionPr, Task, Ticket } from '../types'
+import { STAGE_LABEL, idlePhase, isSubagentTest, pillOf, signalOf, stageFromText, type Stage } from './phase'
 import { describe, shortTitle, stackOrder } from './prs'
 import { ago } from './tasks'
 import { catchupPrompt, parseIssue, parseIssues, ticketFromBranch } from './ticket'
@@ -22,6 +23,7 @@ const allMine = atom({ plugin: 'dash', key: 'allMine' } as const, [])
 const isOthersOpen = atom({ plugin: 'dash', key: 'isOthersOpen' } as const, false)
 const tripped = atom({ plugin: 'dash', key: 'tripped' } as const, null)
 const now = atom({ plugin: 'dash', key: 'now' } as const, 0)
+const phase = atom({ plugin: 'dash', key: 'phase' } as const, null)
 
 const LOCAL_MS = 60_000
 const GITHUB_MS = 5 * 60_000
@@ -236,6 +238,48 @@ async function showGithub($: EngineInterface, data: any) {
   hasGithub = true
 }
 
+// A PR belongs to this session when the session linked it, or when its
+// title carries this session's ticket (ABC-123 …).
+function sessionPrsOf(mine: SessionPr[], everyMine: SessionPr[], tk: Ticket | null): SessionPr[] {
+  const linkedKeys = mine.map(p => p.key)
+  const byTicket = tk ? everyMine.filter(p => !linkedKeys.includes(p.key) && p.title.includes(tk.id)) : []
+  return [...mine, ...byTicket]
+}
+
+// Where this session is in the flow (sticky), what it's doing this turn, and
+// what it waits on between turns. Shown in the pane and as a cmux sidebar pill.
+let stage: Stage | null = null
+let activity: string | null = null
+let isTurnRunning = false
+let hasTimer = false
+let wasAborted = false
+// When a subagent last ran a test or drove a browser; it reads as Testing for
+// TESTING_MS after, so the local refresh clears it once the subagent stops.
+let subagentTestAt = 0
+const TESTING_MS = 90_000
+
+async function publish($: EngineInterface) {
+  try {
+    let text: string
+    const isTesting = (await $.clock.now()) - subagentTestAt < TESTING_MS
+    if (isTurnRunning) text = activity ?? (isTesting ? 'Testing' : stage ? STAGE_LABEL[stage] : 'Working')
+    else {
+      const sid = await $.session.id()
+      const q = (await read($, questions)).find(x => x.id === sid)
+      const prsHere = sessionPrsOf(await read($, prs), await read($, allMine), await read($, ticket))
+      text = idlePhase({ stage, isAsking: !!q, askSummary: q?.summary ?? '', hasTimer, wasAborted, isTesting, prs: prsHere })
+    }
+    if (text === (await read($, phase))) return
+    await update($, phase, () => text)
+    const ws = await $.env.get('CMUX_WORKSPACE_ID')
+    if (!ws) return
+    const pill = pillOf(text)
+    await $.process.run(['cmux', 'set-status', 'dash', text, '--workspace', ws, '--icon', pill.icon, '--color', pill.color, '--priority', '100'])
+  } catch (err) {
+    fail($, 'phase', err)
+  }
+}
+
 async function refreshLocal($: EngineInterface) {
   try {
     const st = await $.process.run(['python3', '-I', `${$.plugin.root}/bin/gate.py`, 'status'])
@@ -250,6 +294,7 @@ async function refreshLocal($: EngineInterface) {
       const next = await waiting($, data.questions as Question[])
       await writeShared($, { questions: next })
       await showQuestions($, next)
+      await publish($)
       return
     }
     // Followers pick up everything the leader wrote on this one fast tick.
@@ -261,6 +306,7 @@ async function refreshLocal($: EngineInterface) {
   } catch (err) {
     fail($, 'sessions', err)
   }
+  await publish($)
 }
 
 // `isForced` lets a follower rescan right after it pushed or opened a PR.
@@ -285,6 +331,7 @@ async function refreshGithub($: EngineInterface, isForced = false) {
   } catch (err) {
     fail($, 'here', err)
   }
+  await publish($)
 }
 
 // Only the tasks change fast; refresh them with the local scan's cadence.
@@ -418,9 +465,50 @@ export const register: Register = on => {
     return { text: `Catching up on ${id}…` }
   })
 
+  on('turn.start', async ($, e, next) => {
+    isTurnRunning = true
+    hasTimer = false
+    wasAborted = false
+    activity = null
+    stage = stageFromText(e.text) ?? stage
+    void publish($)
+    return next(e)
+  })
+
+  on('turn.complete', async ($, e, next) => {
+    const r = await next(e)
+    if (e.agentId) return r
+    isTurnRunning = false
+    wasAborted = e.reason === 'aborted'
+    activity = null
+    void publish($)
+    return r
+  })
+
+  on('session.end', async ($, e, next) => {
+    const ws = await $.env.get('CMUX_WORKSPACE_ID')
+    if (ws) await $.process.run(['cmux', 'clear-status', 'dash', '--workspace', ws])
+    return next(e)
+  }).catch(($, e, next) => next(e))
+
   // A Linear write likely moved the ticket; a git/gh command likely moved a PR.
+  // Main-loop calls also move the phase.
   on('tool.call', async ($, e, next) => {
+    if (!e.agentId) {
+      const sig = signalOf(e.tool, e as Record<string, any>, stage)
+      if ('stage' in sig) stage = sig.stage ?? null
+      if (sig.activity) activity = sig.activity
+      if (e.tool === 'ScheduleWakeup' || e.tool === 'Monitor') hasTimer = true
+      void publish($)
+    } else if (isSubagentTest(e.tool, e as Record<string, any>)) {
+      subagentTestAt = await $.clock.now()
+      void publish($)
+    }
     const ran = await next(e)
+    if (!e.agentId && (e.tool === 'AskUserQuestion' || activity === 'Testing')) {
+      activity = null
+      void publish($)
+    }
     if (e.tool.startsWith('mcp__claude_ai_Linear__save')) {
       void refreshTicket($)
       void refreshMyTickets($, 0, true)
@@ -471,12 +559,8 @@ export const register: Register = on => {
     ] as const
     const later = await read($, reviews)
     const assigned = await read($, myTickets)
-    // A PR belongs to this session when the session linked it, or when its
-    // title carries this session's ticket (ABC-123 …).
     const everyMine = await read($, allMine)
-    const linkedKeys = mine.map(p => p.key)
-    const byTicket = tk ? everyMine.filter(p => !linkedKeys.includes(p.key) && p.title.includes(tk.id)) : []
-    const sessionPrs = [...mine, ...byTicket]
+    const sessionPrs = sessionPrsOf(mine, everyMine, tk)
     const sessionKeys = sessionPrs.map(p => p.key)
     const others = everyMine.filter(p => !sessionKeys.includes(p.key))
     const todoHere = todo.map(([verb, list]) => [verb, list.filter(p => !sessionKeys.includes(p.key))] as const)
@@ -484,6 +568,8 @@ export const register: Register = on => {
     const othersOpen = await read($, isOthersOpen)
     const ticketsOpen = await read($, isTicketsOpen)
     const laterOpen = await read($, isLaterOpen)
+    const ph = await read($, phase)
+    const needsYou = ph ? pillOf(ph).icon === 'hand.raised.fill' : false
 
 
     // Fixed column widths keep every row aligned.
@@ -522,7 +608,10 @@ export const register: Register = on => {
             <Button key="reset-breaker" label="Reset breaker" onPress={() => resetBreaker($)} />
           </Box>
         )}
-        <Text bold>This session</Text>
+        <Text>
+          <Text bold>This session</Text>
+          {ph ? <Text color={needsYou ? 'suggestion' : undefined} dimColor={!needsYou}> · {ph}</Text> : null}
+        </Text>
         {tk ? (
           <Box>
             <Box width={2} flexShrink={0} />

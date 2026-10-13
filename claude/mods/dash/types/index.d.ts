@@ -80,6 +80,7 @@ declare module 'claude-code' {
       tripped: string | null
       isLaterOpen: boolean
       now: number
+      phase: string | null
     }
   }
 }
