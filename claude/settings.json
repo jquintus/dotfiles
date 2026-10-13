@@ -1,9 +1,9 @@
 {
-  "permissions": {
-    "defaultMode": "auto"
-  },
   "env": {
     "CLAUDE_CODE_PLUGIN_DIRS": "~/dotfiles/claude/mods"
+  },
+  "permissions": {
+    "defaultMode": "auto"
   },
   "skillOverrides": {
     "define": "off",
@@ -197,7 +197,8 @@
       "source": {
         "source": "github",
         "repo": "MasterDevs/masterclaude"
-      }
+      },
+      "autoUpdate": true
     },
     "openai-codex": {
       "source": {
@@ -209,7 +210,8 @@
       "source": {
         "source": "github",
         "repo": "dirtlabsai/claude-plugins"
-      }
+      },
+      "autoUpdate": true
     }
   },
   "modelSettings": {
@@ -250,5 +252,6 @@
       "**Org-specific CLIs**: None configured — `cmux` (terminal driver), `hs` (Hammerspoon), `board`, `osascript`, `open`, `luac` appear frequently in this project's transcripts as personal tooling, not org-specific CLIs",
       "Routine under jq/ prefix: git branches for this repo must be prefixed `jq/` per this repo's own CLAUDE.md convention"
     ]
-  }
+  },
+  "tui": "fullscreen"
 }

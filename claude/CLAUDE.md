@@ -18,6 +18,8 @@ injected into Claude's context, so maintainer notes cost no tokens.
 
 Be as brief as possible.
 
+Do not use the question board or agent-board hooks. Keep questions in chat.
+
 Checklists should be especially terse: group concrete next tasks under project
 names, omit completed work and optional projects, and skip explanatory planning
 steps. A short qualifier such as "and test the size" can stay with its task.
