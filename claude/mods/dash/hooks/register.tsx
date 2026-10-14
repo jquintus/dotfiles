@@ -41,6 +41,8 @@ const verdicts = new Map<string, Verdict>()
 const TRIAGE = `You triage the last message a coding agent sent its user.
 Decide whether it ends waiting on the user: a decision, an answer, an approval, or input it needs before it can continue. Numbered options with a recommendation or default still count as waiting.
 A status report, a summary of finished work, or "I'll report when it's done" is not waiting.
+Asking the user to approve, review, or merge a pull request is not waiting: PR approval is tracked elsewhere.
+An optional offer the agent does not need in order to continue ("say if you want X", "I can also…") is not waiting.
 When it is waiting, also offer the replies the user is most likely to send: the agent's recommendation, its default, and any options it named. With several numbered decisions, offer one reply that accepts every recommendation. At most 4 replies. Each reply is written as the user, in the first person, one line, specific enough to act on.
 Reply with JSON only:
 {"waiting": true or false,
@@ -224,6 +226,18 @@ async function showQuestions($: EngineInterface, next: Question[]) {
   announce($, before, next.map(q => ({ key: qKey(q), text: `${q.name} is asking: ${q.summary.slice(0, 80)}` })), !hasSessions)
   hasSessions = true
   await update($, questions, () => next)
+}
+
+async function dropQuestion($: EngineInterface) {
+  try {
+    const sid = await $.session.id()
+    await update($, questions, list => list.filter(x => x.id !== sid))
+    const shared = await readShared($)
+    if (!Array.isArray(shared.questions) || !shared.questions.some((x: Question) => x.id === sid)) return
+    await writeShared($, { questions: shared.questions.filter((x: Question) => x.id !== sid) })
+  } catch (err) {
+    fail($, 'drop question', err)
+  }
 }
 
 async function showGithub($: EngineInterface, data: any) {
@@ -466,6 +480,8 @@ export const register: Register = on => {
   })
 
   on('turn.start', async ($, e, next) => {
+    // the user just answered, so this session's question is gone now, not at the leader's next scan.
+    void dropQuestion($)
     isTurnRunning = true
     hasTimer = false
     wasAborted = false
