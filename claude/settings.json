@@ -214,11 +214,13 @@
       "autoUpdate": true
     }
   },
+  "viewMode": "focus",
   "modelSettings": {
     "claude-opus-5": {
       "effortLevel": "high"
     }
   },
+  "tui": "fullscreen",
   "skipWorkflowUsageWarning": true,
   "theme": "dark",
   "switchModelsOnFlag": true,
@@ -253,6 +255,5 @@
       "Routine under jq/ prefix: git branches for this repo must be prefixed `jq/` per this repo's own CLAUDE.md convention"
     ]
   },
-  "tui": "fullscreen",
-  "viewMode": "focus"
+  "model": "fable"
 }
