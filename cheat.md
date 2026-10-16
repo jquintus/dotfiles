@@ -50,6 +50,8 @@
 
 - `F12` format the entire buffer as JSON in normal mode.
 - `Space h d` see every changed file and its diff, VS Code style. The right pane is the real file, so edit it and `:w`.
+- `Ctrl-P` open a file by fuzzy name, like cmd-P in VS Code.
+- `Space f g` grep every file as you type, like cmd-shift-F. `Ctrl-Q` inside it sends the hits to the quickfix list.
 - `Space ?` the in-editor cheat sheet (`:Halp`) has the rest of the git bindings.
 
 ## jless

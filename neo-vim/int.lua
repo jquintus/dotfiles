@@ -18,6 +18,7 @@ require('netrw')    -- Replaces NERDTree
 require('neo-tree') -- Neo-tree for file explorer
 require('plugins')
 require('git')      -- diffview + gitsigns; <leader>hd for the changed-files view
+require('finder')   -- fzf-lua; <C-p> finds a file, <leader>fg greps everything
 require('slime')    -- Vim-slime for sending code to tmux
 require('completion_engine')
 require('sql')

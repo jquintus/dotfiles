@@ -62,6 +62,9 @@ require('packer').startup(function(use)
     use 'sindrets/diffview.nvim'
     use 'lewis6991/gitsigns.nvim'
 
+    -- fzf-lua: <C-p> file finder and <leader>fg live grep (see finder.lua / :Halp)
+    use 'ibhagwan/fzf-lua'
+
     -- Commentary - comment/uncomment lines
     -- gcc - comment/uncomment line
     -- gc - comment/uncomment visually selected text
