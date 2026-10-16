@@ -58,6 +58,10 @@ require('packer').startup(function(use)
         }
     }
 
+    -- Git: changed-files diff view and in-buffer hunk markers (see git.lua / :Halp)
+    use 'sindrets/diffview.nvim'
+    use 'lewis6991/gitsigns.nvim'
+
     -- Commentary - comment/uncomment lines
     -- gcc - comment/uncomment line
     -- gc - comment/uncomment visually selected text

@@ -49,6 +49,8 @@
 ## Vim / Neovim
 
 - `F12` format the entire buffer as JSON in normal mode.
+- `Space h d` see every changed file and its diff, VS Code style. The right pane is the real file, so edit it and `:w`.
+- `Space ?` the in-editor cheat sheet (`:Halp`) has the rest of the git bindings.
 
 ## jless
 
