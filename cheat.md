@@ -54,6 +54,8 @@
 - `Ctrl-P` open a file by fuzzy name, like cmd-P in VS Code.
 - `Space f g` grep every file as you type, like cmd-shift-F. `Ctrl-Q` inside it sends the hits to the quickfix list.
 - `Space ?` the in-editor cheat sheet (`:Halp`) has the rest of the git bindings.
+- `Space n` toggle the file browser.
+- `Space N` reveal the current file in the file browser.
 
 ## jless
 

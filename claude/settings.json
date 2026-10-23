@@ -5,6 +5,7 @@
   "permissions": {
     "defaultMode": "auto"
   },
+  "model": "opus",
   "skillOverrides": {
     "define": "off",
     "dictionary": "off",
@@ -254,6 +255,5 @@
       "**Org-specific CLIs**: None configured — `cmux` (terminal driver), `hs` (Hammerspoon), `board`, `osascript`, `open`, `luac` appear frequently in this project's transcripts as personal tooling, not org-specific CLIs",
       "Routine under jq/ prefix: git branches for this repo must be prefixed `jq/` per this repo's own CLAUDE.md convention"
     ]
-  },
-  "model": "fable"
+  }
 }

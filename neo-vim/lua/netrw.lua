@@ -6,7 +6,6 @@
 -- `-` -> :Explore kept turning whatever pane you're in into a netrw tree.
 if vim.env.SVIM ~= "1" then
     vim.keymap.set("n", "-", "<cmd>Explore<CR>", { desc = "Open netrw in current file's directory" })
-    vim.keymap.set("n", "<leader>n", "<cmd>Lexplore<CR>", { desc = "Toggle netrw in a vertical split" })
 end
 
 -- Netrw configuration (Vinegar-style)

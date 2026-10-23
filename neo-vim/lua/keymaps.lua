@@ -67,6 +67,8 @@ vim.api.nvim_create_user_command('Zoom', zoom_toggle,
 -- tree for its full keybinding help.
 vim.keymap.set('n', '<leader>n', ':Neotree toggle left<CR>',
     { silent = true, desc = 'Toggle file browser (Neo-tree)' })
+vim.keymap.set('n', '<leader>N', ':Neotree reveal left<CR>',
+    { silent = true, desc = 'Reveal current file in file browser (Neo-tree)' })
 
 vim.keymap.set('n', '<F5>', ':e!<CR>zz', { noremap = true })
 vim.keymap.set('n', '<S-F5>', ':e!<CR>Gzz', { noremap = true })

@@ -84,6 +84,7 @@ M.add({
     title = "Files",
     entries = {
         { "<leader>n", "toggle the file browser (Neo-tree)" },
+        { "<leader>N", "reveal the current file in the file browser" },
         { "?",         "inside Neo-tree: full Neo-tree help" },
     },
 })
