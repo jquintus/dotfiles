@@ -48,6 +48,7 @@
 
 ## Vim / Neovim
 
+- `:ba` close all file buffers and leave an empty one beside the file browser; `:ba!` discards unsaved changes.
 - `F12` format the entire buffer as JSON in normal mode.
 - `Space h d` see every changed file and its diff, VS Code style. The right pane is the real file, so edit it and `:w`.
 - `:PrReview 123` read a GitHub PR with the complete changed files beside its diff; accepts a PR number or URL.

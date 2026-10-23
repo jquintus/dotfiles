@@ -69,6 +69,7 @@ M.add({
         { ":f <name>", "name the current buffer without saving it" },
         { ":0file",    "drop the name again (unmodified buffers only)" },
         { ":Wipeout",  "close every hidden, unmodified buffer" },
+        { ":ba",       "close all file buffers; :ba! discards changes" },
     },
 })
 

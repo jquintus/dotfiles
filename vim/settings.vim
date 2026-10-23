@@ -305,6 +305,47 @@ command! Wipeout call s:wipeout()
 
 noremap <leader><esc> :Wipeout<cr>
 
+" Close file buffers while leaving NERDTree and an empty editor open.
+function! s:close_all_buffers(force)
+  let buffers = []
+  for info in getbufinfo({'buflisted': 1})
+    if getbufvar(info.bufnr, '&buftype') ==# ''
+      if !a:force && getbufvar(info.bufnr, '&modified')
+        echoerr 'Unsaved changes; use :ba! to discard them'
+        return
+      endif
+      call add(buffers, info.bufnr)
+    endif
+  endfor
+
+  let windows = []
+  let tree_open = 0
+  for win in getwininfo()
+    if getbufvar(win.bufnr, '&filetype') ==# 'nerdtree'
+      let tree_open = 1
+    elseif index(buffers, win.bufnr) >= 0
+      call add(windows, win.winid)
+    endif
+  endfor
+
+  if !empty(windows)
+    let empty_buffer = bufadd('')
+    call setbufvar(empty_buffer, '&buflisted', 1)
+    for winid in windows
+      call win_execute(winid, 'buffer ' . empty_buffer)
+    endfor
+  elseif tree_open
+    rightbelow vnew
+  endif
+
+  for buffer in buffers
+    execute 'bdelete' . (a:force ? '!' : '') . ' ' . buffer
+  endfor
+endfunction
+
+command! -bang Ba call s:close_all_buffers(<bang>0)
+cnoreabbrev <expr> ba (getcmdtype() ==# ':' && getcmdline() ==# 'ba') ? 'Ba' : 'ba'
+
 "*******************************************************************************
 " Special file type handling
 "*******************************************************************************
