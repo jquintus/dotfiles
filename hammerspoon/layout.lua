@@ -108,11 +108,11 @@ function M.apply()
         { "Slack",         nil, builtin, FULL,  nil, nil },
       }
     else
-      -- Two (or more) externals: cmux + Chrome overlap on the first external
-      -- (right 2/3 and left 2/3), Slack on the left 2/3 of the second external.
+      -- Two (or more) externals: Chrome on the right 2/3 of the first
+      -- external; cmux fills the second, with Slack on its left 2/3.
       rows = {
-        { "cmux",          nil, ext[1], RIGHT23, nil, nil },
-        { "Google Chrome", nil, ext[1], LEFT23,  nil, nil },
+        { "cmux",          nil, ext[2], FULL,    nil, nil },
+        { "Google Chrome", nil, ext[1], RIGHT23, nil, nil },
         { "Slack",         nil, ext[2], LEFT23,  nil, nil },
       }
     end
