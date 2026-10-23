@@ -1,0 +1,1 @@
+{ "name": "reply", "version": "0.1.0", "description": "/reply puts Claude's last message in the prompt box as a quote, ready for ctrl+g and inline answers" }

@@ -99,6 +99,7 @@
 - Click `[ Dash ]` above the prompt to toggle the same pane while Claude is busy.
 - `/catchup` get a summary of what's been done on this branch's ticket when coming back to it.
 - `python3 -I ~/dotfiles/claude/mods/dash/bin/server.py` serve the dash as a web page at http://127.0.0.1:7419.
+- `/reply` then `ctrl+g` answer Claude's last message inline, line by line, in nvim.
 
 ## Claude subagents
 
