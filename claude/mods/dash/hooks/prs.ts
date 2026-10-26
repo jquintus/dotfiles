@@ -33,6 +33,27 @@ export function shortTitle(title: string): string {
     .replace(/^\w+(\([^)]*\))?!?:\s*/, '')
 }
 
+// A PR belongs to this session when the session linked it, when its title
+// carries this session's ticket (ABC-123 …), or when it sits in the same
+// stack as one of those: a stack built with `gh stack` links only the top PR.
+export function sessionPrsOf(linked: SessionPr[], everyMine: SessionPr[], ticketId: string | null): SessionPr[] {
+  const keys = new Set(linked.map(p => p.key))
+  const out = [...linked, ...everyMine.filter(p => !keys.has(p.key) && !!ticketId && p.title.includes(ticketId))]
+  out.forEach(p => keys.add(p.key))
+  const branch = (repo: string, b?: string | null) => (b ? `${repo}:${b}` : '')
+  const isNeighbor = (a: SessionPr, b: SessionPr) =>
+    a.repo === b.repo && (branch(a.repo, a.base) === branch(b.repo, b.head) || branch(a.repo, a.head) === branch(b.repo, b.base))
+  for (let i = 0; i < out.length; i++) {
+    for (const p of everyMine) {
+      if (!keys.has(p.key) && isNeighbor(p, out[i]!)) {
+        keys.add(p.key)
+        out.push(p)
+      }
+    }
+  }
+  return out
+}
+
 export type Stacked = { pr: SessionPr; position: string }
 
 // Orders PRs bottom-up within each stack (a PR whose base is another's head

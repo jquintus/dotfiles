@@ -3,7 +3,7 @@ import type { EngineInterface, Register } from 'claude-code'
 
 import type { PrItem, Question, Reply, SessionPr, Task, Ticket } from '../types'
 import { STAGE_LABEL, idlePhase, isSubagentTest, pillOf, signalOf, stageFromText, type Stage } from './phase'
-import { describe, shortTitle, stackOrder } from './prs'
+import { describe, sessionPrsOf, shortTitle, stackOrder } from './prs'
 import { ago } from './tasks'
 import { catchupPrompt, parseIssue, parseIssues, ticketFromBranch } from './ticket'
 
@@ -252,13 +252,6 @@ async function showGithub($: EngineInterface, data: any) {
   hasGithub = true
 }
 
-// A PR belongs to this session when the session linked it, or when its
-// title carries this session's ticket (ABC-123 …).
-function sessionPrsOf(mine: SessionPr[], everyMine: SessionPr[], tk: Ticket | null): SessionPr[] {
-  const linkedKeys = mine.map(p => p.key)
-  const byTicket = tk ? everyMine.filter(p => !linkedKeys.includes(p.key) && p.title.includes(tk.id)) : []
-  return [...mine, ...byTicket]
-}
 
 // Where this session is in the flow (sticky), what it's doing this turn, and
 // what it waits on between turns. Shown in the pane and as a cmux sidebar pill.
@@ -280,7 +273,7 @@ async function publish($: EngineInterface) {
     else {
       const sid = await $.session.id()
       const q = (await read($, questions)).find(x => x.id === sid)
-      const prsHere = sessionPrsOf(await read($, prs), await read($, allMine), await read($, ticket))
+      const prsHere = sessionPrsOf(await read($, prs), await read($, allMine), (await read($, ticket))?.id ?? null)
       text = idlePhase({ stage, isAsking: !!q, askSummary: q?.summary ?? '', hasTimer, wasAborted, isTesting, prs: prsHere })
     }
     if (text === (await read($, phase))) return
@@ -576,7 +569,7 @@ export const register: Register = on => {
     const later = await read($, reviews)
     const assigned = await read($, myTickets)
     const everyMine = await read($, allMine)
-    const sessionPrs = sessionPrsOf(mine, everyMine, tk)
+    const sessionPrs = sessionPrsOf(mine, everyMine, tk?.id ?? null)
     const sessionKeys = sessionPrs.map(p => p.key)
     const others = everyMine.filter(p => !sessionKeys.includes(p.key))
     const todoHere = todo.map(([verb, list]) => [verb, list.filter(p => !sessionKeys.includes(p.key))] as const)

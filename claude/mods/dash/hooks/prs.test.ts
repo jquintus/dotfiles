@@ -1,7 +1,7 @@
 import { expect, test } from 'claude-code/testing'
 
 import type { SessionPr } from '../types'
-import { describe, shortTitle, stackOrder } from './prs'
+import { describe, sessionPrsOf, shortTitle, stackOrder } from './prs'
 
 const pr = (over: Partial<SessionPr>): SessionPr => ({
   key: 'k', repo: 'backend', number: 1, title: 't', url: 'u', state: 'OPEN', isDraft: true,
@@ -42,4 +42,16 @@ test('stacked PRs come bottom-up with their position', () => {
   expect(stackOrder(prs).map(s => `${s.pr.number} ${s.position}`)).toEqual([
     '551 ', '1407 1/3', '1408 2/3', '1409 3/3',
   ])
+})
+
+test('a session owns the whole stack its linked PR sits in', () => {
+  const bottom = pr({ key: 'a', number: 1498, title: 'ENG-595 fix: ramps', base: 'main', head: 'b1' })
+  const middle = pr({ key: 'b', number: 1493, title: 'ENG-593 test: oneline', base: 'b1', head: 'b2' })
+  const top = pr({ key: 'c', number: 1502, title: 'ENG-596 fix: edges', base: 'b2', head: 'b3' })
+  const unrelated = pr({ key: 'd', number: 1500, title: 'PROD-1 feat: decks', base: 'main', head: 'x1' })
+  const otherRepo = pr({ key: 'e', repo: 'web', number: 9, title: 'ENG-1 fix', base: 'main', head: 'b1' })
+  const everyMine = [bottom, middle, top, unrelated, otherRepo]
+  expect(sessionPrsOf([middle], everyMine, 'ENG-593').map(p => p.number)).toEqual([1493, 1498, 1502])
+  expect(sessionPrsOf([], everyMine, 'ENG-596').map(p => p.number)).toEqual([1502, 1493, 1498])
+  expect(sessionPrsOf([], everyMine, null)).toEqual([])
 })
