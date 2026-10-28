@@ -21,6 +21,7 @@ local LEFT    = hs.geometry.rect(0, 0, 0.5, 1)
 local RIGHT   = hs.geometry.rect(0.5, 0, 0.5, 1)
 local LEFT23  = hs.geometry.rect(0, 0, 2 / 3, 1)     -- left two-thirds
 local RIGHT23 = hs.geometry.rect(1 / 3, 0, 2 / 3, 1) -- right two-thirds
+local CENTER  = hs.geometry.rect(0.225, 0.2, 0.55, 0.6) -- centered, 55% x 60%
 
 -- The built-in laptop display, or nil if it isn't currently attached (e.g. the
 -- lid is closed in clamshell mode, so macOS reports only the external).
@@ -101,11 +102,12 @@ function M.apply()
   else
     local rows
     if n == 1 then
-      -- One external: work apps share the big screen, Slack on the laptop.
+      -- One external: work apps share the big screen, Slack floats centered
+      -- on top of them.
       rows = {
-        { "cmux",          nil, ext[1],  RIGHT, nil, nil },
-        { "Google Chrome", nil, ext[1],  LEFT,  nil, nil },
-        { "Slack",         nil, builtin, FULL,  nil, nil },
+        { "cmux",          nil, ext[1], RIGHT,  nil, nil },
+        { "Google Chrome", nil, ext[1], LEFT,   nil, nil },
+        { "Slack",         nil, ext[1], CENTER, nil, nil },
       }
     else
       -- Two (or more) externals: Chrome on the right 2/3 of the first
