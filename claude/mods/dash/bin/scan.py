@@ -11,6 +11,8 @@ import subprocess
 import sys
 
 PROJECTS = os.path.expanduser("~/.claude/projects")
+CHECKLISTS = os.path.expanduser("~/.claude/dash/checklists")
+CHECKLIST_STATES = ("todo", "doing", "done")
 TAIL_BYTES = 3_000_000
 
 
@@ -368,10 +370,24 @@ def pr_status(p):
     }
 
 
+def checklist(sid):
+    """The session's own checklist, written by the agent to checklists/<sid>.json."""
+    try:
+        with open(os.path.join(CHECKLISTS, f"{sid}.json"), encoding="utf-8") as f:
+            items = json.load(f)
+    except (OSError, ValueError):
+        return []
+    return [
+        {"label": str(i.get("label", "")), "state": i.get("state")}
+        for i in items
+        if isinstance(i, dict) and i.get("state") in CHECKLIST_STATES
+    ]
+
+
 def here(sid, with_prs=True):
     path = transcript(sid, "")
     if not path:
-        return {"prs": [], "tasks": []}
+        return {"prs": [], "tasks": [], "checklist": checklist(sid)}
     entries = read_tail(path)
     since = started_at(sid)
     # PR links can be older than the tail, so read them from the whole file.
@@ -398,7 +414,12 @@ def here(sid, with_prs=True):
             pr = (data.get(f"p{i}") or {}).get("pullRequest")
             if pr:
                 prs.append(pr_status(pr))
-    return {"prs": prs, "tasks": background(entries, since), "ticketHint": ticket_hint(entries, prs)}
+    return {
+        "prs": prs,
+        "tasks": background(entries, since),
+        "checklist": checklist(sid),
+        "ticketHint": ticket_hint(entries, prs),
+    }
 
 
 def ticket_hint(entries, prs):

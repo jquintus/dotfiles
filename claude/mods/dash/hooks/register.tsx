@@ -1,7 +1,7 @@
 import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register } from 'claude-code'
 
-import type { PrItem, Question, Reply, SessionPr, Task, Ticket } from '../types'
+import type { ChecklistItem, PrItem, Question, Reply, SessionPr, Task, Ticket } from '../types'
 import { STAGE_LABEL, idlePhase, isSubagentTest, pillOf, signalOf, stageFromText, type Stage } from './phase'
 import { describe, sessionPrsOf, shortTitle, stackOrder } from './prs'
 import { ago } from './tasks'
@@ -14,6 +14,8 @@ const merges = atom({ plugin: 'dash', key: 'merges' } as const, [])
 const applies = atom({ plugin: 'dash', key: 'applies' } as const, [])
 const prs = atom({ plugin: 'dash', key: 'prs' } as const, [])
 const tasks = atom({ plugin: 'dash', key: 'tasks' } as const, [])
+const checklist = atom({ plugin: 'dash', key: 'checklist' } as const, [])
+const CHECK_MARK = { todo: '⬜', doing: '🔄', done: '✅' } as const
 const ticket = atom({ plugin: 'dash', key: 'ticket' } as const, null)
 const expanded = atom({ plugin: 'dash', key: 'expanded' } as const, null)
 const isLaterOpen = atom({ plugin: 'dash', key: 'isLaterOpen' } as const, false)
@@ -335,6 +337,7 @@ async function refreshGithub($: EngineInterface, isForced = false) {
     }
     await update($, prs, () => data.prs as SessionPr[])
     await update($, tasks, () => data.tasks as Task[])
+    await update($, checklist, () => data.checklist as ChecklistItem[])
   } catch (err) {
     fail($, 'here', err)
   }
@@ -346,6 +349,7 @@ async function refreshTasks($: EngineInterface) {
   try {
     const data = await scan($, 'here', await $.session.id(), '--no-prs')
     await update($, tasks, () => data.tasks as Task[])
+    await update($, checklist, () => data.checklist as ChecklistItem[])
   } catch (err) {
     fail($, 'tasks', err)
   }
@@ -558,6 +562,7 @@ export const register: Register = on => {
     const trip = await read($, tripped)
     const mine = await read($, prs)
     const running = await read($, tasks)
+    const steps: ChecklistItem[] = await read($, checklist)
     const qs = await read($, questions)
     const open = await read($, expanded)
     // Your own PRs are priorities; other people's review requests can wait.
@@ -641,6 +646,14 @@ export const register: Register = on => {
           const d = describe(p)
           return row(p.key, `${p.repo}#${p.number}`, p.url, d.status, d.tone, d.next, shortTitle(p.title), position)
         })}
+        {steps.length > 0 && <Text> </Text>}
+        {steps.length > 0 && <Text bold>Checklist</Text>}
+        {steps.map((step, i) => (
+          <Box key={`step-${i}`}>
+            <Box width={2} flexShrink={0} />
+            <Text dimColor={step.state === 'done'}>{`${CHECK_MARK[step.state]} ${step.label}`}</Text>
+          </Box>
+        ))}
         {running.length > 0 && <Text> </Text>}
         {running.length > 0 && head(['Running', 'For', '', ''])}
         {running.map(task => (

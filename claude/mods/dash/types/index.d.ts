@@ -46,6 +46,11 @@ export type SessionPr = {
   head?: string | null
 }
 
+export type ChecklistItem = {
+  label: string
+  state: 'todo' | 'doing' | 'done'
+}
+
 export type Task = {
   id: string
   kind: 'agent' | 'shell' | 'monitor' | 'workflow' | 'wakeup'
@@ -71,6 +76,7 @@ declare module 'claude-code' {
       applies: PrItem[]
       prs: SessionPr[]
       tasks: Task[]
+      checklist: ChecklistItem[]
       ticket: Ticket | null
       myTickets: Ticket[]
       allMine: SessionPr[]
