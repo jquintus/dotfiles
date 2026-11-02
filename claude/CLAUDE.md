@@ -86,6 +86,10 @@ Relay the conclusions — I never see the agent's report.
 - **Don't match the file's existing version.** A workflow whose other jobs are on an old major is a reason to upgrade those jobs, not to join them — and expect a Copilot review comment claiming the new job is "inconsistent". That comment is wrong; reply citing this rule rather than downgrading.
 - When a PR touches a workflow, confirm the fix landed rather than assuming: `gh run view <id> --log | grep -icE "deprecat|Node\.js 16|Node\.js 20"` should be 0. Actions in `workflow_dispatch`-only workflows are never exercised by PR checks — say so instead of implying they passed.
 
+## Review scope after merge
+- Before acting on a late review finding, verify that the affected state can occur in production or a supported workflow. A logically valid edge case is not enough reason to ship a fix.
+- Raise any proposed follow-up and its real-world impact well before the original PR merges. After merge, do not create or push a follow-up branch or PR for review feedback without my direction.
+
 ## Copilot PR review loop
 - After addressing Copilot's review feedback on a PR: FIRST explicitly respond to the feedback (reply to each thread, or state the resolution), THEN re-request Copilot's review on that PR so the next round triggers automatically without me asking. Order matters: respond first, re-request second, never re-request before responding.
 - Re-request via `gh` (e.g. `gh api --method POST repos/{owner}/{repo}/pulls/{n}/requested_reviewers -f "reviewers[]=copilot-pull-request-reviewer[bot]"`); if that call doesn't work for the Copilot bot, say so and tell me to click "Re-request review".
