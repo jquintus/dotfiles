@@ -15,7 +15,7 @@ require('autocmds')
 require('halp')     -- :Halp cheat sheet; other modules register their own sections
 require('commands')
 require('netrw')    -- Replaces NERDTree
-require('neo-tree') -- Neo-tree for file explorer
+require('file_tree') -- Neo-tree for file explorer
 require('plugins')
 require('git')      -- diffview + gitsigns; <leader>hd for the changed-files view
 require('finder')   -- fzf-lua; <C-p> finds a file, <leader>fg greps everything
