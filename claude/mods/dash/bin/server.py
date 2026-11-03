@@ -90,9 +90,9 @@ def refresh_local(with_prs):
         try:
             here = scan.here(s["id"], with_prs)
         except Exception:
-            here = {"prs": None, "tasks": [], "ticketHint": None}
+            here = {"prs": None, "tasks": [], "ticketHints": []}
         s["tasks"] = here["tasks"]
-        s["ticket"] = here.get("ticketHint")
+        s["tickets"] = here.get("ticketHints") or []
         s["prs"] = here["prs"] if with_prs else prev.get(s["id"], {}).get("prs", [])
 
     verdicts = read_json(os.path.join(DIR, "verdicts.json"), {})

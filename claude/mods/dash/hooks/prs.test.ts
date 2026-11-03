@@ -51,7 +51,7 @@ test('a session owns the whole stack its linked PR sits in', () => {
   const unrelated = pr({ key: 'd', number: 1500, title: 'PROD-1 feat: decks', base: 'main', head: 'x1' })
   const otherRepo = pr({ key: 'e', repo: 'web', number: 9, title: 'ENG-1 fix', base: 'main', head: 'b1' })
   const everyMine = [bottom, middle, top, unrelated, otherRepo]
-  expect(sessionPrsOf([middle], everyMine, 'ENG-593').map(p => p.number)).toEqual([1493, 1498, 1502])
-  expect(sessionPrsOf([], everyMine, 'ENG-596').map(p => p.number)).toEqual([1502, 1493, 1498])
-  expect(sessionPrsOf([], everyMine, null)).toEqual([])
+  expect(sessionPrsOf([middle], everyMine, ['ENG-593']).map(p => p.number)).toEqual([1493, 1498, 1502])
+  expect(sessionPrsOf([], everyMine, ['ENG-596']).map(p => p.number)).toEqual([1502, 1493, 1498])
+  expect(sessionPrsOf([], everyMine, [])).toEqual([])
 })

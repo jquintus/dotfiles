@@ -34,11 +34,11 @@ export function shortTitle(title: string): string {
 }
 
 // A PR belongs to this session when the session linked it, when its title
-// carries this session's ticket (ABC-123 …), or when it sits in the same
+// carries one of this session's tickets (ABC-123 …), or when it sits in the same
 // stack as one of those: a stack built with `gh stack` links only the top PR.
-export function sessionPrsOf(linked: SessionPr[], everyMine: SessionPr[], ticketId: string | null): SessionPr[] {
+export function sessionPrsOf(linked: SessionPr[], everyMine: SessionPr[], ticketIds: string[]): SessionPr[] {
   const keys = new Set(linked.map(p => p.key))
-  const out = [...linked, ...everyMine.filter(p => !keys.has(p.key) && !!ticketId && p.title.includes(ticketId))]
+  const out = [...linked, ...everyMine.filter(p => !keys.has(p.key) && ticketIds.some(id => p.title.includes(id)))]
   out.forEach(p => keys.add(p.key))
   const branch = (repo: string, b?: string | null) => (b ? `${repo}:${b}` : '')
   const isNeighbor = (a: SessionPr, b: SessionPr) =>

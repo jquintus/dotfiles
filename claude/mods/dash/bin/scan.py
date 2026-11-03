@@ -418,18 +418,24 @@ def here(sid, with_prs=True):
         "prs": prs,
         "tasks": background(entries, since),
         "checklist": checklist(sid),
-        "ticketHint": ticket_hint(entries, prs),
+        "ticketHints": ticket_hints(entries, prs),
     }
 
 
-def ticket_hint(entries, prs):
-    """A ticket id from the session's name, else from a linked PR's title."""
+def ticket_hints(entries, prs):
+    """Ticket ids from the session's name and every linked PR's title and branch."""
     names = [e.get("customTitle") for e in entries if e.get("type") == "custom-title"]
-    for text in names[-1:] + [p["title"] for p in prs]:
+    texts = names[-1:] + [p["title"] for p in prs]
+    out = []
+    for text in texts:
         m = re.search(r"\b([A-Za-z]{2,6}-\d+)\b", text or "")
-        if m:
-            return m.group(1).upper()
-    return None
+        if m and m.group(1).upper() not in out:
+            out.append(m.group(1).upper())
+    for p in prs:
+        m = re.search(r"(?:^|/)([A-Za-z]{2,6}-\d+)(?=$|[-_/])", p.get("head") or "")
+        if m and m.group(1).upper() not in out:
+            out.append(m.group(1).upper())
+    return out
 
 
 if __name__ == "__main__":

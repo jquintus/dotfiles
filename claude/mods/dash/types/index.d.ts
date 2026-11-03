@@ -77,7 +77,7 @@ declare module 'claude-code' {
       prs: SessionPr[]
       tasks: Task[]
       checklist: ChecklistItem[]
-      ticket: Ticket | null
+      tickets: Ticket[]
       myTickets: Ticket[]
       allMine: SessionPr[]
       isOthersOpen: boolean

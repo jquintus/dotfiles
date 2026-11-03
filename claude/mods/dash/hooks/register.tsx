@@ -16,7 +16,7 @@ const prs = atom({ plugin: 'dash', key: 'prs' } as const, [])
 const tasks = atom({ plugin: 'dash', key: 'tasks' } as const, [])
 const checklist = atom({ plugin: 'dash', key: 'checklist' } as const, [])
 const CHECK_MARK = { todo: '⬜', doing: '🔄', done: '✅' } as const
-const ticket = atom({ plugin: 'dash', key: 'ticket' } as const, null)
+const tickets = atom({ plugin: 'dash', key: 'tickets' } as const, [])
 const expanded = atom({ plugin: 'dash', key: 'expanded' } as const, null)
 const isLaterOpen = atom({ plugin: 'dash', key: 'isLaterOpen' } as const, false)
 const myTickets = atom({ plugin: 'dash', key: 'myTickets' } as const, [])
@@ -172,6 +172,7 @@ async function waiting($: EngineInterface, candidates: Question[]): Promise<Ques
 }
 let hasGithub = false
 let isTicketLoading = false
+let isTicketStale = false
 
 // Errors go to the debug log (`claude --debug`), never the transcript.
 function fail($: EngineInterface, what: string, err: unknown) {
@@ -275,7 +276,7 @@ async function publish($: EngineInterface) {
     else {
       const sid = await $.session.id()
       const q = (await read($, questions)).find(x => x.id === sid)
-      const prsHere = sessionPrsOf(await read($, prs), await read($, allMine), (await read($, ticket))?.id ?? null)
+      const prsHere = sessionPrsOf(await read($, prs), await read($, allMine), (await read($, tickets)).map(t => t.id))
       text = idlePhase({ stage, isAsking: !!q, askSummary: q?.summary ?? '', hasTimer, wasAborted, isTesting, prs: prsHere })
     }
     if (text === (await read($, phase))) return
@@ -331,8 +332,9 @@ async function refreshGithub($: EngineInterface, isForced = false) {
   }
   try {
     const data = await scan($, 'here', await $.session.id())
-    if (data.ticketHint && !ticketHint) {
-      ticketHint = data.ticketHint
+    const hints: string[] = data.ticketHints ?? []
+    if (hints.join() !== ticketHints.join()) {
+      ticketHints = hints
       void refreshTicket($)
     }
     await update($, prs, () => data.prs as SessionPr[])
@@ -355,31 +357,42 @@ async function refreshTasks($: EngineInterface) {
   }
 }
 
-let ticketHint: string | null = null
+let ticketHints: string[] = []
 
-// The branch names the ticket; mid-rebase (detached HEAD) the session name or
-// a linked PR's title does.
-async function currentTicketId($: EngineInterface): Promise<string | null> {
+// The branch names the main ticket; the session name and each linked PR's
+// title and branch name the rest (and the main one mid-rebase, on a detached HEAD).
+async function currentTicketIds($: EngineInterface): Promise<string[]> {
   const { stdout } = await $.process.run(['git', 'rev-parse', '--abbrev-ref', 'HEAD'])
-  return ticketFromBranch(stdout.trim()) ?? ticketHint
+  const own = ticketFromBranch(stdout.trim())
+  return [...new Set([...(own ? [own] : []), ...ticketHints])]
 }
 
 // Linear connects after session start, so a miss retries in 20s, not 5 min.
 async function refreshTicket($: EngineInterface, attempt = 0) {
-  if (isTicketLoading) return
+  if (isTicketLoading) {
+    isTicketStale = true
+    return
+  }
   isTicketLoading = true
+  isTicketStale = false
   try {
-    const id = await currentTicketId($)
-    if (!id) return
-    const ran = await $.tool.call({ tool: GET_ISSUE, id, fields: ['title', 'status', 'statusType', 'url'] })
-    const next = ran.deny === undefined && !ran.isError ? parseIssue(id, ran.result) : null
-    if (next) await update($, ticket, () => next)
-    else if (attempt < 15) $.clock.after(20_000, () => void refreshTicket($, attempt + 1))
+    const ids = await currentTicketIds($)
+    if (!ids.length) return
+    const found = await Promise.all(ids.map(async id => {
+      const ran = await $.tool.call({ tool: GET_ISSUE, id, fields: ['title', 'status', 'statusType', 'url'] })
+      return ran.deny === undefined && !ran.isError ? parseIssue(id, ran.result) : null
+    }))
+    const next = found.filter((t): t is Ticket => !!t)
+    if (next.length) await update($, tickets, () => next)
+    if (next.length === ids.length) return
+    if (attempt < 15) $.clock.after(20_000, () => void refreshTicket($, attempt + 1))
   } catch (err) {
     fail($, 'ticket', err)
     if (attempt < 15) $.clock.after(20_000, () => void refreshTicket($, attempt + 1))
   } finally {
     isTicketLoading = false
+    // New hints arrived mid-fetch.
+    if (isTicketStale) void refreshTicket($)
   }
 }
 
@@ -466,8 +479,8 @@ export const register: Register = on => {
   on('command.run', { command: 'dash' }, async $ => ({ text: await toggle($) }))
 
   on('command.run', { command: 'catchup' }, async ($, e) => {
-    const t = await read($, ticket)
-    const id = e.args.trim().toUpperCase() || t?.id || (await currentTicketId($))
+    const t = (await read($, tickets))[0]
+    const id = e.args.trim().toUpperCase() || t?.id || (await currentTicketIds($))[0]
     if (!id) return { text: 'No ticket on this branch. Try /catchup ABC-123.' }
     const cwd = await $.session.cwd()
     const transcripts = `~/.claude/projects/${cwd.replace(/[^A-Za-z0-9]/g, '-')}/*.jsonl`
@@ -558,7 +571,7 @@ export const register: Register = on => {
     const { Box, Button, Text } = $.ui.resolve(e)
     const t = (await read($, now)) || (await $.clock.now())
     const since = (iso: string | null) => (iso ? ago(t - Date.parse(iso)) : '')
-    const tk: Ticket | null = await read($, ticket)
+    const tks: Ticket[] = await read($, tickets)
     const trip = await read($, tripped)
     const mine = await read($, prs)
     const running = await read($, tasks)
@@ -574,7 +587,7 @@ export const register: Register = on => {
     const later = await read($, reviews)
     const assigned = await read($, myTickets)
     const everyMine = await read($, allMine)
-    const sessionPrs = sessionPrsOf(mine, everyMine, tk?.id ?? null)
+    const sessionPrs = sessionPrsOf(mine, everyMine, tks.map(k => k.id))
     const sessionKeys = sessionPrs.map(p => p.key)
     const others = everyMine.filter(p => !sessionKeys.includes(p.key))
     const todoHere = todo.map(([verb, list]) => [verb, list.filter(p => !sessionKeys.includes(p.key))] as const)
@@ -626,13 +639,15 @@ export const register: Register = on => {
           <Text bold>This session</Text>
           {ph ? <Text color={needsYou ? 'suggestion' : undefined} dimColor={!needsYou}> · {ph}</Text> : null}
         </Text>
-        {tk ? (
-          <Box>
-            <Box width={2} flexShrink={0} />
-            <Box width={W.link} flexShrink={0}><Button key="ticket" label={tk.id} onPress={() => openUrl($, tk.url)} /></Box>
-            <Box width={W.status} flexShrink={0}><Text>{tk.status}</Text></Box>
-            <Box flexShrink={1}><Text dimColor wrap="truncate-end">{tk.title}</Text></Box>
-          </Box>
+        {tks.length ? (
+          tks.map(tk => (
+            <Box key={`here-${tk.id}`}>
+              <Box width={2} flexShrink={0} />
+              <Box width={W.link} flexShrink={0}><Button key={`ticket-${tk.id}`} label={tk.id} onPress={() => openUrl($, tk.url)} /></Box>
+              <Box width={W.status} flexShrink={0}><Text>{tk.status}</Text></Box>
+              <Box flexShrink={1}><Text dimColor wrap="truncate-end">{tk.title}</Text></Box>
+            </Box>
+          ))
         ) : (
           <Text dimColor>  No ticket on this branch.</Text>
         )}
@@ -765,7 +780,7 @@ export const register: Register = on => {
                     <Button key={`open-tk-${a.id}`} label={a.id} onPress={() => openUrl($, a.url)} />
                   </Box>
                   <Box width={W.status} flexShrink={0}>
-                    <Text bold={a.id === tk?.id}>{a.status}</Text>
+                    <Text bold={tks.some(k => k.id === a.id)}>{a.status}</Text>
                   </Box>
                   <Box flexShrink={1}>
                     <Text dimColor wrap="truncate-end">{a.title}</Text>

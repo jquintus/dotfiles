@@ -179,7 +179,8 @@ function render() {
   const sessionUrls = new Set()
   const sessions = data.sessions.map(s => {
     const linked = s.prs || []
-    const byTicket = s.ticket ? (gh.mine || []).filter(p => !linked.some(l => l.url === p.url) && p.title.includes(s.ticket)) : []
+    const ids = s.tickets || []
+    const byTicket = (gh.mine || []).filter(p => !linked.some(l => l.url === p.url) && ids.some(id => p.title.includes(id)))
     const prs = [...linked, ...byTicket]
     prs.forEach(p => sessionUrls.add(p.url))
     return { ...s, prs }
@@ -201,10 +202,13 @@ function render() {
   html += '</section><section><h2>Sessions</h2>'
   const idle = sessions.filter(s => !s.prs.length && !(s.tasks || []).length)
   html += sessions.filter(s => !idle.includes(s)).map(s => {
-    const t = s.ticket && ticketOf(s.ticket)
+    const tks = (s.tickets || []).map(id => {
+      const t = ticketOf(id)
+      return t ? `· <a href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.id)}</a> <span class="dim">${esc(t.status)} · ${esc(t.title)}</span>` : `· ${esc(id)}`
+    }).join(' ')
     const tasks = (s.tasks || []).map(k => `<tr><td>${esc(k.kind)}</td><td>${ago(k.startedAt)}</td><td colspan="2" class="dim">${esc(k.label)}</td></tr>`).join('')
     return `<div class="card">
-      <div><b>${esc(s.name)}</b> ${t ? `· <a href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.id)}</a> <span class="dim">${esc(t.status)} · ${esc(t.title)}</span>` : s.ticket ? `· ${esc(s.ticket)}` : ''}</div>
+      <div><b>${esc(s.name)}</b> ${tks}</div>
       ${s.prs.length ? prTable(s.prs) : ''}
       ${tasks ? `<table><tr><th class="w-pr">Running</th><th class="w-status">For</th><th colspan="2"></th></tr>${tasks}</table>` : ''}
     </div>`
