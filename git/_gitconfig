@@ -7,7 +7,7 @@
     unstage = reset HEAD --
     unadd = reset
     unstash = stash pop
-    kev  = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard   # Move your current changes to the Recycle bin (instead of just burning it down). You can use git reflog to find the commit again and restore it if need be.  http://haacked.com/archive/2014/07/28/github-flow-aliases/
+    kev  = !git add -A && git commit --no-verify -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard   # Move your current changes to the Recycle bin (instead of just burning it down). You can use git reflog to find the commit again and restore it if need be.  http://haacked.com/archive/2014/07/28/github-flow-aliases/
     super-kev = !git fetch origin && git reset --hard origin/$(git symbolic-ref --short HEAD) && git clean -fd
     ec = config --global -e                                                            # Edit this file http://haacked.com/archive/2014/07/28/github-flow-aliases/
     co = checkout                                                                      # Checkout
