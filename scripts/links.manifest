@@ -53,8 +53,6 @@ claude/agents/archer.md | ~/.claude/agents/archer.md | security-auditing subagen
 .claude/skills/doc-review/SKILL.md | ~/.claude/skills/doc-review/SKILL.md | doc-review skill (iterative feedback on drafts)
 .claude/skills/doc-review/references/preferences.md | ~/.claude/skills/doc-review/references/preferences.md | doc-review learned preferences
 .claude/skills/doc-review/references/google-docs-mechanics.md | ~/.claude/skills/doc-review/references/google-docs-mechanics.md | doc-review Google Docs editing mechanics
-.claude/skills/sme-question/SKILL.md | ~/.claude/skills/sme-question/SKILL.md | sme-question skill (clear questions for domain experts)
-.claude/skills/sme-question/references/preferences.md | ~/.claude/skills/sme-question/references/preferences.md | sme-question learned preferences
 
 # --- Hammerspoon: main config + one module per feature ---
 hammerspoon/init.lua    | ~/.hammerspoon/init.lua    | Hammerspoon main config
