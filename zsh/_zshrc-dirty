@@ -113,6 +113,13 @@ urls() {
 # wt's trash, stranding the shell in a dead dir (direnv then errors on the
 # stale .envrc). Run the real command, then if our cwd got removed, go home.
 pairdown() {
+  if [[ "$1" == "--switch" ]]; then
+    local target
+    target="$(command pairdown "$@")" || return $?
+    [[ -n "$target" && -d "$target" ]] || return 1
+    cd -- "$target"
+    return $?
+  fi
   command pairdown "$@"
   local ret=$?
   [[ -d "$PWD" ]] || cd ~
