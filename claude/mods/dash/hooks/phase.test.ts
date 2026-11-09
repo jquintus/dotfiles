@@ -22,6 +22,7 @@ test('loops and their timers', () => {
   expect(signalOf('ScheduleWakeup', { reason: 'masterdevs 5-min status update for ABC-123 build' }, 'build')).toEqual({ stage: 'build' })
   expect(signalOf('Monitor', { description: 'PR #12 waiting on a human approval' }, 'pr')).toEqual({ stage: 'approval' })
   expect(signalOf('Bash', { command: 'gh pr merge 12 --squash' }, 'approval')).toEqual({ stage: 'merge' })
+  expect(signalOf('ScheduleWakeup', { reason: 'checking hourly whether PR #12 merged' }, 'pr')).toEqual({ stage: 'approval' })
 })
 
 test('tests run in or out of a loop', () => {

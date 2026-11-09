@@ -63,7 +63,7 @@ export function signalOf(tool: string, input: Record<string, any>, current: Stag
     // The loops wait on timers between turns; the reason names what for.
     case 'ScheduleWakeup':
     case 'Monitor':
-      if (/approval|gate check|merge-it/i.test(reason)) return { stage: 'approval' }
+      if (/approval|gate check|merge-it|\bmerged\b|waiting on review/i.test(reason)) return { stage: 'approval' }
       if (/masterdevs|build/i.test(reason)) return { stage: 'build' }
       if (/\bPR\b|CI|copilot/i.test(reason)) return { stage: 'pr' }
       return {}
