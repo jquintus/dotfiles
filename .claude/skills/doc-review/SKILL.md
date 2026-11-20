@@ -1,6 +1,6 @@
 ---
 name: doc-review
-description: Review a design doc, spec, or other writing Josh is drafting (usually a Google Doc) and give feedback he works through over several rounds. Use when he asks to "read my doc and give feedback", "review this doc", "give me a full set of comments", "add comments on X", or hands over a doc link to critique. Keeps one running feedback file, re-reviews against the latest export, removes items as he resolves them, fixes trivial text issues directly, and records every correction in references/preferences.md.
+description: Review a design doc, spec, or other writing Josh is drafting (usually a Google Doc) and give feedback he works through over several rounds. Use when he asks to "read my doc and give feedback", "review this doc", "give me a full set of comments", "add comments on X", or hands over a doc link to critique. Keeps one running feedback file, re-reviews against the latest read, removes items as he resolves them, fixes trivial text issues directly, and records every correction in references/preferences.md.
 ---
 
 # Doc review
@@ -10,17 +10,12 @@ record of how Josh wants reviews done, and it overrides anything below.
 
 ## 1. Get the current text
 
-- Google Doc: export it fresh every round; never review from an earlier read. Open
-  `https://docs.google.com/document/d/<id>/export?format=txt` in a cmux browser
-  split (`cmux browser open-split <url> --workspace "$CMUX_WORKSPACE_ID" --focus false`),
-  move the newest `~/Downloads/<title>.txt` into the scratchpad, close the split.
-- The export carries every document tab and all comments as lettered footnotes
-  (`[a]`, `[b]`, …). Letters shift between exports, so quote a comment's text
-  rather than citing its letter.
-- Read the comment threads. A reply from whoever owns the decision is settled,
-  not an open question.
-- Links in the doc are not in the txt export. If you need them, export
-  `?format=html` the same way and pull the `href`s.
+- Google Doc: read it fresh every round with the google-workspace MCP's
+  `get_doc_as_markdown` (`comment_mode: "appendix"`, `include_resolved: true`,
+  `tab_id: ""` for every tab). Never review from an earlier read.
+- Read the comment threads in the appendix. Quote a comment's text rather than
+  citing its position. A reply from whoever owns the decision is settled, not an
+  open question.
 
 ## 2. Check before you write a comment
 

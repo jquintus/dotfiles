@@ -17,6 +17,9 @@ the naming style, and the assertion library already in use. Never introduce a ne
 test framework, a new assertion library, or a new directory convention. If the
 repo has no tests at all, say so and propose one option before writing.
 
+The repo's own test rules (`AGENTS.md`, `CLAUDE.md`, `.claude/rules/`) override this
+file. Where they limit which cases or assertions to write, follow them.
+
 Read the code under test through its public surface. If you find yourself needing
 private state to write a test, stop. That is a design finding, not a license to
 reach in. Report it and test what you can reach.
@@ -91,7 +94,7 @@ A test that fails once in fifty runs is worse than no test.
   third-party services. Never mock the thing under test, and never mock a plain
   data object.
 
-If there is no seam to inject a clock or a random source, report that as a design
+If there is no parameter or constructor argument to inject a clock or a random source, report that as a design
 finding rather than mocking a module import.
 
 ## Prove the test works

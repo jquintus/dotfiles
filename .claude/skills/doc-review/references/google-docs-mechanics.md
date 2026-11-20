@@ -1,8 +1,9 @@
 # Editing Google Docs for a review
 
 cmux cannot edit Google Docs (Trusted Types blocks its eval, and the body is
-canvas-rendered). Use Chrome MCP in a fresh tab of the MCP group, and close it
-when done.
+canvas-rendered). For sentence-level text edits use the google-workspace MCP's
+`find_and_replace_doc`. Use Chrome MCP only for edits that must land at a caret
+(tables, comments, styling), in a fresh tab of the MCP group, and close it when done.
 
 ## Positioning
 
@@ -48,7 +49,7 @@ when done.
 
 - Other people's cursors show as labeled flags. Typing directly is safe; avoid
   the clipboard when someone else is editing, since a paste can collide.
-- Verify the result with a fresh `?format=txt` export, not just screenshots.
+- Verify the result with a fresh `get_doc_as_markdown` read, not just screenshots.
 
 ## New tables and matching styles
 
@@ -71,12 +72,9 @@ when done.
 
 ## Find and replace
 
-- Open it with Edit > Find and replace, or `cmd+shift+h` once the doc has focus. On a fresh
-  page load the first click or shortcut is often swallowed. Screenshot to confirm the dialog
-  is open before typing, or the text lands in the document.
-- In a doc with tabs, Replace all opens a "Replace across all tabs?" confirmation. Click OK,
-  or nothing is replaced.
-- Type curly apostrophes (`’`) in the replacement; Docs doesn't convert them there.
-- Replace keeps the formatting of the matched text, so it's the safest way to append to a
-  sentence that's unique in the doc.
-- A case-only change (`Foo` to `foo`) is silently skipped unless Match case is on.
+- Never use the Docs Find and replace dialog, by shortcut or by the Edit menu. Typed text
+  has landed in the document body instead of the dialog and overwritten content.
+- For sentence-level edits use the MCP's `find_and_replace_doc` with `tab_id`,
+  `match_case: true`, and the exact text (curly apostrophes included) as
+  `get_doc_as_markdown` returns it. A `\n` in the replacement starts a new paragraph that
+  inherits the list or heading style.

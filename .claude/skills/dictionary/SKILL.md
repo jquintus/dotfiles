@@ -119,5 +119,5 @@ After notes are filed, offer to link mentions so `[[term]]` jumps work everywher
 The vault is git-tracked but **only commit when the user asks**. If they do, use:
 
 ```bash
-git -c user.name="jq" -c user.email="josh@dirtlabs.ai" -C ~/notes commit ...
+git -C ~/notes commit ...
 ```

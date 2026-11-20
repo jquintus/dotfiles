@@ -18,7 +18,7 @@ injected into Claude's context, so maintainer notes cost no tokens.
 
 Be as brief as possible.
 
-Do not use the question board or agent-board hooks. Keep questions in chat.
+Keep questions in chat.
 
 Assume I read only your final message of each turn. It must stand alone: state
 the conclusion and the facts it rests on. Never rebut or correct a claim that
@@ -54,7 +54,7 @@ Write American English, always: `color`, `gray`, `initialize`, `behavior`, `canc
 
 ## Terminal: cmux
 - I run [cmux](https://cmux.com) as my terminal. When `CMUX_SOCKET_PATH` is in your environment, you can drive the live UI from Bash with the `cmux` CLI: open browser splits, spawn panes, read screens, and post notifications/status/progress back to me.
-- Two things I actively want you to do with it: **open a browser split and visually verify** anything web-facing you changed instead of telling me it should work, and **run long or watchable jobs in a visible pane** (including child `claude -p` agents) so I can follow along or take over.
+- Two things I actively want you to do with it: **open a browser split and visually verify** anything web-facing you changed instead of telling me it should work, and **run long or watchable jobs in a visible pane** so I can follow along or take over. Parallel agent work goes to subagents, never a second Claude in a pane.
 - `cmux docs [browser|agents|settings|shortcuts]` prints curl commands for the current upstream docs. Short refs like `surface:3` are positional and renumber, so grab UUIDs (`--json --id-format uuids`) for anything you hold across commands.
 - **Given a Google Doc to read, use the `google-workspace` MCP server** (`get_doc_as_markdown` with the doc URL, `comment_mode: "appendix"`, `include_resolved: true`; pass `tab_id: ""` to read every tab). Do not open it in a cmux split or a Chrome tab; the MCP returns every tab plus comments directly.
 - After generating or editing an image, display it inline in an existing cmux terminal pane so I can scroll through the previews.

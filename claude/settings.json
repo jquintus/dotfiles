@@ -252,7 +252,7 @@
       "### User-specific",
       "**Primary use of Claude Code**: software development, and personal dotfiles/machine configuration management for this repo",
       "**Trusted repo**: `jquintus/dotfiles` (github.com/jquintus/dotfiles), the working directory's repo and its configured remote. Public — per gh and the repo's own CLAUDE.md. Only this repo's own work belongs here; work-specific (DirtLabs) material must stay out, per the repo's explicit CLAUDE.md guidance.",
-      "**Org-specific CLIs**: None configured — `cmux` (terminal driver), `hs` (Hammerspoon), `board`, `osascript`, `open`, `luac` appear frequently in this project's transcripts as personal tooling, not org-specific CLIs",
+      "**Org-specific CLIs**: None configured — `cmux` (terminal driver), `hs` (Hammerspoon), `osascript`, `open`, `luac` appear frequently in this project's transcripts as personal tooling, not org-specific CLIs",
       "Routine under jq/ prefix: git branches for this repo must be prefixed `jq/` per this repo's own CLAUDE.md convention"
     ]
   }
