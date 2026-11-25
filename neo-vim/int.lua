@@ -18,7 +18,7 @@ require('netrw')    -- Replaces NERDTree
 require('file_tree') -- Neo-tree for file explorer
 require('plugins')
 require('git')      -- diffview + gitsigns; <leader>hd for the changed-files view
-require('jump')     -- flash.nvim; s jumps by label, f/t highlight targets
+require('jump')     -- eyeliner.nvim; f/t highlight the letter to press
 require('finder')   -- fzf-lua; <C-p> finds a file, <leader>fg greps everything
 require('slime')    -- Vim-slime for sending code to tmux
 require('completion_engine')

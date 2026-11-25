@@ -64,6 +64,8 @@ Files that become real dotfiles are named with a leading underscore in the repo
   A binding Josh cannot recall is worth exactly as much as one that was never
   added, and that has already cost real config. `TODO.md` has the longer version
   of this rule. How to write entries there:
+  - **No vim notes.** Neovim bindings go in `:Halp` (`halp.add` in the
+    plugin's module), never in `cheat.md`.
   - **One item per bullet.** Never two keystrokes on one line. Bulleted lists
     exist to be scanned, and packing three bindings into a sentence defeats the
     only thing the file is for.

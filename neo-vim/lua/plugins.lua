@@ -65,8 +65,8 @@ require('packer').startup(function(use)
     -- fzf-lua: <C-p> file finder and <leader>fg live grep (see finder.lua / :Halp)
     use 'ibhagwan/fzf-lua'
 
-    -- flash.nvim: s jumps by label, f/t highlight their targets (see jump.lua / :Halp)
-    use 'folke/flash.nvim'
+    -- eyeliner.nvim: f/t highlight the letter that reaches each word (see jump.lua / :Halp)
+    use 'jinh0/eyeliner.nvim'
 
     -- Commentary - comment/uncomment lines
     -- gcc - comment/uncomment line

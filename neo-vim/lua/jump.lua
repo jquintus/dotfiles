@@ -1,22 +1,22 @@
 --*******************************************************************************
--- flash.nvim: jump anywhere on screen by typing a few characters, then the label.
--- s       type 1-2 characters, then the colored label that appears at the target
--- f/t/F/T enhanced: every match is highlighted; press f again to step to the next
+-- eyeliner.nvim: when you press f/F/t/T, the letter that reaches each word in
+-- one jump lights up (primary color; secondary means press it twice).
 --*******************************************************************************
 local halp = require('halp')
 
-local ok, flash = pcall(require, 'flash')
+local ok, eyeliner = pcall(require, 'eyeliner')
 if ok then
-    flash.setup({})
-    vim.keymap.set({ 'n', 'x', 'o' }, 's', flash.jump, { desc = 'Flash jump' })
+    eyeliner.setup({
+        highlight_on_key = true, -- only light up after pressing f/F/t/T
+        dim = true,              -- dim the rest of the line so the targets stand out
+    })
 end
 
 halp.add({
-    title = 'Jump (flash.nvim)',
+    title = 'Jump on the line (eyeliner.nvim)',
     entries = {
-        { 's',       'type 1-2 chars of the target, then its colored label' },
-        { '',        'works after an operator too: ds<chars><label> deletes up to there' },
-        { 'f / t',   'every match lights up; press f again (or ;) for the next one' },
-        { 'F / T',   'same, backward' },
+        { 'f / t', 'press it and the letter that reaches each word lights up; type it' },
+        { '',      'dimmer highlight: that letter needs two presses (f<c> then ;)' },
+        { 'F / T', 'same, backward' },
     },
 })

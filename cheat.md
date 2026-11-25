@@ -53,7 +53,6 @@
 - `Space h d` see every changed file and its diff, VS Code style. The right pane is the real file, so edit it and `:w`.
 - `:PrReview 123` read a GitHub PR with the complete changed files beside its diff; accepts a PR number or URL.
 - `Ctrl-P` open a file by fuzzy name, like cmd-P in VS Code.
-- `s` then 1-2 characters jumps to that spot on screen; type the colored label that appears there.
 - `Space f g` grep every file as you type, like cmd-shift-F. `Ctrl-Q` inside it sends the hits to the quickfix list.
 - `Space ?` the in-editor cheat sheet (`:Halp`) has the rest of the git bindings.
 - `Space n` toggle the file browser.
